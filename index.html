@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XenithOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    background-color: #030305;
+    color: #e4e6eb;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.aurora-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background-color: #030305;
+}
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(65px);
+    opacity: 0.9;
+    will-change: transform;
+}
+.blob.purple {
+    top: -20%;
+    left: -20%;
+    width: 80vw;
+    height: 80vw;
+    background: radial-gradient(circle, rgba(150,50,255,1) 0%, rgba(150,50,255,0) 70%);
+    animation: float-purple 6s ease-in-out infinite alternate;
+}
+.blob.orange {
+    top: -15%;
+    right: -25%;
+    width: 75vw;
+    height: 75vw;
+    background: radial-gradient(circle, rgba(255,90,60,1) 0%, rgba(255,90,60,0) 70%);
+    animation: float-orange 7s ease-in-out infinite alternate;
+}
+.blob.blue {
+    top: 25%;
+    right: -15%;
+    width: 85vw;
+    height: 85vw;
+    background: radial-gradient(circle, rgba(40,130,255,1) 0%, rgba(40,130,255,0) 70%);
+    animation: float-blue 8s ease-in-out infinite alternate;
+}
+@keyframes float-purple {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(15vw, 15vh, 0) scale(1.2); }
+}
+@keyframes float-orange {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(-20vw, 10vh, 0) scale(1.15); }
+}
+@keyframes float-blue {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(-10vw, -20vh, 0) scale(1.25); }
+}
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: transparent;
+    position: relative;
+    z-index: 101;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #e4e6eb;
+}
+.logo-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+}
+.hamburger {
+    width: 30px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+.hamburger span {
+    position: absolute;
+    height: 3px;
+    background-color: #e4e6eb;
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+    right: 0;
+}
+.hamburger span:nth-child(1) {
+    top: 0;
+    width: 100%;
+}
+.hamburger span:nth-child(2) {
+    bottom: 0;
+    width: 70%;
+}
+.hamburger.active span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+    width: 100%;
+    transform: translateY(-8.5px) rotate(-45deg);
+}
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(3, 3, 5, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 99;
+}
+.mobile-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+.mobile-menu a {
+    font-size: 20px;
+    font-weight: 600;
+    color: #e4e6eb;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 18px 24px;
+    width: 80%;
+    max-width: 320px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease;
+}
+.mobile-menu.active a {
+    opacity: 1;
+    transform: translateY(0);
+}
+.mobile-menu.active a:nth-child(1) { transition-delay: 0.1s, 0.1s, 0s; }
+.mobile-menu.active a:nth-child(2) { transition-delay: 0.15s, 0.15s, 0s; }
+.mobile-menu.active a:nth-child(3) { transition-delay: 0.2s, 0.2s, 0s; }
+.mobile-menu.active a:nth-child(4) { transition-delay: 0.25s, 0.25s, 0s; }
+
+.mobile-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.hero {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px 20px;
+}
+.phone-mockup {
+    width: 280px;
+    height: 580px;
+    background-color: #000;
+    border-radius: 38px;
+    border: 9px solid #1a1d24;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes revealPhone {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: url('screen.jpg') top/cover;
+}
+.content {
+    text-align: center;
+    padding: 20px 32px 60px;
+}
+.content h1 {
+    font-size: 38px;
+    margin-bottom: 20px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+.content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 45px;
+    color: #a0a0a5;
+}
+.btn {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #e4e6eb;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 18px 0;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    margin: 0 auto;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #ffffff;
+    color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
+.btn:active {
+    transform: scale(0.98);
+}
+#home-page {
+    width: 100%;
+    flex: 1;
+}
+#download-page {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+    flex: 1;
+}
+.download-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.download-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+.download-header p {
+    color: #a0a0a5;
+    font-size: 16px;
+}
+.devices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+.device-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    margin: 0 auto;
+    max-width: 360px;
+    width: 100%;
+    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.device-img {
+    width: 140px;
+    height: 280px;
+    background: #000 url('screen.jpg') center/cover;
+    border-radius: 20px;
+    border: 6px solid #1a1d24;
+    margin-bottom: 24px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+.device-info {
+    text-align: center;
+    width: 100%;
+}
+.device-code {
+    font-size: 14px;
+    color: #a0a0a5;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+.device-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.device-maintainer {
+    font-size: 15px;
+    color: #707075;
+    margin-bottom: 24px;
+}
+.download-btn {
+    width: 100%;
+    display: block;
+}
+.archive-container {
+    margin-top: 24px;
+    text-align: left;
+    width: 100%;
+}
+.archive-details {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    overflow: hidden;
+}
+.archive-summary {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+.archive-summary::-webkit-details-marker {
+    display: none;
+}
+.arrow-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+.archive-details[open] .arrow-icon {
+    transform: rotate(180deg);
+}
+.archive-list {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.archive-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.archive-item:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+.archive-version {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e4e6eb;
+}
+.archive-date {
+    font-size: 13px;
+    color: #707075;
+    margin-top: 4px;
+}
+.btn-small {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+.btn-small:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 24px;
+    font-weight: 500;
+    color: #707075;
+    margin-top: auto;
+}
+.social-icons {
+    display: flex;
+    gap: 20px;
+}
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.social-icons svg {
+    width: 30px;
+    height: 30px;
+    fill: #707075;
+    transition: 0.3s;
+}
+.social-icons svg:hover {
+    fill: #e4e6eb;
+}
+</style>
+</head>
+<body>
+
+<div class="aurora-bg">
+    <div class="blob purple"></div>
+    <div class="blob orange"></div>
+    <div class="blob blue"></div>
+</div>
+
+<nav>
+    <a href="#" class="logo-container" id="logo-link">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="#e4e6eb" stroke-width="3" stroke-linecap="round"/>
+                <path d="M6 6L18 18" stroke="#e4e6eb" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <span>XenithOS</span>
+    </a>
+    <div class="hamburger" id="menu-open">
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div class="mobile-menu" id="menu">
+    <a href="#" id="nav-about">About</a>
+    <a href="#" id="nav-download">Download</a>
+    <a href="#">Team</a>
+    <a href="#">Blog</a>
+</div>
+
+<div id="home-page">
+    <header class="hero">
+        <div class="phone-mockup">
+            <div class="phone-screen"></div>
+        </div>
+    </header>
+
+    <section class="content">
+        <h1>What is XenithOS</h1>
+        <p>XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.</p>
+        <a href="#" class="btn" id="get-btn">Get XenithOS</a>
+    </section>
+</div>
+
+<div id="download-page" style="display: none;">
+    <div class="download-header">
+        <h1>Download XenithOS</h1>
+        <p>Get the latest version for your device</p>
+    </div>
+    
+    <div class="devices-list">
+        <div class="device-card">
+            <div class="device-img"></div>
+            <div class="device-info">
+                <div class="device-code">mondrian</div>
+                <div class="device-name">Poco F5 Pro/K60</div>
+                <div class="device-maintainer">Developer: LF5</div>
+                <a href="#" class="btn download-btn">Download Build</a>
+                
+                <div class="archive-container">
+                    <details class="archive-details">
+                        <summary class="archive-summary">
+                            Previous Versions
+                            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+                        </summary>
+                        <div class="archive-list">
+                            <div class="archive-item">
+                                <div>
+                                    <div class="archive-version">XenithOS 1.5.0</div>
+                                    <div class="archive-date">Oct 12, 2025</div>
+                                </div>
+                                <a href="#" class="btn-small">Download</a>
+                            </div>
+                            <div class="archive-item">
+                                <div>
+                                    <div class="archive-version">XenithOS 1.0.0</div>
+                                    <div class="archive-date">Sep 05, 2025</div>
+                                </div>
+                                <a href="#" class="btn-small">Download</a>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-card">
+            <div class="device-img"></div>
+            <div class="device-info">
+                <div class="device-code">alioth</div>
+                <div class="device-name">Poco F3/Mi 11X/Redmi K40</div>
+                <div class="device-maintainer">Maintainer: Ariska Eхидна</div>
+                <a href="#" class="btn download-btn">Download Build</a>
+                
+                <div class="archive-container">
+                    <details class="archive-details">
+                        <summary class="archive-summary">
+                            Previous Versions
+                            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+                        </summary>
+                        <div class="archive-list">
+                            <div class="archive-item">
+                                <div>
+                                    <div class="archive-version">XenithOS 1.5.0</div>
+                                    <div class="archive-date">Oct 12, 2025</div>
+                                </div>
+                                <a href="#" class="btn-small">Download</a>
+                            </div>
+                            <div class="archive-item">
+                                <div>
+                                    <div class="archive-version">XenithOS 1.0.0</div>
+                                    <div class="archive-date">Sep 05, 2025</div>
+                                </div>
+                                <a href="#" class="btn-small">Download</a>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div>© 2026 XenithOS</div>
+    <div class="social-icons">
+        <a href="https://t.me/infinityos_xenithos_rom_updates" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </a>
+    </div>
+</footer>
+
+<script>
+    const menuToggle = document.getElementById('menu-open');
+    const menu = document.getElementById('menu');
+    
+    const homePage = document.getElementById('home-page');
+    const downloadPage = document.getElementById('download-page');
+    const getBtn = document.getElementById('get-btn');
+    const logoLink = document.getElementById('logo-link');
+    const navDownload = document.getElementById('nav-download');
+    const navAbout = document.getElementById('nav-about');
+
+    menuToggle.addEventListener('click', () => {
+        menu.classList.toggle('active');
+        menuToggle.classList.toggle('active');
+    });
+
+    function closeMenu() {
+        menu.classList.remove('active');
+        menuToggle.classList.remove('active');
+    }
+
+    function transitionPages(hidePage, showPage) {
+        hidePage.style.transition = 'opacity 0.3s ease';
+        hidePage.style.opacity = '0';
+        
+        setTimeout(() => {
+            hidePage.style.display = 'none';
+            showPage.style.display = 'block';
+            showPage.style.opacity = '0';
+            window.scrollTo(0, 0);
+            
+            setTimeout(() => {
+                showPage.style.transition = 'opacity 0.4s ease';
+                showPage.style.opacity = '1';
+            }, 50);
+        }, 300);
+    }
+
+    getBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        transitionPages(homePage, downloadPage);
+    });
+
+    navDownload.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        if (downloadPage.style.display !== 'block') {
+            transitionPages(homePage, downloadPage);
+        }
+    });
+
+    logoLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        if (downloadPage.style.display === 'block') {
+            transitionPages(downloadPage, homePage);
+        }
+    });
+
+    navAbout.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        if (downloadPage.style.display === 'block') {
+            transitionPages(downloadPage, homePage);
+        }
+    });
+</script>
+</body>
+</html>
