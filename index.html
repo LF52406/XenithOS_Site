@@ -22,6 +22,9 @@ body {
     display: flex;
     flex-direction: column;
 }
+body.no-scroll {
+    overflow: hidden;
+}
 .aurora-bg {
     position: fixed;
     top: 0;
@@ -110,8 +113,19 @@ nav {
     align-items: center;
     gap: 24px;
 }
+.nav-controls.hidden-controls .lang-selector {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
 .lang-selector {
     position: relative;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+body.no-scroll .lang-selector {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 .globe-btn {
     background: none;
@@ -715,7 +729,7 @@ footer {
         </div>
         <span>XenithOS</span>
     </a>
-    <div class="nav-controls">
+    <div class="nav-controls" id="nav-controls">
         <div class="lang-selector">
             <button class="globe-btn" id="globe-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1095,7 +1109,7 @@ footer {
             "don_desc": "Люди, завдяки яким проект існує",
             "don_msg1": "Величезне дякую за підтримку! Твоя допомога дозволяє нам оплачувати сервери і робити прошивку ще краще.",
             "don_msg2": "Дякую за донат! Дуже ціную твій внесок у розвиток проекту XenithOS.",
-            "don_msg3": "Дякую за каву! Твоя підтримка мотивує працювати далі.",
+            "don_msg3": "Дякую за каву! Твоя підтримка мотивирует працювати далі.",
             "lbl_dev": "Розробник:",
             "lbl_maint": "Мейнтейнер:"
         }
@@ -1154,6 +1168,7 @@ footer {
     const downloadPage = document.getElementById('download-page');
     const buildDetailsPage = document.getElementById('build-details-page');
     const donatorsPage = document.getElementById('donators-page');
+    const navControls = document.getElementById('nav-controls');
     
     const getBtn = document.getElementById('get-btn');
     const logoLink = document.getElementById('logo-link');
@@ -1187,11 +1202,13 @@ footer {
     menuToggle.addEventListener('click', () => {
         menu.classList.toggle('active');
         menuToggle.classList.toggle('active');
+        document.body.classList.toggle('no-scroll');
     });
 
     function closeMenu() {
         menu.classList.remove('active');
         menuToggle.classList.remove('active');
+        document.body.classList.remove('no-scroll');
     }
 
     function transitionPages(hidePage, showPage) {
@@ -1204,6 +1221,13 @@ footer {
             showPage.style.display = 'block';
             showPage.style.opacity = '0';
             window.scrollTo(0, 0);
+            
+            if (showPage === homePage) {
+                navControls.classList.remove('hidden-controls');
+            } else {
+                navControls.classList.add('hidden-controls');
+                langDropdown.classList.remove('active');
+            }
             
             setTimeout(() => {
                 showPage.style.transition = 'opacity 0.4s ease';
@@ -1222,7 +1246,7 @@ footer {
         document.getElementById('bd-maintainer').innerText = data.maintainer;
         document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
         
-        transitionPages(downloadPage, buildDetailsPage);
+        transitionPages(getActivePage(), buildDetailsPage);
     }
 
     getBtn.addEventListener('click', (e) => {
@@ -1276,6 +1300,10 @@ footer {
         transitionPages(getActivePage(), homePage);
     });
 
+    if (getActivePage() !== homePage) {
+        navControls.classList.add('hidden-controls');
+    }
+    
     updateLanguage(currentLang);
 </script>
 </body>
