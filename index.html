@@ -105,6 +105,74 @@ nav {
     width: 100%;
     height: 100%;
 }
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.lang-selector {
+    position: relative;
+}
+.globe-btn {
+    background: none;
+    border: none;
+    color: #e4e6eb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+.globe-btn:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+.globe-btn svg {
+    width: 24px;
+    height: 24px;
+}
+.lang-dropdown {
+    position: absolute;
+    top: 140%;
+    right: -10px;
+    background-color: rgba(3, 3, 5, 0.45);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 4px;
+    min-width: 160px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px) scale(0.95);
+    transform-origin: top right;
+    transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+.lang-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+.lang-option {
+    padding: 12px 16px;
+    color: #a0a0a5;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 16px;
+    text-align: left;
+}
+.lang-option:hover, .lang-option.selected {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: translateX(4px);
+}
 .hamburger {
     width: 30px;
     height: 20px;
@@ -181,7 +249,7 @@ nav {
 .mobile-menu.active a:nth-child(2) { transition-delay: 0.15s, 0.15s, 0s; }
 .mobile-menu.active a:nth-child(3) { transition-delay: 0.2s, 0.2s, 0s; }
 .mobile-menu.active a:nth-child(4) { transition-delay: 0.25s, 0.25s, 0s; }
-
+.mobile-menu.active a:nth-child(5) { transition-delay: 0.3s, 0.3s, 0s; }
 .mobile-menu a:hover {
     background-color: rgba(255, 255, 255, 0.15);
 }
@@ -193,11 +261,12 @@ nav {
 .phone-mockup {
     width: 280px;
     height: 580px;
-    background-color: #000;
-    border-radius: 38px;
-    border: 9px solid #1a1d24;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 40px;
+    padding: 10px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     position: relative;
     opacity: 0;
     animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -215,7 +284,10 @@ nav {
 .phone-screen {
     width: 100%;
     height: 100%;
-    background: url('screen.jpg') top/cover;
+    background: url('image_0.png') center/cover no-repeat;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 .content {
     text-align: center;
@@ -249,6 +321,7 @@ nav {
     backdrop-filter: blur(5px);
     margin: 0 auto;
     cursor: pointer;
+    text-align: center;
 }
 .btn:hover {
     background-color: #ffffff;
@@ -259,16 +332,14 @@ nav {
 .btn:active {
     transform: scale(0.98);
 }
-#home-page {
+#home-page, #download-page, #build-details-page, #donators-page {
     width: 100%;
     flex: 1;
 }
-#download-page {
-    width: 100%;
+#download-page, #build-details-page, #donators-page {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px 24px 60px;
-    flex: 1;
 }
 .download-header {
     text-align: center;
@@ -307,11 +378,21 @@ nav {
 .device-img {
     width: 140px;
     height: 280px;
-    background: #000 url('screen.jpg') center/cover;
-    border-radius: 20px;
-    border: 6px solid #1a1d24;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 22px;
+    padding: 6px;
     margin-bottom: 24px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+}
+.device-screen {
+    width: 100%;
+    height: 100%;
+    background: url('image_0.png') center/cover no-repeat;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 .device-info {
     text-align: center;
@@ -441,6 +522,179 @@ footer {
 .social-icons svg:hover {
     fill: #e4e6eb;
 }
+.build-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.back-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    backdrop-filter: blur(5px);
+}
+.back-btn:hover {
+    background: #ffffff;
+}
+.back-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: #e4e6eb;
+    transition: 0.3s;
+}
+.back-btn:hover svg {
+    fill: #000000;
+}
+.build-header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.info-block {
+    margin-bottom: 20px;
+}
+.info-label {
+    color: #a0a0a5;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.info-value {
+    color: #e4e6eb;
+    font-size: 20px;
+    font-weight: 700;
+}
+.donate-section {
+    margin-top: 40px;
+    width: 100%;
+    text-align: center;
+}
+.donate-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e4e6eb;
+    margin-bottom: 20px;
+}
+.donate-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+.donate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 300px;
+    padding: 14px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 2px solid;
+}
+.donate-btn svg {
+    width: 24px;
+    height: 24px;
+}
+.btn-paypal {
+    border-color: #0079c1;
+    color: #e4e6eb;
+}
+.btn-paypal:hover {
+    background-color: #0079c1;
+    color: #ffffff;
+}
+.btn-patreon {
+    border-color: #ff424d;
+    color: #e4e6eb;
+}
+.btn-patreon:hover {
+    background-color: #ff424d;
+    color: #ffffff;
+}
+.donators-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+.donator-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    backdrop-filter: blur(10px);
+    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.donator-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 16px;
+}
+.donator-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e4e6eb;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.donator-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #9632ff, #2882ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+}
+.donator-amount {
+    font-size: 18px;
+    font-weight: 800;
+    color: #e4e6eb;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.donator-message {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #a0a0a5;
+    font-style: italic;
+    position: relative;
+    padding-left: 12px;
+    border-left: 3px solid rgba(255, 255, 255, 0.15);
+}
+.donator-author {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e4e6eb;
+    text-align: right;
+}
 </style>
 </head>
 <body>
@@ -461,17 +715,34 @@ footer {
         </div>
         <span>XenithOS</span>
     </a>
-    <div class="hamburger" id="menu-open">
-        <span></span>
-        <span></span>
+    <div class="nav-controls">
+        <div class="lang-selector">
+            <button class="globe-btn" id="globe-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+            </button>
+            <div class="lang-dropdown" id="lang-dropdown">
+                <div class="lang-option" data-lang="en">English</div>
+                <div class="lang-option" data-lang="ru">Русский</div>
+                <div class="lang-option" data-lang="uk">Українська</div>
+            </div>
+        </div>
+        <div class="hamburger" id="menu-open">
+            <span></span>
+            <span></span>
+        </div>
     </div>
 </nav>
 
 <div class="mobile-menu" id="menu">
-    <a href="#" id="nav-about">About</a>
-    <a href="#" id="nav-download">Download</a>
-    <a href="#">Team</a>
-    <a href="#">Blog</a>
+    <a href="#" id="nav-about" data-i18n="nav_about">About</a>
+    <a href="#" id="nav-download" data-i18n="nav_download">Download</a>
+    <a href="#" id="nav-donators" data-i18n="nav_donators">Supporters</a>
+    <a href="chat.html" id="nav-chat" data-i18n="nav_chat">Chat</a>
+    <a href="#" data-i18n="nav_team">Team</a>
 </div>
 
 <div id="home-page">
@@ -482,31 +753,33 @@ footer {
     </header>
 
     <section class="content">
-        <h1>What is XenithOS</h1>
-        <p>XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.</p>
-        <a href="#" class="btn" id="get-btn">Get XenithOS</a>
+        <h1 data-i18n="hero_title">What is XenithOS</h1>
+        <p data-i18n="hero_desc">XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.</p>
+        <a href="#" class="btn" id="get-btn" data-i18n="hero_btn">Get XenithOS</a>
     </section>
 </div>
 
 <div id="download-page" style="display: none;">
     <div class="download-header">
-        <h1>Download XenithOS</h1>
-        <p>Get the latest version for your device</p>
+        <h1 data-i18n="dl_title">Download XenithOS</h1>
+        <p data-i18n="dl_desc">Get the latest version for your device</p>
     </div>
     
     <div class="devices-list">
         <div class="device-card">
-            <div class="device-img"></div>
+            <div class="device-img">
+                <div class="device-screen"></div>
+            </div>
             <div class="device-info">
                 <div class="device-code">mondrian</div>
                 <div class="device-name">Poco F5 Pro/K60</div>
-                <div class="device-maintainer">Developer: LF5</div>
-                <a href="#" class="btn download-btn">Download Build</a>
+                <div class="device-maintainer"><span data-i18n="lbl_dev">Developer:</span> LF5</div>
+                <a href="#" class="btn download-btn" id="dl-mondrian" data-i18n="btn_dl_build">Download Build</a>
                 
                 <div class="archive-container">
                     <details class="archive-details">
                         <summary class="archive-summary">
-                            Previous Versions
+                            <span data-i18n="prev_versions">Previous Versions</span>
                             <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
                         </summary>
                         <div class="archive-list">
@@ -515,14 +788,14 @@ footer {
                                     <div class="archive-version">XenithOS 1.5.0</div>
                                     <div class="archive-date">Oct 12, 2025</div>
                                 </div>
-                                <a href="#" class="btn-small">Download</a>
+                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
                             </div>
                             <div class="archive-item">
                                 <div>
                                     <div class="archive-version">XenithOS 1.0.0</div>
                                     <div class="archive-date">Sep 05, 2025</div>
                                 </div>
-                                <a href="#" class="btn-small">Download</a>
+                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
                             </div>
                         </div>
                     </details>
@@ -531,17 +804,19 @@ footer {
         </div>
 
         <div class="device-card">
-            <div class="device-img"></div>
+            <div class="device-img">
+                <div class="device-screen"></div>
+            </div>
             <div class="device-info">
                 <div class="device-code">alioth</div>
                 <div class="device-name">Poco F3/Mi 11X/Redmi K40</div>
-                <div class="device-maintainer">Maintainer: Ariska Eхидна</div>
-                <a href="#" class="btn download-btn">Download Build</a>
+                <div class="device-maintainer"><span data-i18n="lbl_maint">Maintainer:</span> Ariska Eхидна</div>
+                <a href="#" class="btn download-btn" id="dl-alioth" data-i18n="btn_dl_build">Download Build</a>
                 
                 <div class="archive-container">
                     <details class="archive-details">
                         <summary class="archive-summary">
-                            Previous Versions
+                            <span data-i18n="prev_versions">Previous Versions</span>
                             <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
                         </summary>
                         <div class="archive-list">
@@ -550,19 +825,151 @@ footer {
                                     <div class="archive-version">XenithOS 1.5.0</div>
                                     <div class="archive-date">Oct 12, 2025</div>
                                 </div>
-                                <a href="#" class="btn-small">Download</a>
+                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
                             </div>
                             <div class="archive-item">
                                 <div>
                                     <div class="archive-version">XenithOS 1.0.0</div>
                                     <div class="archive-date">Sep 05, 2025</div>
                                 </div>
-                                <a href="#" class="btn-small">Download</a>
+                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
                             </div>
                         </div>
                     </details>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="build-details-page" style="display: none;">
+    <div class="build-header">
+        <button class="back-btn" id="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <h1 id="bd-title">Device</h1>
+    </div>
+
+    <div class="device-card" style="align-items: flex-start; text-align: left; max-width: 100%;">
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_model">Model:</div>
+            <div class="info-value" id="bd-model">...</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_codename">Codename:</div>
+            <div class="info-value" id="bd-codename">...</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_status">Status:</div>
+            <div class="info-value" data-i18n="val_active">Active</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_version">Version:</div>
+            <div class="info-value" id="bd-version">...</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_release">Release:</div>
+            <div class="info-value" data-i18n="val_official">Official</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label" data-i18n="lbl_updated">Last Updated:</div>
+            <div class="info-value" id="bd-date">...</div>
+        </div>
+        <div class="info-block" style="margin-bottom: 30px;">
+            <div class="info-label" id="bd-maintainer-label">Maintainer:</div>
+            <div class="info-value" id="bd-maintainer">...</div>
+        </div>
+
+        <div class="info-label" style="margin-bottom: 12px;" data-i18n="lbl_latest">Latest build:</div>
+        <a href="#" class="btn download-btn" style="margin-bottom: 30px;" data-i18n="btn_dl">Download</a>
+
+        <div class="archive-container" style="margin-top: 0;">
+            <details class="archive-details">
+                <summary class="archive-summary">
+                    <span data-i18n="archive_info">Latest Build Info</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+                </summary>
+                <div class="archive-list" style="color: #a0a0a5; font-size: 14px;" data-i18n="archive_info_desc">
+                    Contains the latest XenithOS features, security patches, and system optimizations.
+                </div>
+            </details>
+            <details class="archive-details" style="margin-top: 12px;">
+                <summary class="archive-summary">
+                    <span data-i18n="archive_change">Device Changelog</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+                </summary>
+                <div class="archive-list" style="color: #a0a0a5; font-size: 14px; line-height: 1.6;" data-i18n="archive_change_desc">
+                    - Updated vendor blobs<br>- Improved battery backup<br>- Fixed minor UI glitches
+                </div>
+            </details>
+            <details class="archive-details" style="margin-top: 12px;">
+                <summary class="archive-summary">
+                    <span data-i18n="archive_inst">Instructions</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+                </summary>
+                <div class="archive-list" style="color: #a0a0a5; font-size: 14px; line-height: 1.6;" data-i18n="archive_inst_desc">
+                    1. Reboot to recovery<br>2. Format Data (yes)<br>3. Flash the ROM zip<br>4. Reboot to system
+                </div>
+            </details>
+        </div>
+
+        <div class="donate-section">
+            <div class="donate-title" data-i18n="donate_title">Donate to Project</div>
+            <div class="donate-buttons">
+                <a href="#" class="donate-btn btn-paypal" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.067 8.178c0 2.877-1.47 5.066-4.41 5.066h-.733c-.323 0-.6.234-.67.55l-.945 4.16c-.055.242-.26.414-.502.414h-2.61c-.368 0-.64-.34-.576-.7l1.012-4.415c.066-.29.314-.498.604-.498h.71c2.256 0 3.398-1.42 3.398-3.11 0-1.503-1.014-2.336-2.522-2.336h-3.414c-.323 0-.6.234-.67.55L7.026 18.06c-.055.242-.26.414-.502.414H3.69c-.367 0-.64-.34-.575-.7L5.783 7.022c.066-.29.314-.498.604-.498h5.6c3.27 0 5.176 1.62 5.176 4.312z" fill="currentColor"/><path d="M12.7 10.12c-.066.29-.314.498-.604.498h-.71c-2.256 0-3.398 1.42-3.398 3.11 0 1.503 1.014 2.336 2.522 2.336h3.414c.323 0 .6-.234.67-.55l.206-.906.56-2.434.116-.5c.05-.224.25-.386.478-.386h.146c2.94 0 4.41-2.19 4.41-5.066 0-.21-.013-.41-.037-.604-.41 1.94-1.87 3.65-4.48 3.65h-.732c-.323 0-.6.234-.67.55l-.56 2.434z" fill="currentColor" opacity=".5"/></svg>
+                    PayPal
+                </a>
+                <a href="#" class="donate-btn btn-patreon" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 .48v23.04h4.22V.48H0zm15.385 0c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.615-3.863 8.615-8.613C24 4.356 20.135.48 15.385.48z" fill="currentColor"/></svg>
+                    Patreon
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="donators-page" style="display: none;">
+    <div class="download-header">
+        <h1 data-i18n="don_title">Supporters</h1>
+        <p data-i18n="don_desc">People who made this project possible</p>
+    </div>
+    
+    <div class="donators-list">
+        <div class="donator-card">
+            <div class="donator-top">
+                <div class="donator-name">
+                    <div class="donator-icon">AL</div>
+                    Alex L.
+                </div>
+                <div class="donator-amount">$50.00</div>
+            </div>
+            <div class="donator-message" data-i18n="don_msg1">Огромное спасибо за поддержку! Твоя помощь позволяет нам оплачивать сервера и делать прошивку еще лучше.</div>
+            <div class="donator-author">— LF5</div>
+        </div>
+
+        <div class="donator-card">
+            <div class="donator-top">
+                <div class="donator-name">
+                    <div class="donator-icon" style="background: linear-gradient(135deg, #ff5a3c, #9632ff);">M</div>
+                    Max
+                </div>
+                <div class="donator-amount">$15.00</div>
+            </div>
+            <div class="donator-message" data-i18n="don_msg2">Благодарю за донат! Очень ценю твой вклад в развитие проекта XenithOS.</div>
+            <div class="donator-author">— LF5</div>
+        </div>
+
+        <div class="donator-card">
+            <div class="donator-top">
+                <div class="donator-name">
+                    <div class="donator-icon" style="background: linear-gradient(135deg, #2882ff, #00ff88);">JD</div>
+                    John Doe
+                </div>
+                <div class="donator-amount">$5.00</div>
+            </div>
+            <div class="donator-message" data-i18n="don_msg3">Спасибо за кофе! Твоя поддержка мотивирует работать дальше.</div>
+            <div class="donator-author">— LF5</div>
         </div>
     </div>
 </div>
@@ -577,15 +984,205 @@ footer {
 </footer>
 
 <script>
+    const translations = {
+        en: {
+            "nav_about": "About",
+            "nav_download": "Download",
+            "nav_donators": "Supporters",
+            "nav_chat": "Chat",
+            "nav_team": "Team",
+            "hero_title": "What is XenithOS",
+            "hero_desc": "XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.",
+            "hero_btn": "Get XenithOS",
+            "dl_title": "Download XenithOS",
+            "dl_desc": "Get the latest version for your device",
+            "btn_dl_build": "Download Build",
+            "prev_versions": "Previous Versions",
+            "btn_dl": "Download",
+            "lbl_model": "Model:",
+            "lbl_codename": "Codename:",
+            "lbl_status": "Status:",
+            "val_active": "Active",
+            "lbl_version": "Version:",
+            "lbl_release": "Release:",
+            "val_official": "Official",
+            "lbl_updated": "Last Updated:",
+            "lbl_latest": "Latest build:",
+            "archive_info": "Latest Build Info",
+            "archive_info_desc": "Contains the latest XenithOS features, security patches, and system optimizations.",
+            "archive_change": "Device Changelog",
+            "archive_change_desc": "- Updated vendor blobs<br>- Improved battery backup<br>- Fixed minor UI glitches",
+            "archive_inst": "Instructions",
+            "archive_inst_desc": "1. Reboot to recovery<br>2. Format Data (yes)<br>3. Flash the ROM zip<br>4. Reboot to system",
+            "donate_title": "Donate to Project",
+            "don_title": "Supporters",
+            "don_desc": "People who made this project possible",
+            "don_msg1": "Huge thanks for the support! Your help allows us to pay for servers and make the ROM even better.",
+            "don_msg2": "Thank you for the donation! I really appreciate your contribution to the XenithOS project.",
+            "don_msg3": "Thanks for the coffee! Your support motivates me to keep working.",
+            "lbl_dev": "Developer:",
+            "lbl_maint": "Maintainer:"
+        },
+        ru: {
+            "nav_about": "О нас",
+            "nav_download": "Скачать",
+            "nav_donators": "Спонсоры",
+            "nav_chat": "Чат",
+            "nav_team": "Команда",
+            "hero_title": "Что такое XenithOS",
+            "hero_desc": "XenithOS, основанная на HyperOS — ваш идеальный выбор для повседневного использования. Это бескомпромиссное сочетание высокой производительности, исключительной плавности, отличного времени автономной работы и умеренной кастомизации в высокостабильной системе.",
+            "hero_btn": "Скачать XenithOS",
+            "dl_title": "Скачать XenithOS",
+            "dl_desc": "Получите последнюю версию для вашего устройства",
+            "btn_dl_build": "Скачать сборку",
+            "prev_versions": "Предыдущие версии",
+            "btn_dl": "Скачать",
+            "lbl_model": "Модель:",
+            "lbl_codename": "Кодовое имя:",
+            "lbl_status": "Статус:",
+            "val_active": "Активен",
+            "lbl_version": "Версия:",
+            "lbl_release": "Релиз:",
+            "val_official": "Официальный",
+            "lbl_updated": "Обновлено:",
+            "lbl_latest": "Последняя сборка:",
+            "archive_info": "Информация о сборке",
+            "archive_info_desc": "Содержит последние функции XenithOS, патчи безопасности и оптимизации системы.",
+            "archive_change": "Список изменений",
+            "archive_change_desc": "- Обновлены vendor blobs<br>- Улучшено время автономной работы<br>- Исправлены мелкие баги UI",
+            "archive_inst": "Инструкция",
+            "archive_inst_desc": "1. Перезагрузитесь в рекавери<br>2. Сделайте Format Data (yes)<br>3. Прошейте zip архив<br>4. Перезагрузитесь в систему",
+            "donate_title": "Поддержать проект",
+            "don_title": "Спонсоры",
+            "don_desc": "Люди, благодаря которым проект существует",
+            "don_msg1": "Огромное спасибо за поддержку! Твоя помощь позволяет нам оплачивать сервера и делать прошивку еще лучше.",
+            "don_msg2": "Благодарю за донат! Очень ценю твой вклад в развитие проекта XenithOS.",
+            "don_msg3": "Спасибо за кофе! Твоя поддержка мотивирует работать дальше.",
+            "lbl_dev": "Разработчик:",
+            "lbl_maint": "Мейнтейнер:"
+        },
+        uk: {
+            "nav_about": "Про нас",
+            "nav_download": "Завантажити",
+            "nav_donators": "Спонсори",
+            "nav_chat": "Чат",
+            "nav_team": "Команда",
+            "hero_title": "Що таке XenithOS",
+            "hero_desc": "XenithOS, заснована на HyperOS — ваш ідеальний вибір для повсякденного використання. Це безкомпромісне поєднання високої продуктивності, виняткової плавності, відмінного часу автономної роботи та помірної кастомізації у високостабільній системі.",
+            "hero_btn": "Отримати XenithOS",
+            "dl_title": "Завантажити XenithOS",
+            "dl_desc": "Отримайте останню версію для вашого пристрою",
+            "btn_dl_build": "Завантажити збірку",
+            "prev_versions": "Попередні версії",
+            "btn_dl": "Завантажити",
+            "lbl_model": "Модель:",
+            "lbl_codename": "Кодове ім'я:",
+            "lbl_status": "Статус:",
+            "val_active": "Активний",
+            "lbl_version": "Версия:",
+            "lbl_release": "Реліз:",
+            "val_official": "Офіційний",
+            "lbl_updated": "Оновлено:",
+            "lbl_latest": "Остання збірка:",
+            "archive_info": "Інформація про збірку",
+            "archive_info_desc": "Містить останні функції XenithOS, патчі безпеки та оптимізації системи.",
+            "archive_change": "Список змін",
+            "archive_change_desc": "- Оновлено vendor blobs<br>- Покращено час автономної роботи<br>- Виправлено дрібні баги UI",
+            "archive_inst": "Інструкция",
+            "archive_inst_desc": "1. Перезавантажтесь у рекавері<br>2. Зробіть Format Data (yes)<br>3. Прошийте zip архів<br>4. Перезавантажтесь у систему",
+            "donate_title": "Підтримати проект",
+            "don_title": "Спонсори",
+            "don_desc": "Люди, завдяки яким проект існує",
+            "don_msg1": "Величезне дякую за підтримку! Твоя допомога дозволяє нам оплачувати сервери і робити прошивку ще краще.",
+            "don_msg2": "Дякую за донат! Дуже ціную твій внесок у розвиток проекту XenithOS.",
+            "don_msg3": "Дякую за каву! Твоя підтримка мотивує працювати далі.",
+            "lbl_dev": "Розробник:",
+            "lbl_maint": "Мейнтейнер:"
+        }
+    };
+
+    let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
+
+    function updateLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('xenithos_lang', lang);
+        document.documentElement.lang = lang;
+        
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.getAttribute('data-lang') === lang) {
+                opt.classList.add('selected');
+            }
+        });
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
+            }
+        });
+
+        if (document.getElementById('build-details-page').style.display === 'block') {
+            const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
+            if (devicesData[deviceId]) {
+                document.getElementById('bd-maintainer-label').innerText = translations[lang][devicesData[deviceId].maintainerLabelKey];
+            }
+        }
+    }
+
+    const globeBtn = document.getElementById('globe-btn');
+    const langDropdown = document.getElementById('lang-dropdown');
+
+    globeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', () => {
+        langDropdown.classList.remove('active');
+    });
+
+    document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            updateLanguage(e.target.getAttribute('data-lang'));
+        });
+    });
+
     const menuToggle = document.getElementById('menu-open');
     const menu = document.getElementById('menu');
-    
     const homePage = document.getElementById('home-page');
     const downloadPage = document.getElementById('download-page');
+    const buildDetailsPage = document.getElementById('build-details-page');
+    const donatorsPage = document.getElementById('donators-page');
+    
     const getBtn = document.getElementById('get-btn');
     const logoLink = document.getElementById('logo-link');
     const navDownload = document.getElementById('nav-download');
     const navAbout = document.getElementById('nav-about');
+    const navDonators = document.getElementById('nav-donators');
+    const btnBack = document.getElementById('btn-back');
+
+    const dlMondrian = document.getElementById('dl-mondrian');
+    const dlAlioth = document.getElementById('dl-alioth');
+
+    const devicesData = {
+        'mondrian': {
+            model: 'Poco F5 Pro/K60',
+            codename: 'MONDRIAN',
+            version: '1.5.0',
+            date: '26 February 2026',
+            maintainer: 'LF5',
+            maintainerLabelKey: 'lbl_dev'
+        },
+        'alioth': {
+            model: 'Poco F3/Mi 11X/Redmi K40',
+            codename: 'ALIOTH',
+            version: '1.5.0',
+            date: '26 February 2026',
+            maintainer: 'Ariska Eхидна',
+            maintainerLabelKey: 'lbl_maint'
+        }
+    };
 
     menuToggle.addEventListener('click', () => {
         menu.classList.toggle('active');
@@ -598,6 +1195,7 @@ footer {
     }
 
     function transitionPages(hidePage, showPage) {
+        if (hidePage === showPage) return;
         hidePage.style.transition = 'opacity 0.3s ease';
         hidePage.style.opacity = '0';
         
@@ -614,34 +1212,71 @@ footer {
         }, 300);
     }
 
+    function openBuildDetails(deviceId) {
+        const data = devicesData[deviceId];
+        document.getElementById('bd-title').innerText = data.codename;
+        document.getElementById('bd-model').innerText = data.model;
+        document.getElementById('bd-codename').innerText = data.codename;
+        document.getElementById('bd-version').innerText = data.version;
+        document.getElementById('bd-date').innerText = data.date;
+        document.getElementById('bd-maintainer').innerText = data.maintainer;
+        document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
+        
+        transitionPages(downloadPage, buildDetailsPage);
+    }
+
     getBtn.addEventListener('click', (e) => {
         e.preventDefault();
         transitionPages(homePage, downloadPage);
     });
 
+    dlMondrian.addEventListener('click', (e) => {
+        e.preventDefault();
+        openBuildDetails('mondrian');
+    });
+
+    dlAlioth.addEventListener('click', (e) => {
+        e.preventDefault();
+        openBuildDetails('alioth');
+    });
+
+    btnBack.addEventListener('click', (e) => {
+        e.preventDefault();
+        transitionPages(buildDetailsPage, downloadPage);
+    });
+
+    function getActivePage() {
+        if (downloadPage.style.display === 'block') return downloadPage;
+        if (buildDetailsPage.style.display === 'block') return buildDetailsPage;
+        if (donatorsPage.style.display === 'block') return donatorsPage;
+        return homePage;
+    }
+
     navDownload.addEventListener('click', (e) => {
         e.preventDefault();
         closeMenu();
-        if (downloadPage.style.display !== 'block') {
-            transitionPages(homePage, downloadPage);
-        }
+        transitionPages(getActivePage(), downloadPage);
+    });
+
+    navDonators.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        transitionPages(getActivePage(), donatorsPage);
     });
 
     logoLink.addEventListener('click', (e) => {
         e.preventDefault();
         closeMenu();
-        if (downloadPage.style.display === 'block') {
-            transitionPages(downloadPage, homePage);
-        }
+        transitionPages(getActivePage(), homePage);
     });
 
     navAbout.addEventListener('click', (e) => {
         e.preventDefault();
         closeMenu();
-        if (downloadPage.style.display === 'block') {
-            transitionPages(downloadPage, homePage);
-        }
+        transitionPages(getActivePage(), homePage);
     });
+
+    updateLanguage(currentLang);
 </script>
 </body>
 </html>
