@@ -1,18 +1,10 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyBMiiFmTsbX56qKGZGuK9YkjUGlnTQuaFc",
-    authDomain: "xenithos-ffff1.firebaseapp.com",
-    databaseURL: "https://xenithos-ffff1-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "xenithos-ffff1",
-    storageBucket: "xenithos-ffff1.firebasestorage.app",
-    messagingSenderId: "624303800249",
-    appId: "1:624303800249:web:27eebfd0a0d245e6e90068"
-};
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMiiFmTsbX56qKGZGuK9YkjUGlnTQuaFc",
     authDomain: "xenithos-ffff1.firebaseapp.com",
+    databaseURL: "https://xenithos-ffff1-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "xenithos-ffff1",
     storageBucket: "xenithos-ffff1.firebasestorage.app",
     messagingSenderId: "624303800249",
