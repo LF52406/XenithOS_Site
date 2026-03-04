@@ -673,7 +673,15 @@ chatInput.addEventListener('focus', () => {
     setTimeout(scrollToBottom, 300); 
 });
 
-unpinBtn.addEventListener('click', handleUnpin);
+unpinBtn.addEventListener('click', (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    handleUnpin();
+});
+
+pinnedMessageContainer.addEventListener('click', () => {
+    if (pinnedMessageId) scrollToMessage(pinnedMessageId);
+});
+
 replyPreviewClose.addEventListener('click', cancelReply);
 
 pollBtn.addEventListener('click', () => {
