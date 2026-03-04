@@ -76,7 +76,7 @@ const translations = {
 
 const emojis = {
     smileys: ["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","☺️","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🫣","🤭","🫢","🤫","🫠","🤥","😶","😶‍🌫️","😐","😑","😬","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","😵‍💫","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖"],
-    people: ["👋","🤚","🖐","✋","🖖","👌","🤌","🤏","✌️","🤞","🫰","🤟","🤘","🤙","👈","👉","👆","🖕","👇","☝️","👍","👎","✊","👊","🤛","🤜","👏","🙌","👐","🤲","🤝","🙏","✍️","💅","🤳","💪","🦾","🦿","🦵","🦶","👂","🦻","👃","🫀","🫁","🧠","🦷","🦴","👀","👁","👅","👄","💋","🩸","👶","👧","🧒","👦","👩","🧑","👨","👩‍🦱","🧑‍🦱","👨‍🦱","👩‍🦰","🧑‍🦰","👨‍🦰","👱‍♀️","👱","👱‍♂️","👩‍🦳","🧑‍🦳","👨‍🦳","👩‍🦲","🧑‍🦲","👨‍🦲","🧔‍♀️","🧔","🧔‍♂️","👵","🧓","👴","👲","👳‍♀️","👳","👳‍♂️","🧕","👮‍♀️","👮","👮‍♂️","👷‍♀️","👷","👷‍♂️","💂‍♀️","💂","💂‍♂️","🕵️‍♀️","🕵️","🕵️‍♂️","👩‍⚕️","🧑‍⚕️","👨‍⚕️","👩‍🌾","🧑‍🌾","👨‍🌾","👩‍🍳","🧑‍🍳","👨‍🍳","👩‍🎓","🧑‍🎓","👨‍🎓","👩‍🎤","🧑‍🎤","👨‍🎤","👩‍🏫","🧑‍🏫","👨‍🏫","👩‍🏭","🧑‍🏭","👨‍🏭","👩‍💻","🧑‍💻","👨‍💻","👩‍💼","🧑‍💼","👨‍💼","👩‍🔧","🧑‍🔧","👨‍🔧","👩‍🔬","🧑‍🔬","👨‍🔬","👩‍🎨","🧑‍🎨","👨‍🎨","👩‍🚒","🧑‍🚒","👨‍🚒","👩‍✈️","🧑‍✈️","👨‍✈️","👩‍🚀","🧑‍🚀","👨‍🚀","👩‍⚖️","🧑‍⚖️","👨‍⚖️","👰‍♀️","👰","👰‍♂️","🤵‍♀️","🤵","🤵‍♂️","👸","🤴","🥷","🦸‍♀️","🦸","🦸‍♂️","🦹‍♀️","🦹","🦹‍♂️","🤶","🎅","🧙‍♀️","🧙","🧙‍♂️","🧝‍♀️","🧝","🧝‍♂️","🧛‍♀️","🧛","🧛‍♂️","🧟‍♀️","🧟","🧟‍♂️","🧞‍♀️","🧌","🧞","🧞‍♂️","🧜‍♀️","🧜","🧜‍♂️","🧚‍♀️","🧚","🧚‍♂️","👼","🤰","🫄","🤱","👩‍🍼","🧑‍🍼","👨‍🍼","🙇‍♀️","🙇","🙇‍♂️","💁‍♀️","💁","💁‍♂️","🙅‍♀️","🙅","🙅‍♂️","🙆‍♀️","🙆","🙆‍♂️","🙋‍♀️","🙋","🙋‍♂️","🧏‍♀️","🧏","🧏‍♂️","🤦‍♀️","🤦","🤦‍♂️","🤷‍♀️","🤷","🤷‍♂️","🙎‍♀️","🙎","🙎‍♂️","🙍‍♀️","🙍","🙍‍♂️","💇‍♀️","💇","💇‍♂️","💆‍♀️","💆","💆‍♂️","🧖‍♀️","💆","🧖‍♂️","💅","🤳","💃","🕺","👯‍♀️","👯","👯‍♂️","🕴‍♀️","🕴","🕴‍♂️","🚶‍♀️","🚶","🚶‍♂️","👩‍🦯","🧑‍🦯","👨‍🦯","🧎‍♀️","🧎","🧎‍♂️","🏃‍♀️","🏃","🏃‍♂️","👩‍🦼","🧑‍🦼","👨‍🦼","👩‍🦽","🧑‍🦽","👨‍🦽","🏃‍♀️","🏃","🏃‍♂️","🧍‍♀️","🧍","🧍‍♂️"],
+    people: ["👋","🤚","🖐","✋","🖖","👌","🤌","🤏","✌️","🤞","🫰","🤟","🤘","🤙","👈","👉","👆","🖕","👇","☝️","👍","👎","✊","👊","🤛","🤜","👏","🙌","👐","🤲","🤝","🙏","✍️","💅","🤳","💪","🦾","🦿","🦵","🦶","👂","🦻","👃","🫀","🫁","🧠","🦷","🦴","👀","👁","👅","👄","💋","🩸","👶","👧","🧒","👦","👩","🧑","👨","👩‍🦱","🧑‍🦱","👨‍🦱","👩‍🦰","🧑‍🦰","👨‍🦰","👱‍♀️","👱","👱‍♂️","👩‍🦳","🧑‍🦳","👨‍🦳","👩‍🦲","🧑‍🦲","👨‍🦲","🧔‍♀️","🧔","🧔‍♂️","👵","🧓","👴","👲","👳‍♀️","👳","👳‍♂️","🧕","👮‍♀️","👮","👮‍♂️","👷‍♀️","👷","👷‍♂️","💂‍♀️","💂","💂‍♂️","🕵️‍♀️","🕵️","🕵️‍♂️","👩‍⚕️","🧑‍⚕️","👨‍⚕️","👩‍🌾","🧑‍🌾","👨‍🌾","👩‍🍳","🧑‍🍳","👨‍🍳","👩‍🎓","🧑‍🎓","👨‍🎓","👩‍🎤","🧑‍🎤","👨‍🎤","👩‍🏫","🧑‍🏫","👨‍🏫","👩‍🏭","🧑‍🏭","👨‍🏭","👩‍💻","🧑‍💻","👨‍💻","👩‍💼","🧑‍💼","👨‍💼","👩‍🔧","🧑‍🔧","👨‍🔧","👩‍🔬","🧑‍🔬","👨‍🔬","👩‍🎨","🧑‍🎨","👨‍🎨","👩‍🚒","🧑‍🚒","👨‍🚒","👩‍✈️","🧑‍✈️","👨‍✈️","👩‍🚀","🧑‍🚀","👨‍🚀","👩‍⚖️","🧑‍⚖️","👨‍⚖️","👰‍♀️","👰","👰‍♂️","🤵‍♀️","🤵","🤵‍♂️","👸","🤴","🥷","🦸‍♀️","🦸","🦸‍♂️","🦹‍♀️","🦹","🦹‍♂️","🤶","🎅","🧙‍♀️","🧙","🧙‍♂️","🧝‍♀️","🧝","🧝‍♂️","🧛‍♀️","🧛","🧛‍♂️","🧟‍♀️","🧟","🧟‍♂️","🧞‍♀️","🧌","🧞","🧞‍♂️","🧜‍♀️","🧜","🧜‍♂️","🧚‍♀️","🧚","🧚‍♂️","👼","🤰","🫄","🤱","👩‍🍼","🧑‍🍼","👨‍🍼","🙇‍♀️","🙇","🙇‍♂️","💁‍♀️","💁","💁‍♂️","🙅‍♀️","🙅","🙅‍♂️","🙆‍♀️","🙆","🙆‍♂️","🙋‍♀️","🙋","🙋‍♂️","🧏‍♀️","🧏","🧏‍♂️","🤦‍♀️","🤦","🤦‍♂️","🤷‍♀️","🤷","🤷‍♂️","🙎‍♀️","🙎","🙎‍♂️","🙍‍♀️","🙍","🙍‍♂️","💇‍♀️","💇","💇‍♂️","💆‍♀️","💆","💆‍♂️","🧖‍♀️","💆","🧖‍♂️","💅","🤳","💃","🕺","👯‍♀️","👯","👯‍♂️","🕴‍♀️","🕴","🕴‍♂️","🚶‍♀️","🚶","🚶‍♂️","🏃‍♀️","🏃","🏃‍♂️","🧍‍♀️","🧍","🧍‍♂️"],
     symbols: ["❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟","☮️","✝️","☪️","🕉️","☸️","✡️","🔯","🕎","☯️","☦️","🛐","⛎","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","🆔","⚛️","🉑","☢️","☣️","📴","📳","🈶","🈚","🈸","🈺","🈷️","✴️","🆚","💮","🉐","㊙️","㊗️","🈴","🈵","🈹","🈲","🅰️","🅱️","🆎","🆑","🅾️","🆘","❌","⭕","🛑","⛔","📛","🚫","💯","💢","♨️","🚷","🚯","🚳","🚱","🔞","📵","🚭","❗","❕","❓","❔","‼️","⁉️","🔅","🔆","〽️","⚠️","🚸","🔱","⚜️","🔰","♻️","✅","🈯","💹","❇️","✳️","❎","🌐","💠","Ⓜ️","🌀","💤","🏧","🚾","♿","🅿️","🈳","🈂️","🛂","🛃","🛄","🛅","🚹","🚺","🚼","🚻","🚮","🎦","📶","🈁","🔣","ℹ️","🔤","🔡","🔠","🆖","🆗","🆙","🆒","🆕","🆓","0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟","🔢","#️⃣","*️⃣","⏏️","▶️","⏸️","⏯️","⏹️","⏺️","⏭️","⏮️","⏩","⏪","⏫","⏬","◀️","🔼","🔽","➡️","⬅️","⬆️","⬇️","↗️","↘️","↙️","↖️","↕️","↔️","↪️","↩️","⤴️","⤵️","🔀","🔁","🔂","🔄","🔃","🎵","🎶","➕","➖","➗","✖️","♾️","💲","💱","™️","©️","®️","〰️","➰","➿","🔚","🔙","🔛","🔝","🔜","✔️","☑️","🔘","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔺","🔻","🔸","🔹","🔶","🔷","🔳","🔲","▪️","▫️","◾","◽","◼️","◻️","⬛","⬜","🟥","🟧","🟨","🟩","🟦","🟪","🟫","🔈","🔇","🔉","🔊","🔔","🔕","📣","📢","👁️‍🗨️","💬","💭","🗯️","♠️","♣️","♥️","♦️","🃏","🎴","🀄","🕐","🕑","🕒","🕓","🕔","🕕","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕧"]
 };
 
@@ -249,9 +249,9 @@ function formatBytes(bytes, decimals = 2) {
 
 function getFileType(fileName) {
     const ext = fileName.split('.').pop().toLowerCase();
-    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
-    const videoExts = ['mp4', 'webm', 'ogg', 'mov'];
-    const audioExts = ['mp3', 'wav', 'flac', 'm4a', 'aac'];
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'heic'];
+    const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi'];
+    const audioExts = ['mp3', 'wav', 'flac', 'm4a', 'aac', 'ogg'];
     if (imageExts.includes(ext)) return 'image';
     if (videoExts.includes(ext)) return 'video';
     if (audioExts.includes(ext)) return 'audio';
@@ -339,79 +339,60 @@ chatFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 500 * 1024 * 1024) {
-        alert('Слишком большой файл. Максимум 500 МБ.');
+    if (file.size > 30 * 1024 * 1024) {
+        alert('Максимальный размер файла — 30 МБ.');
         chatFileInput.value = '';
         return;
     }
 
     uploadModal.classList.add('active');
-    uploadProgressBar.style.width = '0%';
-    uploadPercent.textContent = '0%';
+    uploadProgressBar.style.width = '20%';
+    uploadPercent.textContent = 'Обработка файла...';
 
     const fileType = getFileType(file.name);
-    const formData = new FormData();
-    formData.append('files[]', file);
+    const reader = new FileReader();
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://pomf.lain.la/upload.php');
-    
-    xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-            const percent = Math.round((event.loaded / event.total) * 100);
-            uploadProgressBar.style.width = percent + '%';
-            uploadPercent.textContent = percent + '%';
-        }
-    };
-    
-    xhr.onload = () => {
-        if (xhr.status === 200) {
-            try {
-                const res = JSON.parse(xhr.responseText);
-                if (res.success && res.files && res.files.length > 0) {
-                    finishUpload(res.files[0].url, file.name, fileType, formatBytes(file.size));
-                } else {
-                    throw new Error('Ответ сервера не содержит ссылки');
+    reader.onload = function(event) {
+        const base64Data = event.target.result;
+        
+        uploadProgressBar.style.width = '100%';
+        uploadPercent.textContent = 'Отправка...';
+
+        setTimeout(() => {
+            const text = chatInput.value.trim();
+            const msgId = Date.now();
+            const msgData = {
+                id: msgId,
+                type: 'user',
+                author: currentUser,
+                text: filterProfanity(text),
+                isEdited: false,
+                fileData: {
+                    url: base64Data,
+                    name: file.name,
+                    type: fileType,
+                    size: formatBytes(file.size)
                 }
-            } catch (err) {
-                uploadModal.classList.remove('active');
-                chatFileInput.value = '';
-                alert('Ошибка обработки файла. Попробуйте снова.');
-            }
-        } else {
+            };
+            
+            if (replyingToId) msgData.replyTo = replyingToId;
+            set(ref(db, 'messages/' + msgId), msgData);
+
             uploadModal.classList.remove('active');
             chatFileInput.value = '';
-            alert('Сервер отклонил файл.');
-        }
+            chatInput.value = '';
+            cancelReply();
+        }, 500);
     };
-    
-    xhr.onerror = () => {
+
+    reader.onerror = function() {
         uploadModal.classList.remove('active');
         chatFileInput.value = '';
-        alert('Ошибка сети или блокировка загрузки провайдером.');
+        alert('Ошибка при чтении файла устройством.');
     };
-    
-    xhr.send(formData);
-});
 
-function finishUpload(url, name, type, size) {
-    const text = chatInput.value.trim();
-    const msgId = Date.now();
-    const msgData = {
-        id: msgId,
-        type: 'user',
-        author: currentUser,
-        text: filterProfanity(text),
-        isEdited: false,
-        fileData: { url, name, type, size }
-    };
-    if (replyingToId) msgData.replyTo = replyingToId;
-    set(ref(db, 'messages/' + msgId), msgData);
-    uploadModal.classList.remove('active');
-    chatFileInput.value = '';
-    chatInput.value = '';
-    cancelReply();
-}
+    reader.readAsDataURL(file);
+});
 
 function openImageViewer(url) {
     viewerImg.src = url;
@@ -578,7 +559,7 @@ function renderMessages() {
             if (msg.fileData.type === 'image') { const i = document.createElement('img'); i.src = msg.fileData.url; i.className = 'chat-img-attachment'; i.onclick = () => openImageViewer(msg.fileData.url); textDiv.appendChild(i); }
             else if (msg.fileData.type === 'video') { const v = document.createElement('video'); v.src = msg.fileData.url; v.className = 'chat-video-attachment'; v.controls = true; textDiv.appendChild(v); }
             else if (msg.fileData.type === 'audio') { const a = document.createElement('audio'); a.src = msg.fileData.url; a.className = 'chat-audio-attachment'; a.controls = true; textDiv.appendChild(a); }
-            else { const l = document.createElement('a'); l.href = msg.fileData.url; l.target = '_blank'; l.className = 'chat-file-attachment'; l.innerHTML = `${fileDocIcon}<div class="chat-file-info"><div class="chat-file-name">${msg.fileData.name}</div><div class="chat-file-size">${msg.fileData.size}</div></div>`; textDiv.appendChild(l); }
+            else { const l = document.createElement('a'); l.href = msg.fileData.url; l.target = '_blank'; l.download = msg.fileData.name; l.className = 'chat-file-attachment'; l.innerHTML = `${fileDocIcon}<div class="chat-file-info"><div class="chat-file-name">${msg.fileData.name}</div><div class="chat-file-size">${msg.fileData.size}</div></div>`; textDiv.appendChild(l); }
         } else { const t = document.createElement('div'); t.textContent = msg.text; textDiv.appendChild(t); }
         const metaDiv = document.createElement('div');
         metaDiv.className = 'msg-meta';
@@ -603,15 +584,18 @@ chatSettingsBtn.addEventListener('click', () => { openModal('prompt_name', curre
 emojiTabs.forEach(tab => { onSafeClick(tab, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); emojiTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); renderEmojis(tab.getAttribute('data-category')); }); });
 onSafeClick(stickerBtn, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); if (isEmojiPickerOpen) { closeEmojiPicker(); } else { openEmojiPicker(); } });
 document.addEventListener('mousedown', (e) => { if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) { closeEmojiPicker(); } });
-chatSend.addEventListener('click', handleSend);
+chatSend.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); }, { passive: false });
+chatSend.addEventListener('mousedown', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); });
 chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+window.addEventListener('resize', scrollToBottom);
+chatInput.addEventListener('focus', () => { if (isEmojiPickerOpen) { closeEmojiPicker(); } setTimeout(scrollToBottom, 100); setTimeout(scrollToBottom, 300); });
 unpinBtn.addEventListener('click', (e) => { if (e && e.stopPropagation) e.stopPropagation(); handleUnpin(); });
 pinnedMessageContainer.addEventListener('click', () => { if (pinnedMessageId) scrollToMessage(pinnedMessageId); });
 replyPreviewClose.addEventListener('click', cancelReply);
-pollBtn.addEventListener('click', () => { pollModal.classList.add('active'); pollOptionsContainer.innerHTML = `<input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;"><input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">`; });
-document.getElementById('poll-btn-cancel').addEventListener('click', () => pollModal.classList.remove('active'));
+pollBtn.addEventListener('click', () => { pollModal.classList.add('active'); pollQuestionInput.value = ''; pollOptionsContainer.innerHTML = `<input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;"><input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">`; });
+document.getElementById('poll-btn-cancel').addEventListener('click', () => { pollModal.classList.remove('active'); });
 pollAddOptionBtn.addEventListener('click', () => { const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'); if (inputs.length >= 10) return; const n = document.createElement('input'); n.type = 'text'; n.className = 'poll-option-input'; n.placeholder = `Option ${inputs.length + 1}`; n.style.marginBottom = '8px'; pollOptionsContainer.appendChild(n); });
-document.getElementById('poll-btn-confirm').addEventListener('click', () => { const q = pollQuestionInput.value.trim(); const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'); const ops = []; inputs.forEach(i => { const v = i.value.trim(); if (v) ops.push({ text: filterProfanity(v) }); }); if (!q || ops.length < 2) return; const msgId = Date.now(); const msgData = { id: msgId, type: 'user', author: currentUser, text: filterProfanity(q), isEdited: false, isPoll: true, pollData: { question: filterProfanity(q), options: ops } }; if (replyingToId) msgData.replyTo = replyingToId; set(ref(db, 'messages/' + msgId), msgData); pollModal.classList.remove('active'); cancelReply(); });
+document.getElementById('poll-btn-confirm').addEventListener('click', () => { const q = pollQuestionInput.value.trim(); if (!q) return; const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'); const ops = []; inputs.forEach(i => { const val = i.value.trim(); if (val) { ops.push({ text: filterProfanity(val) }); } }); if (ops.length < 2) return; const msgId = Date.now(); const msgData = { id: msgId, type: 'user', author: currentUser, text: filterProfanity(q), isEdited: false, isPoll: true, pollData: { question: filterProfanity(q), options: ops } }; if (replyingToId) { msgData.replyTo = replyingToId; } set(ref(db, 'messages/' + msgId), msgData); pollModal.classList.remove('active'); cancelReply(); });
 updateLanguage(currentLang);
 renderEmojis('smileys');
-if (!currentUser) { setTimeout(() => { openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (n) => { if (n) { currentUser = n; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } }); }, 500); } else { updateUIVisibility(); }
+if (!currentUser) { setTimeout(() => { openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (newNick) => { if (newNick) { currentUser = newNick; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } }); }, 500); } else { updateUIVisibility(); }
