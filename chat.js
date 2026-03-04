@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
+import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMiiFmTsbX56qKGZGuK9YkjUGlnTQuaFc",
@@ -14,6 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const storage = getStorage(app);
 
 const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LfwzH8sAAAAAJBSdAZvO1W4tYrGQCEQq_ebn348'),
@@ -86,12 +88,15 @@ const deleteIcon = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 
 const modIcon = `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
 const pinIcon = `<svg viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>`;
 const replyIcon = `<svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>`;
+const fileDocIcon = `<svg class="chat-file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`;
 const ADMIN_NICK = 'LF5';
 
 const chatMessages = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
 const stickerBtn = document.getElementById('chat-sticker-btn');
+const chatAttachBtn = document.getElementById('chat-attach-btn');
+const chatFileInput = document.getElementById('chat-file-input');
 const emojiPicker = document.getElementById('emoji-picker');
 const emojiGrid = document.getElementById('emoji-grid');
 const emojiTabs = document.querySelectorAll('.emoji-tab');
@@ -114,6 +119,10 @@ const replyPreviewContainer = document.getElementById('reply-preview');
 const replyPreviewAuthor = document.getElementById('reply-preview-author');
 const replyPreviewText = document.getElementById('reply-preview-text');
 const replyPreviewClose = document.getElementById('reply-preview-close');
+
+const uploadModal = document.getElementById('upload-modal');
+const uploadProgressBar = document.getElementById('upload-progress-bar');
+const uploadPercent = document.getElementById('upload-percent');
 
 let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
 let currentUser = localStorage.getItem('xenithos_chat_user');
@@ -227,6 +236,22 @@ function onSafeClick(element, callback) {
     });
 }
 
+function formatBytes(bytes, decimals = 2) {
+    if (!+bytes) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+function getFileType(mimeType) {
+    if (mimeType.startsWith('image/')) return 'image';
+    if (mimeType.startsWith('video/')) return 'video';
+    if (mimeType.startsWith('audio/')) return 'audio';
+    return 'document';
+}
+
 function openEmojiPicker() {
     if (!isEmojiPickerOpen) {
         chatInput.blur();
@@ -283,7 +308,7 @@ function handleReply(id) {
     if (!msg) return;
     replyingToId = id;
     replyPreviewAuthor.textContent = msg.author;
-    replyPreviewText.textContent = msg.isPoll ? '📊 ' + msg.pollData.question : msg.text;
+    replyPreviewText.textContent = msg.isPoll ? '📊 ' + msg.pollData.question : (msg.fileData ? '📎 ' + msg.fileData.name : msg.text);
     replyPreviewContainer.style.display = 'flex';
     chatInput.focus();
 }
@@ -303,6 +328,65 @@ function scrollToMessage(id) {
         }, 1500);
     }
 }
+
+onSafeClick(chatAttachBtn, (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    chatFileInput.click();
+});
+
+chatFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    uploadModal.classList.add('active');
+    uploadProgressBar.style.width = '0%';
+    uploadPercent.textContent = '0%';
+
+    const fileRef = sRef(storage, `chat_uploads/${Date.now()}_${file.name}`);
+    const uploadTask = uploadBytesResumable(fileRef, file);
+
+    uploadTask.on('state_changed', 
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploadProgressBar.style.width = progress + '%';
+            uploadPercent.textContent = Math.round(progress) + '%';
+        }, 
+        (error) => {
+            uploadModal.classList.remove('active');
+            chatFileInput.value = '';
+        }, 
+        () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                const text = chatInput.value.trim();
+                const msgId = Date.now();
+                const msgData = {
+                    id: msgId,
+                    type: 'user',
+                    author: currentUser,
+                    text: filterProfanity(text),
+                    isEdited: false,
+                    fileData: {
+                        url: downloadURL,
+                        name: file.name,
+                        type: getFileType(file.type),
+                        size: formatBytes(file.size)
+                    }
+                };
+                
+                if (replyingToId) {
+                    msgData.replyTo = replyingToId;
+                }
+
+                set(ref(db, 'messages/' + msgId), msgData);
+                
+                uploadModal.classList.remove('active');
+                chatFileInput.value = '';
+                chatInput.value = '';
+                cancelReply();
+            });
+        }
+    );
+});
 
 function handleSend() {
     closeEmojiPicker();
@@ -405,6 +489,8 @@ function updatePinnedMessageUI() {
     let previewText = pinnedMsg.text;
     if (pinnedMsg.isPoll) {
         previewText = '📊 ' + pinnedMsg.pollData.question;
+    } else if (pinnedMsg.fileData && !pinnedMsg.text) {
+        previewText = '📎 ' + pinnedMsg.fileData.name;
     }
     
     pinnedText.textContent = previewText;
@@ -513,7 +599,7 @@ function renderMessages() {
 
                 const repText = document.createElement('div');
                 repText.className = 'msg-reply-text';
-                repText.textContent = originalMsg.isPoll ? '📊 ' + originalMsg.pollData.question : originalMsg.text;
+                repText.textContent = originalMsg.isPoll ? '📊 ' + originalMsg.pollData.question : (originalMsg.fileData ? '📎 ' + originalMsg.fileData.name : originalMsg.text);
 
                 replyBlock.appendChild(repAuth);
                 replyBlock.appendChild(repText);
@@ -551,6 +637,47 @@ function renderMessages() {
                 pollCont.appendChild(optDiv);
             });
             textDiv.appendChild(pollCont);
+        } else if (msg.fileData) {
+            if (msg.text) {
+                const textContentDiv = document.createElement('div');
+                textContentDiv.textContent = msg.text;
+                textDiv.appendChild(textContentDiv);
+            }
+
+            if (msg.fileData.type === 'image') {
+                const img = document.createElement('img');
+                img.src = msg.fileData.url;
+                img.className = 'chat-img-attachment';
+                img.onclick = () => window.open(msg.fileData.url, '_blank');
+                textDiv.appendChild(img);
+            } else if (msg.fileData.type === 'video') {
+                const vid = document.createElement('video');
+                vid.src = msg.fileData.url;
+                vid.className = 'chat-video-attachment';
+                vid.controls = true;
+                vid.preload = 'metadata';
+                textDiv.appendChild(vid);
+            } else if (msg.fileData.type === 'audio') {
+                const aud = document.createElement('audio');
+                aud.src = msg.fileData.url;
+                aud.className = 'chat-audio-attachment';
+                aud.controls = true;
+                textDiv.appendChild(aud);
+            } else {
+                const fileLink = document.createElement('a');
+                fileLink.href = msg.fileData.url;
+                fileLink.target = '_blank';
+                fileLink.className = 'chat-file-attachment';
+                
+                fileLink.innerHTML = `
+                    ${fileDocIcon}
+                    <div class="chat-file-info">
+                        <div class="chat-file-name">${msg.fileData.name}</div>
+                        <div class="chat-file-size">${msg.fileData.size}</div>
+                    </div>
+                `;
+                textDiv.appendChild(fileLink);
+            }
         } else {
             const textContentDiv = document.createElement('div');
             textContentDiv.textContent = msg.text;
