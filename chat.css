@@ -767,3 +767,6 @@ nav {
     background: #ffffff;
     transform: scale(1.02);
 }
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
