@@ -342,20 +342,20 @@ chatFileInput.addEventListener('change', (e) => {
     if (!file) return;
 
     uploadModal.classList.add('active');
-    uploadProgressBar.style.width = '50%';
-    uploadPercent.textContent = 'Uploading...';
+    uploadProgressBar.style.width = '30%';
+    uploadPercent.textContent = 'Preparing...';
 
     const formData = new FormData();
-    formData.append('fileToUpload', file);
-    formData.append('reqtype', 'fileupload');
+    formData.append('file', file);
 
-    fetch('https://catbox.moe/user/api.php', {
+    fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d0a2a901485a5', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
-    .then(fileUrl => {
-        if (fileUrl.startsWith('http')) {
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const fileUrl = data.data.url;
             const text = chatInput.value.trim();
             const msgId = Date.now();
             const msgData = {
