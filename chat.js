@@ -85,6 +85,7 @@ const editIcon = `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l
 const deleteIcon = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
 const modIcon = `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
 const pinIcon = `<svg viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>`;
+const replyIcon = `<svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>`;
 const ADMIN_NICK = 'LF5';
 
 const chatMessages = document.getElementById('chat-messages');
@@ -109,6 +110,11 @@ const pinnedMessageContainer = document.getElementById('pinned-message');
 const pinnedText = document.getElementById('pinned-text');
 const unpinBtn = document.getElementById('unpin-btn');
 
+const replyPreviewContainer = document.getElementById('reply-preview');
+const replyPreviewAuthor = document.getElementById('reply-preview-author');
+const replyPreviewText = document.getElementById('reply-preview-text');
+const replyPreviewClose = document.getElementById('reply-preview-close');
+
 let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
 let currentUser = localStorage.getItem('xenithos_chat_user');
 let moderators = JSON.parse(localStorage.getItem('xenithos_mods') || '[]');
@@ -116,6 +122,7 @@ let messagesData = [];
 let pinnedMessageId = null;
 let modalCallback = null;
 let isEmojiPickerOpen = false;
+let replyingToId = null;
 
 onValue(ref(db, 'messages'), (snapshot) => {
     const data = snapshot.val() || {};
@@ -210,9 +217,7 @@ function onSafeClick(element, callback) {
 
     element.addEventListener('touchend', (e) => {
         if (!isScrolling) {
-            if (e.cancelable) {
-                e.preventDefault();
-            }
+            if (e.cancelable) e.preventDefault();
             callback(e);
         }
     });
@@ -237,16 +242,12 @@ function closeEmojiPicker(fromPopState = false) {
         emojiPicker.classList.remove('active');
         stickerBtn.classList.remove('active');
         isEmojiPickerOpen = false;
-        if (!fromPopState) {
-            history.back();
-        }
+        if (!fromPopState) history.back();
     }
 }
 
 window.addEventListener('popstate', (e) => {
-    if (isEmojiPickerOpen) {
-        closeEmojiPicker(true);
-    }
+    if (isEmojiPickerOpen) closeEmojiPicker(true);
 });
 
 function renderEmojis(category) {
@@ -277,6 +278,32 @@ function filterProfanity(text) {
     return result;
 }
 
+function handleReply(id) {
+    const msg = messagesData.find(m => m.id === id);
+    if (!msg) return;
+    replyingToId = id;
+    replyPreviewAuthor.textContent = msg.author;
+    replyPreviewText.textContent = msg.isPoll ? '📊 ' + msg.pollData.question : msg.text;
+    replyPreviewContainer.style.display = 'flex';
+    chatInput.focus();
+}
+
+function cancelReply() {
+    replyingToId = null;
+    replyPreviewContainer.style.display = 'none';
+}
+
+function scrollToMessage(id) {
+    const el = document.getElementById('msg-' + id);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlight-msg');
+        setTimeout(() => {
+            el.classList.remove('highlight-msg');
+        }, 1500);
+    }
+}
+
 function handleSend() {
     closeEmojiPicker();
     chatInput.blur(); 
@@ -286,15 +313,22 @@ function handleSend() {
     if (!text) return;
     
     const msgId = Date.now();
-    set(ref(db, 'messages/' + msgId), {
+    const msgData = {
         id: msgId,
         type: 'user',
         author: currentUser,
         text: filterProfanity(text),
         isEdited: false
-    });
+    };
+
+    if (replyingToId) {
+        msgData.replyTo = replyingToId;
+    }
+
+    set(ref(db, 'messages/' + msgId), msgData);
     
     chatInput.value = '';
+    cancelReply();
 }
 
 function handleDelete(id) {
@@ -306,8 +340,7 @@ function handleDelete(id) {
 
 function handleEdit(id) {
     const msgIndex = messagesData.findIndex(msg => msg.id === id);
-    if (msgIndex === -1) return;
-    if (messagesData[msgIndex].isPoll) return;
+    if (msgIndex === -1 || messagesData[msgIndex].isPoll) return;
     
     openModal('prompt_edit', messagesData[msgIndex].text, (newText) => {
         if (newText && newText !== messagesData[msgIndex].text) {
@@ -401,6 +434,7 @@ function renderMessages() {
 
         const wrapper = document.createElement('div');
         wrapper.className = `msg-wrapper ${isSelf ? 'self' : 'other'}`;
+        wrapper.id = 'msg-' + msg.id;
 
         const header = document.createElement('div');
         header.className = 'msg-header';
@@ -417,6 +451,12 @@ function renderMessages() {
         
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'msg-actions';
+
+        const repBtn = document.createElement('button');
+        repBtn.className = 'action-btn';
+        repBtn.innerHTML = replyIcon;
+        repBtn.onclick = () => handleReply(msg.id);
+        actionsDiv.appendChild(repBtn);
 
         if (canPin) {
             const pinB = document.createElement('button');
@@ -459,6 +499,27 @@ function renderMessages() {
 
         const textDiv = document.createElement('div');
         textDiv.className = 'chat-msg';
+
+        if (msg.replyTo) {
+            const originalMsg = messagesData.find(m => m.id === msg.replyTo);
+            if (originalMsg) {
+                const replyBlock = document.createElement('div');
+                replyBlock.className = 'msg-reply-block';
+                replyBlock.onclick = () => scrollToMessage(msg.replyTo);
+
+                const repAuth = document.createElement('div');
+                repAuth.className = 'msg-reply-author';
+                repAuth.textContent = originalMsg.author;
+
+                const repText = document.createElement('div');
+                repText.className = 'msg-reply-text';
+                repText.textContent = originalMsg.isPoll ? '📊 ' + originalMsg.pollData.question : originalMsg.text;
+
+                replyBlock.appendChild(repAuth);
+                replyBlock.appendChild(repText);
+                textDiv.appendChild(replyBlock);
+            }
+        }
         
         if (msg.isPoll) {
             const pollCont = document.createElement('div');
@@ -523,16 +584,12 @@ function renderMessages() {
 }
 
 btnBack.addEventListener('click', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
+    if (e.cancelable) e.preventDefault();
     smoothNavigate('index.html');
 });
 
 logoNav.addEventListener('click', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
+    if (e.cancelable) e.preventDefault();
     smoothNavigate('index.html');
 });
 
@@ -593,16 +650,12 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 chatSend.addEventListener('touchstart', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
+    if (e.cancelable) e.preventDefault();
     handleSend();
 }, { passive: false });
 
 chatSend.addEventListener('mousedown', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
+    if (e.cancelable) e.preventDefault();
     handleSend();
 });
 
@@ -621,6 +674,7 @@ chatInput.addEventListener('focus', () => {
 });
 
 unpinBtn.addEventListener('click', handleUnpin);
+replyPreviewClose.addEventListener('click', cancelReply);
 
 pollBtn.addEventListener('click', () => {
     pollModal.classList.add('active');
@@ -662,7 +716,7 @@ document.getElementById('poll-btn-confirm').addEventListener('click', () => {
     if (options.length < 2) return; 
 
     const msgId = Date.now();
-    set(ref(db, 'messages/' + msgId), {
+    const msgData = {
         id: msgId,
         type: 'user',
         author: currentUser,
@@ -673,9 +727,15 @@ document.getElementById('poll-btn-confirm').addEventListener('click', () => {
             question: filterProfanity(question),
             options: options
         }
-    });
+    };
 
+    if (replyingToId) {
+        msgData.replyTo = replyingToId;
+    }
+
+    set(ref(db, 'messages/' + msgId), msgData);
     pollModal.classList.remove('active');
+    cancelReply();
 });
 
 updateLanguage(currentLang);
