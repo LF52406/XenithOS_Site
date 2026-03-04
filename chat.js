@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
-import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMiiFmTsbX56qKGZGuK9YkjUGlnTQuaFc",
@@ -15,7 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const storage = getStorage(app);
 
 const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LfwzH8sAAAAAJBSdAZvO1W4tYrGQCEQq_ebn348'),
@@ -245,10 +243,15 @@ function formatBytes(bytes, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-function getFileType(mimeType) {
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.startsWith('audio/')) return 'audio';
+function getFileType(fileName) {
+    const ext = fileName.split('.').pop().toLowerCase();
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+    const videoExts = ['mp4', 'webm', 'ogg', 'mov'];
+    const audioExts = ['mp3', 'wav', 'flac', 'm4a'];
+    
+    if (imageExts.includes(ext)) return 'image';
+    if (videoExts.includes(ext)) return 'video';
+    if (audioExts.includes(ext)) return 'audio';
     return 'document';
 }
 
@@ -339,53 +342,51 @@ chatFileInput.addEventListener('change', (e) => {
     if (!file) return;
 
     uploadModal.classList.add('active');
-    uploadProgressBar.style.width = '0%';
-    uploadPercent.textContent = '0%';
+    uploadProgressBar.style.width = '50%';
+    uploadPercent.textContent = 'Uploading...';
 
-    const fileRef = sRef(storage, `chat_uploads/${Date.now()}_${file.name}`);
-    const uploadTask = uploadBytesResumable(fileRef, file);
+    const formData = new FormData();
+    formData.append('fileToUpload', file);
+    formData.append('reqtype', 'fileupload');
 
-    uploadTask.on('state_changed', 
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            uploadProgressBar.style.width = progress + '%';
-            uploadPercent.textContent = Math.round(progress) + '%';
-        }, 
-        (error) => {
-            uploadModal.classList.remove('active');
-            chatFileInput.value = '';
-        }, 
-        () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                const text = chatInput.value.trim();
-                const msgId = Date.now();
-                const msgData = {
-                    id: msgId,
-                    type: 'user',
-                    author: currentUser,
-                    text: filterProfanity(text),
-                    isEdited: false,
-                    fileData: {
-                        url: downloadURL,
-                        name: file.name,
-                        type: getFileType(file.type),
-                        size: formatBytes(file.size)
-                    }
-                };
-                
-                if (replyingToId) {
-                    msgData.replyTo = replyingToId;
+    fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(fileUrl => {
+        if (fileUrl.startsWith('http')) {
+            const text = chatInput.value.trim();
+            const msgId = Date.now();
+            const msgData = {
+                id: msgId,
+                type: 'user',
+                author: currentUser,
+                text: filterProfanity(text),
+                isEdited: false,
+                fileData: {
+                    url: fileUrl,
+                    name: file.name,
+                    type: getFileType(file.name),
+                    size: formatBytes(file.size)
                 }
+            };
+            
+            if (replyingToId) {
+                msgData.replyTo = replyingToId;
+            }
 
-                set(ref(db, 'messages/' + msgId), msgData);
-                
-                uploadModal.classList.remove('active');
-                chatFileInput.value = '';
-                chatInput.value = '';
-                cancelReply();
-            });
+            set(ref(db, 'messages/' + msgId), msgData);
         }
-    );
+        uploadModal.classList.remove('active');
+        chatFileInput.value = '';
+        chatInput.value = '';
+        cancelReply();
+    })
+    .catch(() => {
+        uploadModal.classList.remove('active');
+        chatFileInput.value = '';
+    });
 });
 
 function handleSend() {
