@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMiiFmTsbX56qKGZGuK9YkjUGlnTQuaFc",
@@ -13,6 +14,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6LfwzH8sAAAAAJBSdAZvO1W4tYrGQCEQq_ebn348'),
+    isTokenAutoRefreshEnabled: true
+});
 
 const translations = {
     en: {
@@ -130,17 +136,14 @@ function scrollToBottom() {
 function updateLanguage(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
-
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang][key]) el.innerHTML = translations[lang][key];
     });
-
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
     });
-    
     renderMessages(); 
     updatePinnedMessageUI();
 }
@@ -150,9 +153,7 @@ function smoothNavigate(url) {
     page.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     page.style.opacity = '0';
     page.style.transform = 'translateY(10px)';
-    setTimeout(() => {
-        window.location.href = url;
-    }, 300);
+    setTimeout(() => { window.location.href = url; }, 300);
 }
 
 function openModal(titleKey, defaultValue, callback) {
@@ -186,34 +187,17 @@ function updateUIVisibility() {
 }
 
 function onSafeClick(element, callback) {
-    let startX = 0;
-    let startY = 0;
-    let isScrolling = false;
-
+    let startX = 0, startY = 0, isScrolling = false;
     element.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        isScrolling = false;
+        startX = e.touches[0].clientX; startY = e.touches[0].clientY; isScrolling = false;
     }, { passive: true });
-
     element.addEventListener('touchmove', (e) => {
-        if (Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) {
-            isScrolling = true;
-        }
+        if (Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) isScrolling = true;
     }, { passive: true });
-
     element.addEventListener('touchend', (e) => {
-        if (!isScrolling) {
-            if (e.cancelable) {
-                e.preventDefault();
-            }
-            callback(e);
-        }
+        if (!isScrolling) { if (e.cancelable) e.preventDefault(); callback(e); }
     });
-
-    element.addEventListener('click', (e) => {
-        callback(e);
-    });
+    element.addEventListener('click', (e) => { callback(e); });
 }
 
 function openEmojiPicker() {
@@ -231,33 +215,23 @@ function closeEmojiPicker(fromPopState = false) {
         emojiPicker.classList.remove('active');
         stickerBtn.classList.remove('active');
         isEmojiPickerOpen = false;
-        if (!fromPopState) {
-            history.back();
-        }
+        if (!fromPopState) history.back();
     }
 }
 
-window.addEventListener('popstate', (e) => {
-    if (isEmojiPickerOpen) {
-        closeEmojiPicker(true);
-    }
-});
+window.addEventListener('popstate', (e) => { if (isEmojiPickerOpen) closeEmojiPicker(true); });
 
 function renderEmojis(category) {
     emojiGrid.innerHTML = '';
     if (!emojis[category]) return; 
-    
     emojis[category].forEach(emoji => {
         const el = document.createElement('div');
         el.className = 'emoji-item';
         el.textContent = emoji;
-        
         onSafeClick(el, (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
-            chatInput.blur();
-            chatInput.value += emoji;
+            chatInput.blur(); chatInput.value += emoji;
         });
-        
         emojiGrid.appendChild(el);
     });
 }
@@ -274,418 +248,159 @@ function filterProfanity(text) {
 function handleSend() {
     closeEmojiPicker();
     chatInput.blur(); 
-
     if (!currentUser) return;
     const text = chatInput.value.trim();
     if (!text) return;
-    
     const msgId = Date.now();
     set(ref(db, 'messages/' + msgId), {
-        id: msgId,
-        type: 'user',
-        author: currentUser,
-        text: filterProfanity(text),
-        isEdited: false
+        id: msgId, type: 'user', author: currentUser, text: filterProfanity(text), isEdited: false
     });
-    
     chatInput.value = '';
 }
 
 function handleDelete(id) {
     remove(ref(db, 'messages/' + id));
-    if (pinnedMessageId === id) {
-        set(ref(db, 'pinnedMessageId'), null);
-    }
+    if (pinnedMessageId === id) set(ref(db, 'pinnedMessageId'), null);
 }
 
 function handleEdit(id) {
     const msgIndex = messagesData.findIndex(msg => msg.id === id);
-    if (msgIndex === -1) return;
-    if (messagesData[msgIndex].isPoll) return;
-    
+    if (msgIndex === -1 || messagesData[msgIndex].isPoll) return;
     openModal('prompt_edit', messagesData[msgIndex].text, (newText) => {
         if (newText && newText !== messagesData[msgIndex].text) {
-            update(ref(db, 'messages/' + id), {
-                text: filterProfanity(newText),
-                isEdited: true
-            });
+            update(ref(db, 'messages/' + id), { text: filterProfanity(newText), isEdited: true });
         }
     });
 }
 
 function handleToggleMod(nick) {
-    if (moderators.includes(nick)) {
-        moderators = moderators.filter(m => m !== nick);
-    } else {
-        moderators.push(nick);
-    }
+    if (moderators.includes(nick)) moderators = moderators.filter(m => m !== nick);
+    else moderators.push(nick);
     localStorage.setItem('xenithos_mods', JSON.stringify(moderators));
     renderMessages();
 }
 
-function handlePin(id) {
-    set(ref(db, 'pinnedMessageId'), id);
-}
-
-function handleUnpin() {
-    set(ref(db, 'pinnedMessageId'), null);
-}
+function handlePin(id) { set(ref(db, 'pinnedMessageId'), id); }
+function handleUnpin() { set(ref(db, 'pinnedMessageId'), null); }
 
 function handleVote(msgId, optionIndex) {
     if (!currentUser) return;
     const msgIndex = messagesData.findIndex(msg => msg.id === msgId);
     if (msgIndex === -1 || !messagesData[msgIndex].isPoll) return;
-
     const poll = messagesData[msgIndex].pollData;
-    
     poll.options.forEach(opt => {
         if (!opt.voters) opt.voters = [];
         opt.voters = opt.voters.filter(v => v !== currentUser);
     });
-
     if (!poll.options[optionIndex].voters) poll.options[optionIndex].voters = [];
     poll.options[optionIndex].voters.push(currentUser);
-    
     update(ref(db, 'messages/' + msgId + '/pollData'), poll);
 }
 
 function updatePinnedMessageUI() {
-    if (!pinnedMessageId) {
-        pinnedMessageContainer.style.display = 'none';
-        return;
-    }
-
+    if (!pinnedMessageId) { pinnedMessageContainer.style.display = 'none'; return; }
     const pinnedMsg = messagesData.find(msg => msg.id === pinnedMessageId);
-    if (!pinnedMsg) {
-        pinnedMessageContainer.style.display = 'none';
-        return;
-    }
-
+    if (!pinnedMsg) { pinnedMessageContainer.style.display = 'none'; return; }
     pinnedMessageContainer.style.display = 'flex';
-    
-    let previewText = pinnedMsg.text;
-    if (pinnedMsg.isPoll) {
-        previewText = '📊 ' + pinnedMsg.pollData.question;
-    }
-    
+    let previewText = pinnedMsg.isPoll ? '📊 ' + pinnedMsg.pollData.question : pinnedMsg.text;
     pinnedText.textContent = previewText;
-
     const role = getUserRole(currentUser);
-    if (role === 'admin' || role === 'mod') {
-        unpinBtn.style.display = 'flex';
-    } else {
-        unpinBtn.style.display = 'none';
-    }
+    unpinBtn.style.display = (role === 'admin' || role === 'mod') ? 'flex' : 'none';
 }
 
 function renderMessages() {
     chatMessages.innerHTML = '';
     const myRole = getUserRole(currentUser);
-    
     messagesData.forEach(msg => {
         if (msg.type === 'system') return;
-
-        const isSelf = msg.author === currentUser;
-        const authorRole = getUserRole(msg.author);
-        
-        const canEdit = isSelf && !msg.isPoll;
-        const canDelete = isSelf || myRole === 'admin' || myRole === 'mod';
-        const canPin = myRole === 'admin' || myRole === 'mod';
-        const canToggleMod = myRole === 'admin' && !isSelf && authorRole !== 'admin';
-
-        const wrapper = document.createElement('div');
-        wrapper.className = `msg-wrapper ${isSelf ? 'self' : 'other'}`;
-
-        const header = document.createElement('div');
-        header.className = 'msg-header';
-        
-        const authorSpan = document.createElement('span');
-        authorSpan.className = 'msg-author';
-        authorSpan.textContent = msg.author;
-
-        if (authorRole === 'admin') {
-            authorSpan.innerHTML += ` <span class="role-badge badge-admin">${translations[currentLang]['role_admin']}</span>`;
-        } else if (authorRole === 'mod') {
-            authorSpan.innerHTML += ` <span class="role-badge badge-mod">${translations[currentLang]['role_mod']}</span>`;
-        }
-        
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'msg-actions';
-
+        const isSelf = msg.author === currentUser, authorRole = getUserRole(msg.author);
+        const canEdit = isSelf && !msg.isPoll, canDelete = isSelf || myRole === 'admin' || myRole === 'mod';
+        const canPin = myRole === 'admin' || myRole === 'mod', canToggleMod = myRole === 'admin' && !isSelf && authorRole !== 'admin';
+        const wrapper = document.createElement('div'); wrapper.className = `msg-wrapper ${isSelf ? 'self' : 'other'}`;
+        const header = document.createElement('div'); header.className = 'msg-header';
+        const authorSpan = document.createElement('span'); authorSpan.className = 'msg-author'; authorSpan.textContent = msg.author;
+        if (authorRole === 'admin') authorSpan.innerHTML += ` <span class="role-badge badge-admin">${translations[currentLang]['role_admin']}</span>`;
+        else if (authorRole === 'mod') authorSpan.innerHTML += ` <span class="role-badge badge-mod">${translations[currentLang]['role_mod']}</span>`;
+        const actionsDiv = document.createElement('div'); actionsDiv.className = 'msg-actions';
         if (canPin) {
-            const pinB = document.createElement('button');
-            pinB.className = 'action-btn';
-            pinB.innerHTML = pinIcon;
-            pinB.onclick = () => handlePin(msg.id);
-            actionsDiv.appendChild(pinB);
+            const btn = document.createElement('button'); btn.className = 'action-btn'; btn.innerHTML = pinIcon; btn.onclick = () => handlePin(msg.id); actionsDiv.appendChild(btn);
         }
-
         if (canToggleMod) {
-            const modBtn = document.createElement('button');
-            modBtn.className = 'action-btn';
-            modBtn.innerHTML = modIcon;
-            if(authorRole === 'mod') modBtn.style.color = '#ff5a3c';
-            modBtn.onclick = () => handleToggleMod(msg.author);
-            actionsDiv.appendChild(modBtn);
+            const btn = document.createElement('button'); btn.className = 'action-btn'; btn.innerHTML = modIcon; if(authorRole === 'mod') btn.style.color = '#ff5a3c'; btn.onclick = () => handleToggleMod(msg.author); actionsDiv.appendChild(btn);
         }
         if (canEdit) {
-            const editBtn = document.createElement('button');
-            editBtn.className = 'action-btn';
-            editBtn.innerHTML = editIcon;
-            editBtn.onclick = () => handleEdit(msg.id);
-            actionsDiv.appendChild(editBtn);
+            const btn = document.createElement('button'); btn.className = 'action-btn'; btn.innerHTML = editIcon; btn.onclick = () => handleEdit(msg.id); actionsDiv.appendChild(btn);
         }
         if (canDelete) {
-            const delBtn = document.createElement('button');
-            delBtn.className = 'action-btn';
-            delBtn.innerHTML = deleteIcon;
-            delBtn.onclick = () => handleDelete(msg.id);
-            actionsDiv.appendChild(delBtn);
+            const btn = document.createElement('button'); btn.className = 'action-btn'; btn.innerHTML = deleteIcon; btn.onclick = () => handleDelete(msg.id); actionsDiv.appendChild(btn);
         }
-
-        if (isSelf) {
-            header.appendChild(actionsDiv);
-            header.appendChild(authorSpan);
-        } else {
-            header.appendChild(authorSpan);
-            header.appendChild(actionsDiv);
-        }
-
-        const textDiv = document.createElement('div');
-        textDiv.className = 'chat-msg';
-        
+        if (isSelf) { header.appendChild(actionsDiv); header.appendChild(authorSpan); } else { header.appendChild(authorSpan); header.appendChild(actionsDiv); }
+        const textDiv = document.createElement('div'); textDiv.className = 'chat-msg';
         if (msg.isPoll) {
-            const pollCont = document.createElement('div');
-            pollCont.className = 'poll-container';
-            
-            const qDiv = document.createElement('div');
-            qDiv.className = 'poll-question';
-            qDiv.textContent = msg.pollData.question;
-            pollCont.appendChild(qDiv);
-
+            const pollCont = document.createElement('div'); pollCont.className = 'poll-container';
+            const qDiv = document.createElement('div'); qDiv.className = 'poll-question'; qDiv.textContent = msg.pollData.question; pollCont.appendChild(qDiv);
             const totalVotes = msg.pollData.options.reduce((sum, opt) => sum + (opt.voters ? opt.voters.length : 0), 0);
-
             msg.pollData.options.forEach((opt, index) => {
-                const optDiv = document.createElement('div');
-                optDiv.className = 'poll-option';
-                
-                const voters = opt.voters || [];
-                const isSelected = voters.includes(currentUser);
-                const percent = totalVotes === 0 ? 0 : Math.round((voters.length / totalVotes) * 100);
-
-                optDiv.innerHTML = `
-                    <div class="poll-progress-bar" style="width: ${percent}%"></div>
-                    <div class="poll-radio ${isSelected ? 'selected' : ''}"></div>
-                    <div class="poll-text">${opt.text}</div>
-                    <div class="poll-percent">${percent}%</div>
-                `;
-
-                optDiv.onclick = () => handleVote(msg.id, index);
-                pollCont.appendChild(optDiv);
+                const optDiv = document.createElement('div'); optDiv.className = 'poll-option';
+                const voters = opt.voters || [], isSelected = voters.includes(currentUser), percent = totalVotes === 0 ? 0 : Math.round((voters.length / totalVotes) * 100);
+                optDiv.innerHTML = `<div class="poll-progress-bar" style="width: ${percent}%"></div><div class="poll-radio ${isSelected ? 'selected' : ''}"></div><div class="poll-text">${opt.text}</div><div class="poll-percent">${percent}%</div>`;
+                optDiv.onclick = () => handleVote(msg.id, index); pollCont.appendChild(optDiv);
             });
             textDiv.appendChild(pollCont);
         } else {
-            const textContentDiv = document.createElement('div');
-            textContentDiv.textContent = msg.text;
-            textDiv.appendChild(textContentDiv);
+            const cDiv = document.createElement('div'); cDiv.textContent = msg.text; textDiv.appendChild(cDiv);
         }
-
-        const metaDiv = document.createElement('div');
-        metaDiv.className = 'msg-meta';
-
+        const metaDiv = document.createElement('div'); metaDiv.className = 'msg-meta';
         if (msg.isEdited && !msg.isPoll) {
-            const editedTag = document.createElement('span');
-            editedTag.className = 'msg-edited-tag';
-            editedTag.textContent = translations[currentLang]['edited'];
-            metaDiv.appendChild(editedTag);
+            const tag = document.createElement('span'); tag.className = 'msg-edited-tag'; tag.textContent = translations[currentLang]['edited']; metaDiv.appendChild(tag);
         }
-
-        const msgDate = new Date(msg.id); 
-        const timeSpan = document.createElement('span');
-        timeSpan.className = 'msg-time';
-        timeSpan.textContent = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        metaDiv.appendChild(timeSpan);
-
-        textDiv.appendChild(metaDiv);
-
-        wrapper.appendChild(header);
-        wrapper.appendChild(textDiv);
-        chatMessages.appendChild(wrapper);
+        const timeSpan = document.createElement('span'); timeSpan.className = 'msg-time'; timeSpan.textContent = new Date(msg.id).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        metaDiv.appendChild(timeSpan); textDiv.appendChild(metaDiv); wrapper.appendChild(header); wrapper.appendChild(textDiv); chatMessages.appendChild(wrapper);
     });
-    
     scrollToBottom();
 }
 
-btnBack.addEventListener('click', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
-    smoothNavigate('index.html');
-});
-
-logoNav.addEventListener('click', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
-    smoothNavigate('index.html');
-});
-
+btnBack.addEventListener('click', (e) => { if (e.cancelable) e.preventDefault(); smoothNavigate('index.html'); });
+logoNav.addEventListener('click', (e) => { if (e.cancelable) e.preventDefault(); smoothNavigate('index.html'); });
 document.getElementById('modal-btn-cancel').addEventListener('click', closeModal);
-
-document.getElementById('modal-btn-confirm').addEventListener('click', () => {
-    if (modalCallback) modalCallback(modalInput.value.trim());
-    closeModal();
-});
-
-modalInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        if (modalCallback) modalCallback(modalInput.value.trim());
-        closeModal();
-    }
-});
-
+document.getElementById('modal-btn-confirm').addEventListener('click', () => { if (modalCallback) modalCallback(modalInput.value.trim()); closeModal(); });
+modalInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { if (modalCallback) modalCallback(modalInput.value.trim()); closeModal(); } });
 chatSettingsBtn.addEventListener('click', () => {
-    openModal('prompt_name', currentUser || '', (newNick) => {
-        if (newNick && newNick !== currentUser) {
-            currentUser = newNick;
-            localStorage.setItem('xenithos_chat_user', currentUser);
-            updateUIVisibility();
-            renderMessages();
-        }
-    });
+    openModal('prompt_name', currentUser || '', (newNick) => { if (newNick && newNick !== currentUser) { currentUser = newNick; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } });
 });
-
 emojiTabs.forEach(tab => {
-    onSafeClick(tab, (e) => {
-        if (e && e.stopPropagation) e.stopPropagation();
-        chatInput.blur();
-        emojiTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderEmojis(tab.getAttribute('data-category'));
-    });
+    onSafeClick(tab, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); emojiTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); renderEmojis(tab.getAttribute('data-category')); });
 });
-
-onSafeClick(stickerBtn, (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    chatInput.blur();
-    if (isEmojiPickerOpen) {
-        closeEmojiPicker();
-    } else {
-        openEmojiPicker();
-    }
-});
-
-document.addEventListener('mousedown', (e) => {
-    if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) {
-        closeEmojiPicker();
-    }
-});
-document.addEventListener('touchstart', (e) => {
-    if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) {
-        closeEmojiPicker();
-    }
-}, { passive: true });
-
-chatSend.addEventListener('touchstart', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
-    handleSend();
-}, { passive: false });
-
-chatSend.addEventListener('mousedown', (e) => {
-    if (e.cancelable) {
-        e.preventDefault();
-    }
-    handleSend();
-});
-
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleSend();
-});
-
+onSafeClick(stickerBtn, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); if (isEmojiPickerOpen) closeEmojiPicker(); else openEmojiPicker(); });
+document.addEventListener('mousedown', (e) => { if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) closeEmojiPicker(); });
+document.addEventListener('touchstart', (e) => { if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) closeEmojiPicker(); }, { passive: true });
+chatSend.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); }, { passive: false });
+chatSend.addEventListener('mousedown', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); });
+chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
 window.addEventListener('resize', scrollToBottom);
-
-chatInput.addEventListener('focus', () => {
-    if (isEmojiPickerOpen) {
-        closeEmojiPicker();
-    }
-    setTimeout(scrollToBottom, 100);
-    setTimeout(scrollToBottom, 300); 
-});
-
+chatInput.addEventListener('focus', () => { if (isEmojiPickerOpen) closeEmojiPicker(); setTimeout(scrollToBottom, 100); setTimeout(scrollToBottom, 300); });
 unpinBtn.addEventListener('click', handleUnpin);
-
 pollBtn.addEventListener('click', () => {
-    pollModal.classList.add('active');
-    pollQuestionInput.value = '';
-    pollOptionsContainer.innerHTML = `
-        <input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;">
-        <input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">
-    `;
+    pollModal.classList.add('active'); pollQuestionInput.value = '';
+    pollOptionsContainer.innerHTML = `<input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;"><input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">`;
 });
-
-document.getElementById('poll-btn-cancel').addEventListener('click', () => {
-    pollModal.classList.remove('active');
-});
-
+document.getElementById('poll-btn-cancel').addEventListener('click', () => { pollModal.classList.remove('active'); });
 pollAddOptionBtn.addEventListener('click', () => {
     const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input');
     if (inputs.length >= 10) return;
-    const newInput = document.createElement('input');
-    newInput.type = 'text';
-    newInput.className = 'poll-option-input';
-    newInput.placeholder = `Option ${inputs.length + 1}`;
-    newInput.style.marginBottom = '8px';
-    pollOptionsContainer.appendChild(newInput);
+    const i = document.createElement('input'); i.type = 'text'; i.className = 'poll-option-input'; i.placeholder = `Option ${inputs.length + 1}`; i.style.marginBottom = '8px'; pollOptionsContainer.appendChild(i);
 });
-
 document.getElementById('poll-btn-confirm').addEventListener('click', () => {
-    const question = pollQuestionInput.value.trim();
-    if (!question) return;
-
-    const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input');
-    const options = [];
-    inputs.forEach(input => {
-        const val = input.value.trim();
-        if (val) {
-            options.push({ text: filterProfanity(val) });
-        }
-    });
-
+    const q = pollQuestionInput.value.trim(); if (!q) return;
+    const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'), options = [];
+    inputs.forEach(input => { const v = input.value.trim(); if (v) options.push({ text: filterProfanity(v) }); });
     if (options.length < 2) return; 
-
-    const msgId = Date.now();
-    set(ref(db, 'messages/' + msgId), {
-        id: msgId,
-        type: 'user',
-        author: currentUser,
-        text: filterProfanity(question),
-        isEdited: false,
-        isPoll: true,
-        pollData: {
-            question: filterProfanity(question),
-            options: options
-        }
-    });
-
+    const id = Date.now();
+    set(ref(db, 'messages/' + id), { id, type: 'user', author: currentUser, text: filterProfanity(q), isEdited: false, isPoll: true, pollData: { question: filterProfanity(q), options } });
     pollModal.classList.remove('active');
 });
-
 updateLanguage(currentLang);
 renderEmojis('smileys');
-
 if (!currentUser) {
-    setTimeout(() => {
-        openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (newNick) => {
-            if (newNick) {
-                currentUser = newNick;
-                localStorage.setItem('xenithos_chat_user', currentUser);
-                updateUIVisibility();
-                renderMessages();
-            }
-        });
-    }, 500);
-} else {
-    updateUIVisibility();
-}
+    setTimeout(() => { openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (new) => { if (new) { currentUser = new; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } }); }, 500);
+} else { updateUIVisibility(); }
