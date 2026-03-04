@@ -350,10 +350,11 @@ chatFileInput.addEventListener('change', (e) => {
     uploadPercent.textContent = '0%';
 
     const formData = new FormData();
-    formData.append('files[]', file);
+    formData.append('file', file);
+    formData.append('anonymous', 'true');
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://uguu.se/api.php?d=upload-tool');
+    xhr.open('POST', 'https://pixeldrain.com/api/file');
 
     xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
@@ -364,8 +365,10 @@ chatFileInput.addEventListener('change', (e) => {
     };
 
     xhr.onload = () => {
-        if (xhr.status === 200) {
-            const fileUrl = xhr.responseText.trim();
+        if (xhr.status === 201 || xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            const directUrl = `https://pixeldrain.com/api/file/${response.id}`;
+            
             const text = chatInput.value.trim();
             const msgId = Date.now();
             const msgData = {
@@ -375,7 +378,7 @@ chatFileInput.addEventListener('change', (e) => {
                 text: filterProfanity(text),
                 isEdited: false,
                 fileData: {
-                    url: fileUrl,
+                    url: directUrl,
                     name: file.name,
                     type: getFileType(file.name),
                     size: formatBytes(file.size)
