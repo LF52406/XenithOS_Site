@@ -263,6 +263,7 @@ function getFileType(fileName) {
     const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'heic'];
     const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi'];
     const audioExts = ['mp3', 'wav', 'flac', 'm4a', 'aac', 'ogg'];
+    
     if (imageExts.includes(ext)) return 'image';
     if (videoExts.includes(ext)) return 'video';
     if (audioExts.includes(ext)) return 'audio';
@@ -296,15 +297,18 @@ window.addEventListener('popstate', (e) => {
 function renderEmojis(category) {
     emojiGrid.innerHTML = '';
     if (!emojis[category]) return; 
+    
     emojis[category].forEach(emoji => {
         const el = document.createElement('div');
         el.className = 'emoji-item';
         el.textContent = emoji;
+        
         onSafeClick(el, (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
             chatInput.blur();
             chatInput.value += emoji;
         });
+        
         emojiGrid.appendChild(el);
     });
 }
@@ -354,7 +358,7 @@ chatFileInput.addEventListener('change', (e) => {
     if (!file) return;
 
     if (file.size > 100 * 1024 * 1024) {
-        alert('Размер файла превышает лимит (100 МБ). Выберите файл поменьше.');
+        alert('Размер файла превышает лимит (100 МБ).');
         chatFileInput.value = '';
         return;
     }
@@ -795,7 +799,7 @@ function renderMessages() {
                 });
 
                 audioEl.addEventListener('timeupdate', () => {
-                    if (!isNaN(audioEl.duration)) {
+                    if (!isNaN(audioEl.duration) && audioEl.duration > 0) {
                         const pct = (audioEl.currentTime / audioEl.duration) * 100;
                         progress.style.width = pct + '%';
                         timeDisplay.textContent = `${formatTime(audioEl.currentTime)} / ${formatTime(audioEl.duration)}`;
@@ -808,7 +812,9 @@ function renderMessages() {
                     progress.style.width = '0%';
                     currentPlayingAudio = null;
                     currentPlayBtn = null;
-                    timeDisplay.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+                    if(!isNaN(audioEl.duration)) {
+                        timeDisplay.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+                    }
                 });
 
                 playBtn.onclick = () => {
