@@ -87,6 +87,7 @@ const modIcon = `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03
 const pinIcon = `<svg viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>`;
 const replyIcon = `<svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>`;
 const fileDocIcon = `<svg class="chat-file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`;
+const musicIcon = `<svg style="width:24px;height:24px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>`;
 const ADMIN_NICK = 'LF5';
 
 const chatMessages = document.getElementById('chat-messages');
@@ -124,7 +125,6 @@ const uploadPercent = document.getElementById('upload-percent');
 
 const imageViewer = document.getElementById('image-viewer');
 const viewerImg = document.getElementById('viewer-img');
-const viewerClose = document.querySelector('.image-viewer-close');
 
 let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
 let currentUser = localStorage.getItem('xenithos_chat_user');
@@ -277,10 +277,6 @@ function closeEmojiPicker(fromPopState = false) {
     }
 }
 
-window.addEventListener('popstate', (e) => {
-    if (isEmojiPickerOpen) closeEmojiPicker(true);
-});
-
 function renderEmojis(category) {
     emojiGrid.innerHTML = '';
     if (!emojis[category]) return; 
@@ -339,89 +335,80 @@ chatFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-        alert('Размер файла превышает лимит (100 МБ).');
+    if (file.size > 30 * 1024 * 1024) {
+        alert('Максимальный размер файла — 30 МБ.');
         chatFileInput.value = '';
         return;
     }
 
     uploadModal.classList.add('active');
-    uploadProgressBar.style.width = '0%';
-    uploadPercent.textContent = '0%';
+    uploadProgressBar.style.width = '20%';
+    uploadPercent.textContent = 'Обработка файла...';
 
     const fileType = getFileType(file.name);
-    const formData = new FormData();
-    formData.append('file', file);
+    const reader = new FileReader();
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://tmpfiles.org/api/v1/upload');
+    reader.onload = function(event) {
+        const base64Data = event.target.result;
+        
+        uploadProgressBar.style.width = '100%';
+        uploadPercent.textContent = 'Отправка...';
 
-    xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-            const percent = Math.round((event.loaded / event.total) * 100);
-            uploadProgressBar.style.width = percent + '%';
-            uploadPercent.textContent = percent + '%';
-        }
-    };
+        setTimeout(() => {
+            const text = chatInput.value.trim();
+            const msgId = Date.now();
+            const msgData = {
+                id: msgId,
+                type: 'user',
+                author: currentUser,
+                text: filterProfanity(text),
+                isEdited: false,
+                fileData: {
+                    url: base64Data,
+                    name: file.name,
+                    type: fileType,
+                    size: formatBytes(file.size)
+                }
+            };
+            
+            if (replyingToId) msgData.replyTo = replyingToId;
+            set(ref(db, 'messages/' + msgId), msgData);
 
-    xhr.onload = () => {
-        if (xhr.status === 200) {
-            try {
-                const res = JSON.parse(xhr.responseText);
-                let rawUrl = res.data.url;
-                let directHttpsUrl = rawUrl.replace('http://', 'https://').replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                finishUpload(directHttpsUrl, file.name, fileType, formatBytes(file.size));
-            } catch(e) {
-                uploadModal.classList.remove('active');
-                chatFileInput.value = '';
-                alert('Сбой при конвертации ссылки.');
-            }
-        } else {
             uploadModal.classList.remove('active');
             chatFileInput.value = '';
-            alert('Сервер отклонил файл.');
-        }
+            chatInput.value = '';
+            cancelReply();
+        }, 500);
     };
 
-    xhr.onerror = () => {
+    reader.onerror = function() {
         uploadModal.classList.remove('active');
         chatFileInput.value = '';
-        alert('Ошибка сети.');
+        alert('Ошибка при чтении файла устройством.');
     };
 
-    xhr.send(formData);
+    reader.readAsDataURL(file);
 });
-
-function finishUpload(url, name, type, size) {
-    const text = chatInput.value.trim();
-    const msgId = Date.now();
-    const msgData = {
-        id: msgId,
-        type: 'user',
-        author: currentUser,
-        text: filterProfanity(text),
-        isEdited: false,
-        fileData: { url, name, type, size }
-    };
-    if (replyingToId) msgData.replyTo = replyingToId;
-    set(ref(db, 'messages/' + msgId), msgData);
-    uploadModal.classList.remove('active');
-    chatFileInput.value = '';
-    chatInput.value = '';
-    cancelReply();
-}
 
 function openImageViewer(url) {
     viewerImg.src = url;
     imageViewer.classList.add('active');
+    history.pushState({ modal: 'imageViewer' }, '');
 }
 
-function closeImageViewer() {
-    imageViewer.classList.remove('active');
-    setTimeout(() => { viewerImg.src = ''; }, 300);
+function closeImageViewer(fromPopState = false) {
+    if (imageViewer.classList.contains('active')) {
+        imageViewer.classList.remove('active');
+        setTimeout(() => { viewerImg.src = ''; }, 300);
+        if (!fromPopState) history.back();
+    }
 }
 
-if(viewerClose) viewerClose.onclick = closeImageViewer;
+window.addEventListener('popstate', (e) => {
+    if (isEmojiPickerOpen) closeEmojiPicker(true);
+    if (imageViewer.classList.contains('active')) closeImageViewer(true);
+});
+
 if(imageViewer) imageViewer.onclick = (e) => { if (e.target === imageViewer) closeImageViewer(); };
 
 function handleSend() {
@@ -573,10 +560,62 @@ function renderMessages() {
             textDiv.appendChild(pollCont);
         } else if (msg.fileData) {
             if (msg.text) { const t = document.createElement('div'); t.textContent = msg.text; textDiv.appendChild(t); }
-            if (msg.fileData.type === 'image') { const i = document.createElement('img'); i.src = msg.fileData.url; i.className = 'chat-img-attachment'; i.onclick = () => openImageViewer(msg.fileData.url); textDiv.appendChild(i); }
-            else if (msg.fileData.type === 'video') { const v = document.createElement('video'); v.src = msg.fileData.url; v.className = 'chat-video-attachment'; v.controls = true; textDiv.appendChild(v); }
-            else if (msg.fileData.type === 'audio') { const a = document.createElement('audio'); a.src = msg.fileData.url; a.className = 'chat-audio-attachment'; a.controls = true; textDiv.appendChild(a); }
-            else { const l = document.createElement('a'); l.href = msg.fileData.url; l.target = '_blank'; l.download = msg.fileData.name; l.className = 'chat-file-attachment'; l.innerHTML = `${fileDocIcon}<div class="chat-file-info"><div class="chat-file-name">${msg.fileData.name}</div><div class="chat-file-size">${msg.fileData.size}</div></div>`; textDiv.appendChild(l); }
+            if (msg.fileData.type === 'image') { 
+                const i = document.createElement('img'); 
+                i.src = msg.fileData.url; 
+                i.className = 'chat-img-attachment'; 
+                i.onclick = () => openImageViewer(msg.fileData.url); 
+                textDiv.appendChild(i); 
+            }
+            else if (msg.fileData.type === 'video') { 
+                const v = document.createElement('video'); 
+                v.src = msg.fileData.url; 
+                v.className = 'chat-video-attachment'; 
+                v.controls = true; 
+                textDiv.appendChild(v); 
+            }
+            else if (msg.fileData.type === 'audio') { 
+                const audioWrapper = document.createElement('div');
+                audioWrapper.className = 'chat-file-attachment';
+                audioWrapper.style.flexDirection = 'column';
+                audioWrapper.style.alignItems = 'stretch';
+                audioWrapper.style.padding = '12px';
+                
+                const titleRow = document.createElement('div');
+                titleRow.style.display = 'flex';
+                titleRow.style.alignItems = 'center';
+                titleRow.style.gap = '10px';
+                titleRow.style.marginBottom = '10px';
+                
+                const iconColor = isSelf ? '#fff' : '#9632ff';
+                titleRow.innerHTML = `
+                    <div style="color: ${iconColor}">${musicIcon}</div>
+                    <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+                        <div style="font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${msg.fileData.name}</div>
+                        <div style="font-size:12px; opacity:0.7; margin-top:2px;">${msg.fileData.size}</div>
+                    </div>
+                `;
+                
+                const a = document.createElement('audio'); 
+                a.src = msg.fileData.url; 
+                a.className = 'chat-audio-attachment'; 
+                a.controls = true; 
+                a.style.width = '100%';
+                a.style.marginTop = '0';
+                
+                audioWrapper.appendChild(titleRow);
+                audioWrapper.appendChild(a);
+                textDiv.appendChild(audioWrapper);
+            }
+            else { 
+                const l = document.createElement('a'); 
+                l.href = msg.fileData.url; 
+                l.target = '_blank'; 
+                l.download = msg.fileData.name; 
+                l.className = 'chat-file-attachment'; 
+                l.innerHTML = `${fileDocIcon}<div class="chat-file-info"><div class="chat-file-name">${msg.fileData.name}</div><div class="chat-file-size">${msg.fileData.size}</div></div>`; 
+                textDiv.appendChild(l); 
+            }
         } else { const t = document.createElement('div'); t.textContent = msg.text; textDiv.appendChild(t); }
         const metaDiv = document.createElement('div');
         metaDiv.className = 'msg-meta';
