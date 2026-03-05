@@ -506,7 +506,7 @@ body.no-scroll .lang-selector {
     transition: all 0.2s ease;
 }
 .btn-small:hover {
-    background-color: #ffffff;
+    background: #ffffff;
     color: #000000;
 }
 footer {
@@ -756,7 +756,7 @@ footer {
     <a href="#" id="nav-download" data-i18n="nav_download">Download</a>
     <a href="#" id="nav-donators" data-i18n="nav_donators">Supporters</a>
     <a href="chat.html" id="nav-chat" data-i18n="nav_chat">Chat</a>
-    <a href="#" data-i18n="nav_team">Team</a>
+    <a href="team.html" id="btn-team" data-i18n="nav_team">Team</a>
 </div>
 
 <div id="home-page">
@@ -1176,6 +1176,7 @@ footer {
     const navAbout = document.getElementById('nav-about');
     const navDonators = document.getElementById('nav-donators');
     const btnBack = document.getElementById('btn-back');
+    const btnTeam = document.getElementById('btn-team');
 
     const dlMondrian = document.getElementById('dl-mondrian');
     const dlAlioth = document.getElementById('dl-alioth');
@@ -1299,6 +1300,19 @@ footer {
         closeMenu();
         transitionPages(getActivePage(), homePage);
     });
+
+    if (btnTeam) {
+        btnTeam.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMenu();
+            document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                window.location.href = 'team.html';
+            }, 300);
+        });
+    }
 
     if (getActivePage() !== homePage) {
         navControls.classList.add('hidden-controls');
