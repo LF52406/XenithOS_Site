@@ -87,7 +87,8 @@ const modIcon = `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03
 const pinIcon = `<svg viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>`;
 const replyIcon = `<svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>`;
 const fileDocIcon = `<svg class="chat-file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`;
-const musicIcon = `<svg style="width:24px;height:24px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>`;
+const playIcon = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const pauseIcon = `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
 const ADMIN_NICK = 'LF5';
 
 const chatMessages = document.getElementById('chat-messages');
@@ -134,6 +135,9 @@ let pinnedMessageId = null;
 let modalCallback = null;
 let isEmojiPickerOpen = false;
 let replyingToId = null;
+
+let currentPlayingAudio = null;
+let currentPlayBtn = null;
 
 onValue(ref(db, 'messages'), (snapshot) => {
     const data = snapshot.val() || {};
@@ -247,6 +251,13 @@ function formatBytes(bytes, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return '0:00';
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
 function getFileType(fileName) {
     const ext = fileName.split('.').pop().toLowerCase();
     const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'heic'];
@@ -276,6 +287,11 @@ function closeEmojiPicker(fromPopState = false) {
         if (!fromPopState) history.back();
     }
 }
+
+window.addEventListener('popstate', (e) => {
+    if (isEmojiPickerOpen) closeEmojiPicker(true);
+    if (imageViewer.classList.contains('active')) closeImageViewer(true);
+});
 
 function renderEmojis(category) {
     emojiGrid.innerHTML = '';
@@ -322,7 +338,9 @@ function scrollToMessage(id) {
     if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el.classList.add('highlight-msg');
-        setTimeout(() => el.classList.remove('highlight-msg'), 1500);
+        setTimeout(() => {
+            el.classList.remove('highlight-msg');
+        }, 1500);
     }
 }
 
@@ -335,60 +353,111 @@ chatFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 30 * 1024 * 1024) {
-        alert('Максимальный размер файла — 30 МБ.');
+    if (file.size > 100 * 1024 * 1024) {
+        alert('Размер файла превышает лимит (100 МБ). Выберите файл поменьше.');
         chatFileInput.value = '';
         return;
     }
 
     uploadModal.classList.add('active');
-    uploadProgressBar.style.width = '20%';
-    uploadPercent.textContent = 'Обработка файла...';
+    uploadProgressBar.style.width = '0%';
+    uploadPercent.textContent = '0%';
 
     const fileType = getFileType(file.name);
-    const reader = new FileReader();
 
-    reader.onload = function(event) {
-        const base64Data = event.target.result;
+    if (fileType === 'image') {
+        const formData = new FormData();
+        formData.append('image', file);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d0a2a901485a5');
         
-        uploadProgressBar.style.width = '100%';
-        uploadPercent.textContent = 'Отправка...';
-
-        setTimeout(() => {
-            const text = chatInput.value.trim();
-            const msgId = Date.now();
-            const msgData = {
-                id: msgId,
-                type: 'user',
-                author: currentUser,
-                text: filterProfanity(text),
-                isEdited: false,
-                fileData: {
-                    url: base64Data,
-                    name: file.name,
-                    type: fileType,
-                    size: formatBytes(file.size)
-                }
-            };
-            
-            if (replyingToId) msgData.replyTo = replyingToId;
-            set(ref(db, 'messages/' + msgId), msgData);
-
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                uploadProgressBar.style.width = percent + '%';
+                uploadPercent.textContent = percent + '%';
+            }
+        };
+        
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const res = JSON.parse(xhr.responseText);
+                finishUpload(res.data.url, file.name, fileType, formatBytes(file.size));
+            } else {
+                uploadModal.classList.remove('active');
+                chatFileInput.value = '';
+                alert('Ошибка сервера загрузки фото.');
+            }
+        };
+        
+        xhr.onerror = () => {
             uploadModal.classList.remove('active');
             chatFileInput.value = '';
-            chatInput.value = '';
-            cancelReply();
-        }, 500);
-    };
+            alert('Ошибка сети при загрузке фото.');
+        };
+        
+        xhr.send(formData);
+    } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://tmpfiles.org/api/v1/upload');
 
-    reader.onerror = function() {
-        uploadModal.classList.remove('active');
-        chatFileInput.value = '';
-        alert('Ошибка при чтении файла устройством.');
-    };
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                uploadProgressBar.style.width = percent + '%';
+                uploadPercent.textContent = percent + '%';
+            }
+        };
 
-    reader.readAsDataURL(file);
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                try {
+                    const res = JSON.parse(xhr.responseText);
+                    let rawUrl = res.data.url;
+                    let directHttpsUrl = rawUrl.replace('http://', 'https://').replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                    finishUpload(directHttpsUrl, file.name, fileType, formatBytes(file.size));
+                } catch(e) {
+                    uploadModal.classList.remove('active');
+                    chatFileInput.value = '';
+                    alert('Сбой при конвертации ссылки.');
+                }
+            } else {
+                uploadModal.classList.remove('active');
+                chatFileInput.value = '';
+                alert('Сервер отклонил файл.');
+            }
+        };
+
+        xhr.onerror = () => {
+            uploadModal.classList.remove('active');
+            chatFileInput.value = '';
+            alert('Ошибка сети.');
+        };
+
+        xhr.send(formData);
+    }
 });
+
+function finishUpload(url, name, type, size) {
+    const text = chatInput.value.trim();
+    const msgId = Date.now();
+    const msgData = {
+        id: msgId,
+        type: 'user',
+        author: currentUser,
+        text: filterProfanity(text),
+        isEdited: false,
+        fileData: { url, name, type, size }
+    };
+    if (replyingToId) msgData.replyTo = replyingToId;
+    set(ref(db, 'messages/' + msgId), msgData);
+    uploadModal.classList.remove('active');
+    chatFileInput.value = '';
+    chatInput.value = '';
+    cancelReply();
+}
 
 function openImageViewer(url) {
     viewerImg.src = url;
@@ -404,109 +473,177 @@ function closeImageViewer(fromPopState = false) {
     }
 }
 
-window.addEventListener('popstate', (e) => {
-    if (isEmojiPickerOpen) closeEmojiPicker(true);
-    if (imageViewer.classList.contains('active')) closeImageViewer(true);
-});
-
-if(imageViewer) imageViewer.onclick = (e) => { if (e.target === imageViewer) closeImageViewer(); };
+if (imageViewer) {
+    imageViewer.onclick = (e) => { 
+        if (e.target === imageViewer) closeImageViewer(); 
+    };
+}
 
 function handleSend() {
     closeEmojiPicker();
     chatInput.blur(); 
+
     if (!currentUser) return;
     const text = chatInput.value.trim();
     if (!text) return;
+    
     const msgId = Date.now();
-    const msgData = { id: msgId, type: 'user', author: currentUser, text: filterProfanity(text), isEdited: false };
-    if (replyingToId) msgData.replyTo = replyingToId;
+    const msgData = {
+        id: msgId,
+        type: 'user',
+        author: currentUser,
+        text: filterProfanity(text),
+        isEdited: false
+    };
+
+    if (replyingToId) {
+        msgData.replyTo = replyingToId;
+    }
+
     set(ref(db, 'messages/' + msgId), msgData);
+    
     chatInput.value = '';
     cancelReply();
 }
 
 function handleDelete(id) {
     remove(ref(db, 'messages/' + id));
-    if (pinnedMessageId === id) set(ref(db, 'pinnedMessageId'), null);
+    if (pinnedMessageId === id) {
+        set(ref(db, 'pinnedMessageId'), null);
+    }
 }
 
 function handleEdit(id) {
-    const msg = messagesData.find(msg => msg.id === id);
-    if (!msg || msg.isPoll) return;
-    openModal('prompt_edit', msg.text, (newText) => {
-        if (newText && newText !== msg.text) {
-            update(ref(db, 'messages/' + id), { text: filterProfanity(newText), isEdited: true });
+    const msgIndex = messagesData.findIndex(msg => msg.id === id);
+    if (msgIndex === -1 || messagesData[msgIndex].isPoll) return;
+    
+    openModal('prompt_edit', messagesData[msgIndex].text, (newText) => {
+        if (newText && newText !== messagesData[msgIndex].text) {
+            update(ref(db, 'messages/' + id), {
+                text: filterProfanity(newText),
+                isEdited: true
+            });
         }
     });
 }
 
 function handleToggleMod(nick) {
-    if (moderators.includes(nick)) { moderators = moderators.filter(m => m !== nick); }
-    else { moderators.push(nick); }
+    if (moderators.includes(nick)) {
+        moderators = moderators.filter(m => m !== nick);
+    } else {
+        moderators.push(nick);
+    }
     localStorage.setItem('xenithos_mods', JSON.stringify(moderators));
     renderMessages();
 }
 
-function handlePin(id) { set(ref(db, 'pinnedMessageId'), id); }
-function handleUnpin() { set(ref(db, 'pinnedMessageId'), null); }
+function handlePin(id) {
+    set(ref(db, 'pinnedMessageId'), id);
+}
+
+function handleUnpin() {
+    set(ref(db, 'pinnedMessageId'), null);
+}
 
 function handleVote(msgId, optionIndex) {
     if (!currentUser) return;
-    const msg = messagesData.find(msg => msg.id === msgId);
-    if (!msg || !msg.isPoll) return;
-    const poll = msg.pollData;
+    const msgIndex = messagesData.findIndex(msg => msg.id === msgId);
+    if (msgIndex === -1 || !messagesData[msgIndex].isPoll) return;
+
+    const poll = messagesData[msgIndex].pollData;
+    
     poll.options.forEach(opt => {
         if (!opt.voters) opt.voters = [];
         opt.voters = opt.voters.filter(v => v !== currentUser);
     });
+
     if (!poll.options[optionIndex].voters) poll.options[optionIndex].voters = [];
     poll.options[optionIndex].voters.push(currentUser);
+    
     update(ref(db, 'messages/' + msgId + '/pollData'), poll);
 }
 
 function updatePinnedMessageUI() {
-    if (!pinnedMessageId) { pinnedMessageContainer.style.display = 'none'; return; }
+    if (!pinnedMessageId) {
+        pinnedMessageContainer.style.display = 'none';
+        return;
+    }
+
     const pinnedMsg = messagesData.find(msg => msg.id === pinnedMessageId);
-    if (!pinnedMsg) { pinnedMessageContainer.style.display = 'none'; return; }
+    if (!pinnedMsg) {
+        pinnedMessageContainer.style.display = 'none';
+        return;
+    }
+
     pinnedMessageContainer.style.display = 'flex';
-    let previewText = pinnedMsg.isPoll ? '📊 ' + pinnedMsg.pollData.question : (pinnedMsg.fileData && !pinnedMsg.text ? '📎 ' + pinnedMsg.fileData.name : pinnedMsg.text);
+    
+    let previewText = pinnedMsg.text;
+    if (pinnedMsg.isPoll) {
+        previewText = '📊 ' + pinnedMsg.pollData.question;
+    } else if (pinnedMsg.fileData && !pinnedMsg.text) {
+        previewText = '📎 ' + pinnedMsg.fileData.name;
+    }
+    
     pinnedText.textContent = previewText;
+
     const role = getUserRole(currentUser);
-    unpinBtn.style.display = (role === 'admin' || role === 'mod') ? 'flex' : 'none';
+    if (role === 'admin' || role === 'mod') {
+        unpinBtn.style.display = 'flex';
+    } else {
+        unpinBtn.style.display = 'none';
+    }
 }
 
 function renderMessages() {
     chatMessages.innerHTML = '';
     const myRole = getUserRole(currentUser);
+    
     messagesData.forEach(msg => {
         if (msg.type === 'system') return;
+
         const isSelf = msg.author === currentUser;
         const authorRole = getUserRole(msg.author);
+        
+        const canEdit = isSelf && !msg.isPoll;
+        const canDelete = isSelf || myRole === 'admin' || myRole === 'mod';
+        const canPin = myRole === 'admin' || myRole === 'mod';
+        const canToggleMod = myRole === 'admin' && !isSelf && authorRole !== 'admin';
+
         const wrapper = document.createElement('div');
         wrapper.className = `msg-wrapper ${isSelf ? 'self' : 'other'}`;
         wrapper.id = 'msg-' + msg.id;
+
         const header = document.createElement('div');
         header.className = 'msg-header';
+        
         const authorSpan = document.createElement('span');
         authorSpan.className = 'msg-author';
         authorSpan.textContent = msg.author;
-        if (authorRole === 'admin') authorSpan.innerHTML += ` <span class="role-badge badge-admin">${translations[currentLang]['role_admin']}</span>`;
-        else if (authorRole === 'mod') authorSpan.innerHTML += ` <span class="role-badge badge-mod">${translations[currentLang]['role_mod']}</span>`;
+
+        if (authorRole === 'admin') {
+            authorSpan.innerHTML += ` <span class="role-badge badge-admin">${translations[currentLang]['role_admin']}</span>`;
+        } else if (authorRole === 'mod') {
+            authorSpan.innerHTML += ` <span class="role-badge badge-mod">${translations[currentLang]['role_mod']}</span>`;
+        }
+        
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'msg-actions';
+
         const repBtn = document.createElement('button');
         repBtn.className = 'action-btn';
         repBtn.innerHTML = replyIcon;
         repBtn.onclick = () => handleReply(msg.id);
         actionsDiv.appendChild(repBtn);
-        if (myRole === 'admin' || myRole === 'mod') {
+
+        if (canPin) {
             const pinB = document.createElement('button');
             pinB.className = 'action-btn';
             pinB.innerHTML = pinIcon;
             pinB.onclick = () => handlePin(msg.id);
             actionsDiv.appendChild(pinB);
         }
-        if (myRole === 'admin' && !isSelf && authorRole !== 'admin') {
+
+        if (canToggleMod) {
             const modBtn = document.createElement('button');
             modBtn.className = 'action-btn';
             modBtn.innerHTML = modIcon;
@@ -514,144 +651,427 @@ function renderMessages() {
             modBtn.onclick = () => handleToggleMod(msg.author);
             actionsDiv.appendChild(modBtn);
         }
-        if (isSelf && !msg.isPoll) {
+        if (canEdit) {
             const editBtn = document.createElement('button');
             editBtn.className = 'action-btn';
             editBtn.innerHTML = editIcon;
             editBtn.onclick = () => handleEdit(msg.id);
             actionsDiv.appendChild(editBtn);
         }
-        if (isSelf || myRole === 'admin' || myRole === 'mod') {
+        if (canDelete) {
             const delBtn = document.createElement('button');
             delBtn.className = 'action-btn';
             delBtn.innerHTML = deleteIcon;
             delBtn.onclick = () => handleDelete(msg.id);
             actionsDiv.appendChild(delBtn);
         }
-        if (isSelf) { header.appendChild(actionsDiv); header.appendChild(authorSpan); }
-        else { header.appendChild(authorSpan); header.appendChild(actionsDiv); }
+
+        if (isSelf) {
+            header.appendChild(actionsDiv);
+            header.appendChild(authorSpan);
+        } else {
+            header.appendChild(authorSpan);
+            header.appendChild(actionsDiv);
+        }
+
         const textDiv = document.createElement('div');
         textDiv.className = 'chat-msg';
+
         if (msg.replyTo) {
             const originalMsg = messagesData.find(m => m.id === msg.replyTo);
             if (originalMsg) {
                 const replyBlock = document.createElement('div');
                 replyBlock.className = 'msg-reply-block';
                 replyBlock.onclick = () => scrollToMessage(msg.replyTo);
-                replyBlock.innerHTML = `<div class="msg-reply-author">${originalMsg.author}</div><div class="msg-reply-text">${originalMsg.isPoll ? '📊 ' + originalMsg.pollData.question : (originalMsg.fileData ? '📎 ' + originalMsg.fileData.name : originalMsg.text)}</div>`;
+
+                const repAuth = document.createElement('div');
+                repAuth.className = 'msg-reply-author';
+                repAuth.textContent = originalMsg.author;
+
+                const repText = document.createElement('div');
+                repText.className = 'msg-reply-text';
+                repText.textContent = originalMsg.isPoll ? '📊 ' + originalMsg.pollData.question : (originalMsg.fileData ? '📎 ' + originalMsg.fileData.name : originalMsg.text);
+
+                replyBlock.appendChild(repAuth);
+                replyBlock.appendChild(repText);
                 textDiv.appendChild(replyBlock);
             }
         }
+        
         if (msg.isPoll) {
             const pollCont = document.createElement('div');
             pollCont.className = 'poll-container';
-            pollCont.innerHTML = `<div class="poll-question">${msg.pollData.question}</div>`;
+            
+            const qDiv = document.createElement('div');
+            qDiv.className = 'poll-question';
+            qDiv.textContent = msg.pollData.question;
+            pollCont.appendChild(qDiv);
+
             const totalVotes = msg.pollData.options.reduce((sum, opt) => sum + (opt.voters ? opt.voters.length : 0), 0);
+
             msg.pollData.options.forEach((opt, index) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'poll-option';
+                
                 const voters = opt.voters || [];
                 const isSelected = voters.includes(currentUser);
                 const percent = totalVotes === 0 ? 0 : Math.round((voters.length / totalVotes) * 100);
-                const optDiv = document.createElement('div');
-                optDiv.className = 'poll-option';
-                optDiv.innerHTML = `<div class="poll-progress-bar" style="width: ${percent}%"></div><div class="poll-radio ${isSelected ? 'selected' : ''}"></div><div class="poll-text">${opt.text}</div><div class="poll-percent">${percent}%</div>`;
+
+                optDiv.innerHTML = `
+                    <div class="poll-progress-bar" style="width: ${percent}%"></div>
+                    <div class="poll-radio ${isSelected ? 'selected' : ''}"></div>
+                    <div class="poll-text">${opt.text}</div>
+                    <div class="poll-percent">${percent}%</div>
+                `;
+
                 optDiv.onclick = () => handleVote(msg.id, index);
                 pollCont.appendChild(optDiv);
             });
             textDiv.appendChild(pollCont);
         } else if (msg.fileData) {
-            if (msg.text) { const t = document.createElement('div'); t.textContent = msg.text; textDiv.appendChild(t); }
-            if (msg.fileData.type === 'image') { 
-                const i = document.createElement('img'); 
-                i.src = msg.fileData.url; 
-                i.className = 'chat-img-attachment'; 
-                i.onclick = () => openImageViewer(msg.fileData.url); 
-                textDiv.appendChild(i); 
+            if (msg.text) {
+                const textContentDiv = document.createElement('div');
+                textContentDiv.textContent = msg.text;
+                textDiv.appendChild(textContentDiv);
             }
-            else if (msg.fileData.type === 'video') { 
-                const v = document.createElement('video'); 
-                v.src = msg.fileData.url; 
-                v.className = 'chat-video-attachment'; 
-                v.controls = true; 
-                textDiv.appendChild(v); 
-            }
-            else if (msg.fileData.type === 'audio') { 
+
+            if (msg.fileData.type === 'image') {
+                const img = document.createElement('img');
+                img.src = msg.fileData.url;
+                img.className = 'chat-img-attachment';
+                img.referrerPolicy = "no-referrer";
+                img.onclick = () => openImageViewer(msg.fileData.url);
+                textDiv.appendChild(img);
+            } else if (msg.fileData.type === 'video') {
+                const vid = document.createElement('video');
+                vid.src = msg.fileData.url;
+                vid.className = 'chat-video-attachment';
+                vid.controls = true;
+                vid.preload = 'metadata';
+                textDiv.appendChild(vid);
+            } else if (msg.fileData.type === 'audio') {
                 const audioWrapper = document.createElement('div');
-                audioWrapper.className = 'chat-file-attachment';
-                audioWrapper.style.flexDirection = 'column';
-                audioWrapper.style.alignItems = 'stretch';
-                audioWrapper.style.padding = '12px';
+                audioWrapper.className = 'custom-audio-player';
+
+                const playBtn = document.createElement('button');
+                playBtn.className = 'audio-play-btn';
+                playBtn.innerHTML = playIcon;
+
+                const details = document.createElement('div');
+                details.className = 'audio-details';
+
+                const title = document.createElement('div');
+                title.className = 'audio-title';
+                title.textContent = msg.fileData.name;
+
+                const track = document.createElement('div');
+                track.className = 'audio-track';
+                const progress = document.createElement('div');
+                progress.className = 'audio-progress';
+                track.appendChild(progress);
+
+                const meta = document.createElement('div');
+                meta.className = 'audio-meta';
+                const timeDisplay = document.createElement('span');
+                timeDisplay.className = 'audio-time';
+                timeDisplay.textContent = '0:00 / 0:00';
+                const sizeDisplay = document.createElement('span');
+                sizeDisplay.className = 'audio-size';
+                sizeDisplay.textContent = msg.fileData.size;
+
+                meta.appendChild(timeDisplay);
+                meta.appendChild(sizeDisplay);
+
+                details.appendChild(title);
+                details.appendChild(track);
+                details.appendChild(meta);
+
+                const audioEl = document.createElement('audio');
+                audioEl.src = msg.fileData.url;
+                audioEl.style.display = 'none';
+
+                audioEl.addEventListener('loadedmetadata', () => {
+                    timeDisplay.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+                });
+
+                audioEl.addEventListener('timeupdate', () => {
+                    if (!isNaN(audioEl.duration)) {
+                        const pct = (audioEl.currentTime / audioEl.duration) * 100;
+                        progress.style.width = pct + '%';
+                        timeDisplay.textContent = `${formatTime(audioEl.currentTime)} / ${formatTime(audioEl.duration)}`;
+                    }
+                });
+
+                audioEl.addEventListener('ended', () => {
+                    playBtn.innerHTML = playIcon;
+                    playBtn.classList.remove('playing');
+                    progress.style.width = '0%';
+                    currentPlayingAudio = null;
+                    currentPlayBtn = null;
+                    timeDisplay.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+                });
+
+                playBtn.onclick = () => {
+                    if (currentPlayingAudio && currentPlayingAudio !== audioEl) {
+                        currentPlayingAudio.pause();
+                        if(currentPlayBtn) {
+                            currentPlayBtn.innerHTML = playIcon;
+                            currentPlayBtn.classList.remove('playing');
+                        }
+                    }
+                    
+                    if (audioEl.paused) {
+                        audioEl.play();
+                        playBtn.innerHTML = pauseIcon;
+                        playBtn.classList.add('playing');
+                        currentPlayingAudio = audioEl;
+                        currentPlayBtn = playBtn;
+                    } else {
+                        audioEl.pause();
+                        playBtn.innerHTML = playIcon;
+                        playBtn.classList.remove('playing');
+                        currentPlayingAudio = null;
+                        currentPlayBtn = null;
+                    }
+                };
+
+                track.onclick = (e) => {
+                    const rect = track.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    if(audioEl.duration) {
+                        audioEl.currentTime = pct * audioEl.duration;
+                    }
+                };
+
+                audioWrapper.appendChild(playBtn);
+                audioWrapper.appendChild(details);
+                audioWrapper.appendChild(audioEl);
+                textDiv.appendChild(audioWrapper);
+            } else {
+                const fileLink = document.createElement('a');
+                fileLink.href = msg.fileData.url;
+                fileLink.target = '_blank';
+                fileLink.download = msg.fileData.name;
+                fileLink.className = 'chat-file-attachment';
                 
-                const titleRow = document.createElement('div');
-                titleRow.style.display = 'flex';
-                titleRow.style.alignItems = 'center';
-                titleRow.style.gap = '10px';
-                titleRow.style.marginBottom = '10px';
-                
-                const iconColor = isSelf ? '#fff' : '#9632ff';
-                titleRow.innerHTML = `
-                    <div style="color: ${iconColor}">${musicIcon}</div>
-                    <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
-                        <div style="font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${msg.fileData.name}</div>
-                        <div style="font-size:12px; opacity:0.7; margin-top:2px;">${msg.fileData.size}</div>
+                fileLink.innerHTML = `
+                    ${fileDocIcon}
+                    <div class="chat-file-info">
+                        <div class="chat-file-name">${msg.fileData.name}</div>
+                        <div class="chat-file-size">${msg.fileData.size}</div>
                     </div>
                 `;
-                
-                const a = document.createElement('audio'); 
-                a.src = msg.fileData.url; 
-                a.className = 'chat-audio-attachment'; 
-                a.controls = true; 
-                a.style.width = '100%';
-                a.style.marginTop = '0';
-                
-                audioWrapper.appendChild(titleRow);
-                audioWrapper.appendChild(a);
-                textDiv.appendChild(audioWrapper);
+                textDiv.appendChild(fileLink);
             }
-            else { 
-                const l = document.createElement('a'); 
-                l.href = msg.fileData.url; 
-                l.target = '_blank'; 
-                l.download = msg.fileData.name; 
-                l.className = 'chat-file-attachment'; 
-                l.innerHTML = `${fileDocIcon}<div class="chat-file-info"><div class="chat-file-name">${msg.fileData.name}</div><div class="chat-file-size">${msg.fileData.size}</div></div>`; 
-                textDiv.appendChild(l); 
-            }
-        } else { const t = document.createElement('div'); t.textContent = msg.text; textDiv.appendChild(t); }
+        } else {
+            const textContentDiv = document.createElement('div');
+            textContentDiv.textContent = msg.text;
+            textDiv.appendChild(textContentDiv);
+        }
+
         const metaDiv = document.createElement('div');
         metaDiv.className = 'msg-meta';
-        if (msg.isEdited && !msg.isPoll) { const e = document.createElement('span'); e.className = 'msg-edited-tag'; e.textContent = translations[currentLang]['edited']; metaDiv.appendChild(e); }
+
+        if (msg.isEdited && !msg.isPoll) {
+            const editedTag = document.createElement('span');
+            editedTag.className = 'msg-edited-tag';
+            editedTag.textContent = translations[currentLang]['edited'];
+            metaDiv.appendChild(editedTag);
+        }
+
+        const msgDate = new Date(msg.id); 
         const timeSpan = document.createElement('span');
         timeSpan.className = 'msg-time';
-        timeSpan.textContent = new Date(msg.id).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        timeSpan.textContent = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         metaDiv.appendChild(timeSpan);
+
         textDiv.appendChild(metaDiv);
+
         wrapper.appendChild(header);
         wrapper.appendChild(textDiv);
         chatMessages.appendChild(wrapper);
     });
+    
     scrollToBottom();
 }
 
-btnBack.addEventListener('click', (e) => { if (e.cancelable) e.preventDefault(); smoothNavigate('index.html'); });
-logoNav.addEventListener('click', (e) => { if (e.cancelable) e.preventDefault(); smoothNavigate('index.html'); });
+btnBack.addEventListener('click', (e) => {
+    if (e.cancelable) e.preventDefault();
+    smoothNavigate('index.html');
+});
+
+logoNav.addEventListener('click', (e) => {
+    if (e.cancelable) e.preventDefault();
+    smoothNavigate('index.html');
+});
+
 document.getElementById('modal-btn-cancel').addEventListener('click', closeModal);
-document.getElementById('modal-btn-confirm').addEventListener('click', () => { if (modalCallback) modalCallback(modalInput.value.trim()); closeModal(); });
-chatSettingsBtn.addEventListener('click', () => { openModal('prompt_name', currentUser || '', (newNick) => { if (newNick && newNick !== currentUser) { currentUser = newNick; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } }); });
-emojiTabs.forEach(tab => { onSafeClick(tab, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); emojiTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); renderEmojis(tab.getAttribute('data-category')); }); });
-onSafeClick(stickerBtn, (e) => { if (e && e.stopPropagation) e.stopPropagation(); chatInput.blur(); if (isEmojiPickerOpen) { closeEmojiPicker(); } else { openEmojiPicker(); } });
-document.addEventListener('mousedown', (e) => { if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) { closeEmojiPicker(); } });
-chatSend.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); }, { passive: false });
-chatSend.addEventListener('mousedown', (e) => { if (e.cancelable) e.preventDefault(); handleSend(); });
-chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+
+document.getElementById('modal-btn-confirm').addEventListener('click', () => {
+    if (modalCallback) modalCallback(modalInput.value.trim());
+    closeModal();
+});
+
+modalInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        if (modalCallback) modalCallback(modalInput.value.trim());
+        closeModal();
+    }
+});
+
+chatSettingsBtn.addEventListener('click', () => {
+    openModal('prompt_name', currentUser || '', (newNick) => {
+        if (newNick && newNick !== currentUser) {
+            currentUser = newNick;
+            localStorage.setItem('xenithos_chat_user', currentUser);
+            updateUIVisibility();
+            renderMessages();
+        }
+    });
+});
+
+emojiTabs.forEach(tab => {
+    onSafeClick(tab, (e) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        chatInput.blur();
+        emojiTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderEmojis(tab.getAttribute('data-category'));
+    });
+});
+
+onSafeClick(stickerBtn, (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    chatInput.blur();
+    if (isEmojiPickerOpen) {
+        closeEmojiPicker();
+    } else {
+        openEmojiPicker();
+    }
+});
+
+document.addEventListener('mousedown', (e) => {
+    if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) {
+        closeEmojiPicker();
+    }
+});
+document.addEventListener('touchstart', (e) => {
+    if (!emojiPicker.contains(e.target) && !stickerBtn.contains(e.target)) {
+        closeEmojiPicker();
+    }
+}, { passive: true });
+
+chatSend.addEventListener('touchstart', (e) => {
+    if (e.cancelable) e.preventDefault();
+    handleSend();
+}, { passive: false });
+
+chatSend.addEventListener('mousedown', (e) => {
+    if (e.cancelable) e.preventDefault();
+    handleSend();
+});
+
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSend();
+});
+
 window.addEventListener('resize', scrollToBottom);
-chatInput.addEventListener('focus', () => { if (isEmojiPickerOpen) { closeEmojiPicker(); } setTimeout(scrollToBottom, 100); setTimeout(scrollToBottom, 300); });
-unpinBtn.addEventListener('click', (e) => { if (e && e.stopPropagation) e.stopPropagation(); handleUnpin(); });
-pinnedMessageContainer.addEventListener('click', () => { if (pinnedMessageId) scrollToMessage(pinnedMessageId); });
+
+chatInput.addEventListener('focus', () => {
+    if (isEmojiPickerOpen) {
+        closeEmojiPicker();
+    }
+    setTimeout(scrollToBottom, 100);
+    setTimeout(scrollToBottom, 300); 
+});
+
+unpinBtn.addEventListener('click', (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    handleUnpin();
+});
+
+pinnedMessageContainer.addEventListener('click', () => {
+    if (pinnedMessageId) scrollToMessage(pinnedMessageId);
+});
+
 replyPreviewClose.addEventListener('click', cancelReply);
-pollBtn.addEventListener('click', () => { pollModal.classList.add('active'); pollQuestionInput.value = ''; pollOptionsContainer.innerHTML = `<input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;"><input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">`; });
-document.getElementById('poll-btn-cancel').addEventListener('click', () => { pollModal.classList.remove('active'); });
-pollAddOptionBtn.addEventListener('click', () => { const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'); if (inputs.length >= 10) return; const n = document.createElement('input'); n.type = 'text'; n.className = 'poll-option-input'; n.placeholder = `Option ${inputs.length + 1}`; n.style.marginBottom = '8px'; pollOptionsContainer.appendChild(n); });
-document.getElementById('poll-btn-confirm').addEventListener('click', () => { const q = pollQuestionInput.value.trim(); if (!q) return; const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input'); const ops = []; inputs.forEach(i => { const val = i.value.trim(); if (val) { ops.push({ text: filterProfanity(val) }); } }); if (ops.length < 2) return; const msgId = Date.now(); const msgData = { id: msgId, type: 'user', author: currentUser, text: filterProfanity(q), isEdited: false, isPoll: true, pollData: { question: filterProfanity(q), options: ops } }; if (replyingToId) { msgData.replyTo = replyingToId; } set(ref(db, 'messages/' + msgId), msgData); pollModal.classList.remove('active'); cancelReply(); });
+
+pollBtn.addEventListener('click', () => {
+    pollModal.classList.add('active');
+    pollQuestionInput.value = '';
+    pollOptionsContainer.innerHTML = `
+        <input type="text" class="poll-option-input" placeholder="Option 1" style="margin-bottom: 8px;">
+        <input type="text" class="poll-option-input" placeholder="Option 2" style="margin-bottom: 8px;">
+    `;
+});
+
+document.getElementById('poll-btn-cancel').addEventListener('click', () => {
+    pollModal.classList.remove('active');
+});
+
+pollAddOptionBtn.addEventListener('click', () => {
+    const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input');
+    if (inputs.length >= 10) return;
+    const newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.className = 'poll-option-input';
+    newInput.placeholder = `Option ${inputs.length + 1}`;
+    newInput.style.marginBottom = '8px';
+    pollOptionsContainer.appendChild(newInput);
+});
+
+document.getElementById('poll-btn-confirm').addEventListener('click', () => {
+    const question = pollQuestionInput.value.trim();
+    if (!question) return;
+
+    const inputs = pollOptionsContainer.querySelectorAll('.poll-option-input');
+    const options = [];
+    inputs.forEach(input => {
+        const val = input.value.trim();
+        if (val) {
+            options.push({ text: filterProfanity(val) });
+        }
+    });
+
+    if (options.length < 2) return; 
+
+    const msgId = Date.now();
+    const msgData = {
+        id: msgId,
+        type: 'user',
+        author: currentUser,
+        text: filterProfanity(question),
+        isEdited: false,
+        isPoll: true,
+        pollData: {
+            question: filterProfanity(question),
+            options: options
+        }
+    };
+
+    if (replyingToId) {
+        msgData.replyTo = replyingToId;
+    }
+
+    set(ref(db, 'messages/' + msgId), msgData);
+    pollModal.classList.remove('active');
+    cancelReply();
+});
+
 updateLanguage(currentLang);
 renderEmojis('smileys');
-if (!currentUser) { setTimeout(() => { openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (newNick) => { if (newNick) { currentUser = newNick; localStorage.setItem('xenithos_chat_user', currentUser); updateUIVisibility(); renderMessages(); } }); }, 500); } else { updateUIVisibility(); }
+
+if (!currentUser) {
+    setTimeout(() => {
+        openModal('prompt_name', 'User' + Math.floor(Math.random() * 1000), (newNick) => {
+            if (newNick) {
+                currentUser = newNick;
+                localStorage.setItem('xenithos_chat_user', currentUser);
+                updateUIVisibility();
+                renderMessages();
+            }
+        });
+    }, 500);
+} else {
+    updateUIVisibility();
+}
