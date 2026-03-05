@@ -141,9 +141,20 @@ let currentPlayBtn = null;
 
 onValue(ref(db, 'messages'), (snapshot) => {
     const data = snapshot.val() || {};
-    messagesData = Object.values(data).sort((a, b) => a.id - b.id);
+    const newMessagesData = Object.values(data).sort((a, b) => a.id - b.id);
+    const isAtBottom = chatMessages.scrollHeight - chatMessages.clientHeight <= chatMessages.scrollTop + 50;
+    const isNewMessage = newMessagesData.length > messagesData.length;
+    const currentScroll = chatMessages.scrollTop;
+    
+    messagesData = newMessagesData;
     renderMessages();
     updatePinnedMessageUI();
+    
+    if (isNewMessage || isAtBottom) {
+        scrollToBottom();
+    } else {
+        chatMessages.scrollTop = currentScroll;
+    }
 });
 
 onValue(ref(db, 'pinnedMessageId'), (snapshot) => {
@@ -158,19 +169,18 @@ function scrollToBottom() {
 function updateLanguage(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
-
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang][key]) el.innerHTML = translations[lang][key];
     });
-
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
     });
-    
+    const currentScroll = chatMessages.scrollTop;
     renderMessages(); 
     updatePinnedMessageUI();
+    chatMessages.scrollTop = currentScroll;
 }
 
 function smoothNavigate(url) {
@@ -217,26 +227,22 @@ function onSafeClick(element, callback) {
     let startX = 0;
     let startY = 0;
     let isScrolling = false;
-
     element.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         isScrolling = false;
     }, { passive: true });
-
     element.addEventListener('touchmove', (e) => {
         if (Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) {
             isScrolling = true;
         }
     }, { passive: true });
-
     element.addEventListener('touchend', (e) => {
         if (!isScrolling) {
             if (e.cancelable) e.preventDefault();
             callback(e);
         }
     });
-
     element.addEventListener('click', (e) => {
         callback(e);
     });
@@ -263,7 +269,6 @@ function getFileType(fileName) {
     const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'heic'];
     const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi'];
     const audioExts = ['mp3', 'wav', 'flac', 'm4a', 'aac', 'ogg'];
-    
     if (imageExts.includes(ext)) return 'image';
     if (videoExts.includes(ext)) return 'video';
     if (audioExts.includes(ext)) return 'audio';
@@ -291,24 +296,21 @@ function closeEmojiPicker(fromPopState = false) {
 
 window.addEventListener('popstate', (e) => {
     if (isEmojiPickerOpen) closeEmojiPicker(true);
-    if (imageViewer.classList.contains('active')) closeImageViewer(true);
+    if (imageViewer && imageViewer.classList.contains('active')) closeImageViewer(true);
 });
 
 function renderEmojis(category) {
     emojiGrid.innerHTML = '';
     if (!emojis[category]) return; 
-    
     emojis[category].forEach(emoji => {
         const el = document.createElement('div');
         el.className = 'emoji-item';
         el.textContent = emoji;
-        
         onSafeClick(el, (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
             chatInput.blur();
             chatInput.value += emoji;
         });
-        
         emojiGrid.appendChild(el);
     });
 }
@@ -342,9 +344,7 @@ function scrollToMessage(id) {
     if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el.classList.add('highlight-msg');
-        setTimeout(() => {
-            el.classList.remove('highlight-msg');
-        }, 1500);
+        setTimeout(() => el.classList.remove('highlight-msg'), 1500);
     }
 }
 
@@ -486,7 +486,6 @@ if (imageViewer) {
 function handleSend() {
     closeEmojiPicker();
     chatInput.blur(); 
-
     if (!currentUser) return;
     const text = chatInput.value.trim();
     if (!text) return;
@@ -505,7 +504,6 @@ function handleSend() {
     }
 
     set(ref(db, 'messages/' + msgId), msgData);
-    
     chatInput.value = '';
     cancelReply();
 }
@@ -897,8 +895,6 @@ function renderMessages() {
         wrapper.appendChild(textDiv);
         chatMessages.appendChild(wrapper);
     });
-    
-    scrollToBottom();
 }
 
 btnBack.addEventListener('click', (e) => {
@@ -932,6 +928,7 @@ chatSettingsBtn.addEventListener('click', () => {
             localStorage.setItem('xenithos_chat_user', currentUser);
             updateUIVisibility();
             renderMessages();
+            scrollToBottom();
         }
     });
 });
@@ -1075,6 +1072,7 @@ if (!currentUser) {
                 localStorage.setItem('xenithos_chat_user', currentUser);
                 updateUIVisibility();
                 renderMessages();
+                scrollToBottom();
             }
         });
     }, 500);
