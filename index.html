@@ -256,7 +256,6 @@ body.no-scroll .lang-selector {
 .mobile-menu.active a:nth-child(3) { transition-delay: 0.2s, 0.2s, 0s; }
 .mobile-menu.active a:nth-child(4) { transition-delay: 0.25s, 0.25s, 0s; }
 .mobile-menu.active a:nth-child(5) { transition-delay: 0.3s, 0.3s, 0s; }
-
 .hero {
     display: flex;
     justify-content: center;
@@ -321,8 +320,28 @@ body.no-scroll .lang-selector {
     cursor: pointer;
     text-align: center;
 }
+.btn-small {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
 .btn:active {
+    background-color: #ffffff;
+    color: #000000;
     transform: scale(0.98);
+}
+.btn-small:active {
+    background-color: #ffffff;
+    color: #000000;
+}
+.mobile-menu a:active {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 #home-page, #download-page, #build-details-page, #donators-page {
     width: 100%;
@@ -472,17 +491,6 @@ body.no-scroll .lang-selector {
     color: #707075;
     margin-top: 4px;
 }
-.btn-small {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-}
 footer {
     display: flex;
     justify-content: space-between;
@@ -527,11 +535,17 @@ footer {
     transition: 0.3s;
     backdrop-filter: blur(5px);
 }
+.back-btn:active {
+    background: #ffffff;
+}
 .back-btn svg {
     width: 24px;
     height: 24px;
     fill: #e4e6eb;
     transition: 0.3s;
+}
+.back-btn:active svg {
+    fill: #000000;
 }
 .build-header h1 {
     font-size: 28px;
@@ -598,6 +612,9 @@ footer {
     border-color: #ff424d;
     color: #e4e6eb;
 }
+.btn-paypal:active { background-color: #0079c1; color: #ffffff; }
+.btn-patreon:active { background-color: #ff424d; color: #ffffff; }
+
 .donators-list {
     display: flex;
     flex-direction: column;
@@ -968,10 +985,12 @@ footer {
 </footer>
 
 <script>
-    window.addEventListener('pageshow', () => {
-        document.body.style.transition = 'none';
+    window.addEventListener('pageshow', (e) => {
+        document.body.style.transition = 'opacity 0.4s ease';
         document.body.style.opacity = '1';
-        document.body.style.transform = 'translateY(0)';
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
     });
 
     const translations = {
@@ -1092,13 +1111,12 @@ footer {
     };
 
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
-    let currentPageEl;
+    let currentPageEl = null;
 
     const homePage = document.getElementById('home-page');
     const downloadPage = document.getElementById('download-page');
     const buildDetailsPage = document.getElementById('build-details-page');
     const donatorsPage = document.getElementById('donators-page');
-    const pages = [homePage, downloadPage, buildDetailsPage, donatorsPage];
 
     const menuToggle = document.getElementById('menu-open');
     const menu = document.getElementById('menu');
@@ -1137,44 +1155,10 @@ footer {
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-        let hash = window.location.hash.substring(1);
-        let isMenuOpen = (hash === 'menu');
-        
-        let initialView = 'home-page';
-        const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
-        
-        if (isMenuOpen) {
-            if (history.state && history.state.bg && validViews.includes(history.state.bg)) {
-                initialView = history.state.bg;
-            }
-        } else if (validViews.includes(hash)) {
-            initialView = hash;
+        if (!window.location.hash) {
+            history.replaceState(null, '', '#home-page');
         }
-
-        currentPageEl = document.getElementById(initialView);
-        pages.forEach(p => {
-            if (p.id === initialView) {
-                p.style.display = 'block';
-                p.style.opacity = '1';
-            } else {
-                p.style.display = 'none';
-                p.style.opacity = '0';
-            }
-        });
-        
-        if (initialView !== 'home-page') {
-            navControls.classList.add('hidden-controls');
-        }
-        
-        if (isMenuOpen) {
-            history.replaceState({ view: 'menu', bg: initialView }, '', '#menu');
-            menu.classList.add('active');
-            menuToggle.classList.add('active');
-            document.body.classList.add('no-scroll');
-        } else {
-            history.replaceState({ view: initialView }, '', '#' + initialView);
-        }
-        
+        handleHashChange();
         updateLanguage(currentLang);
     });
 
@@ -1222,26 +1206,33 @@ footer {
 
     function switchPageTo(targetEl) {
         if (currentPageEl === targetEl) return;
-        
+
+        if (targetEl === homePage) {
+            navControls.classList.remove('hidden-controls');
+        } else {
+            navControls.classList.add('hidden-controls');
+            langDropdown.classList.remove('active');
+        }
+
         if (document.activeElement) {
             document.activeElement.blur();
         }
-        
+
+        if (!currentPageEl) {
+            targetEl.style.display = 'block';
+            targetEl.style.opacity = '1';
+            currentPageEl = targetEl;
+            return;
+        }
+
         currentPageEl.style.transition = 'opacity 0.3s ease';
         currentPageEl.style.opacity = '0';
         
         setTimeout(() => {
-            currentPageEl.style.display = 'none';
+            if (currentPageEl) currentPageEl.style.display = 'none';
             targetEl.style.display = 'block';
             targetEl.style.opacity = '0';
             window.scrollTo(0, 0);
-            
-            if (targetEl === homePage) {
-                navControls.classList.remove('hidden-controls');
-            } else {
-                navControls.classList.add('hidden-controls');
-                langDropdown.classList.remove('active');
-            }
             
             setTimeout(() => {
                 targetEl.style.transition = 'opacity 0.4s ease';
@@ -1251,98 +1242,66 @@ footer {
         }, 300);
     }
 
-    function goToPage(targetId) {
-        if (currentPageEl.id === targetId) return;
-        history.pushState({ view: targetId }, '', '#' + targetId);
-        switchPageTo(document.getElementById(targetId));
-    }
+    function handleHashChange() {
+        let hash = window.location.hash;
+        if (!hash) hash = '#home-page';
 
-    function openMenu() {
-        history.pushState({ view: 'menu', bg: currentPageEl.id }, '', '#menu');
-        menu.classList.add('active');
-        menuToggle.classList.add('active');
-        document.body.classList.add('no-scroll');
-    }
-
-    function closeMenuUI() {
-        menu.classList.remove('active');
-        menuToggle.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-    }
-
-    menuToggle.addEventListener('click', () => {
-        if (menu.classList.contains('active')) {
-            history.back();
-        } else {
-            openMenu();
-        }
-    });
-
-    window.addEventListener('popstate', (e) => {
-        const state = e.state;
-        if (state && state.view === 'menu') {
-            if (state.bg && state.bg !== currentPageEl.id) {
-                currentPageEl.style.display = 'none';
-                currentPageEl.style.opacity = '0';
-                
-                const targetBg = document.getElementById(state.bg);
-                targetBg.style.display = 'block';
-                targetBg.style.opacity = '1';
-                currentPageEl = targetBg;
-                
-                if (targetBg === homePage) {
-                    navControls.classList.remove('hidden-controls');
-                } else {
-                    navControls.classList.add('hidden-controls');
-                    langDropdown.classList.remove('active');
-                }
-            }
+        if (hash === '#menu') {
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
+            if (!currentPageEl) {
+                switchPageTo(homePage);
+            }
         } else {
-            closeMenuUI();
-            if (state && state.view) {
-                switchPageTo(document.getElementById(state.view));
-            } else {
+            menu.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+            
+            const targetId = hash.substring(1);
+            const targetEl = document.getElementById(targetId);
+            
+            if (targetEl) {
+                switchPageTo(targetEl);
+            } else if (!currentPageEl) {
                 switchPageTo(homePage);
             }
         }
-    });
-
-    function navigateFromMenu(targetPageId) {
-        closeMenuUI();
-        history.pushState({ view: targetPageId }, '', '#' + targetPageId);
-        switchPageTo(document.getElementById(targetPageId));
     }
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    menuToggle.addEventListener('click', () => {
+        if (window.location.hash === '#menu') {
+            window.history.back();
+        } else {
+            window.location.hash = 'menu';
+        }
+    });
 
     navDownload.addEventListener('click', (e) => {
         e.preventDefault();
-        navigateFromMenu('download-page');
+        window.location.hash = 'download-page';
     });
 
     navDonators.addEventListener('click', (e) => {
         e.preventDefault();
-        navigateFromMenu('donators-page');
+        window.location.hash = 'donators-page';
     });
 
     logoLink.addEventListener('click', (e) => {
         e.preventDefault();
-        if (menu.classList.contains('active')) {
-            navigateFromMenu('home-page');
-        } else {
-            goToPage('home-page');
-        }
+        window.location.hash = 'home-page';
     });
 
     navAbout.addEventListener('click', (e) => {
         e.preventDefault();
-        navigateFromMenu('home-page');
+        window.location.hash = 'home-page';
     });
 
     getBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        goToPage('download-page');
+        window.location.hash = 'download-page';
     });
 
     function openBuildDetails(deviceId) {
@@ -1355,7 +1314,7 @@ footer {
         document.getElementById('bd-maintainer').innerText = data.maintainer;
         document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
         
-        goToPage('build-details-page');
+        window.location.hash = 'build-details-page';
     }
 
     dlMondrian.addEventListener('click', (e) => {
@@ -1370,15 +1329,11 @@ footer {
 
     btnBack.addEventListener('click', (e) => {
         e.preventDefault();
-        if (history.state && history.state.view) {
-            history.back();
-        } else {
-            goToPage('download-page');
-        }
+        window.location.hash = 'download-page';
     });
 
     function transitionToExternal(url) {
-        document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        document.body.style.transition = 'opacity 0.3s ease';
         document.body.style.opacity = '0';
         setTimeout(() => {
             window.location.href = url;
