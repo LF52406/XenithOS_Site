@@ -381,6 +381,7 @@ nav {
     position: relative;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     border: 1px solid transparent;
+    width: 100%;
 }
 .msg-wrapper.other .chat-msg {
     background-color: rgba(255, 255, 255, 0.05);
@@ -425,7 +426,7 @@ nav {
     flex-direction: column;
     gap: 8px;
     width: 100%;
-    min-width: 240px; 
+    min-width: 220px; 
     margin-top: 2px;
 }
 .poll-question {
@@ -898,13 +899,13 @@ nav {
 .custom-audio-player {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 12px;
+    padding: 10px 12px;
     border-radius: 16px;
     margin-top: 8px;
-    min-width: 260px;
-    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .msg-wrapper.self .custom-audio-player {
@@ -912,8 +913,8 @@ nav {
     border-color: rgba(255, 255, 255, 0.15);
 }
 .audio-play-btn {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: #9632ff;
     color: #fff;
@@ -935,8 +936,8 @@ nav {
     transform: scale(1.05);
 }
 .audio-play-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     fill: currentColor;
     margin-left: 2px;
 }
@@ -945,19 +946,19 @@ nav {
 }
 .audio-details {
     flex: 1;
-    min-width: 0;
+    min-width: 0; 
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 .audio-title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #e4e6eb;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 .msg-wrapper.self .audio-title {
     color: #fff;
@@ -969,7 +970,7 @@ nav {
     border-radius: 2px;
     cursor: pointer;
     position: relative;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 .audio-progress {
     height: 100%;
@@ -1004,7 +1005,7 @@ nav {
 .audio-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 10px;
     color: #a0a0a5;
 }
 .msg-wrapper.self .audio-meta {
