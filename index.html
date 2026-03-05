@@ -354,8 +354,14 @@ body.no-scroll .notif-wrapper {
     animation: revealPhone 0.8s ease forwards;
 }
 @keyframes revealPhone {
-    0% { opacity: 0; transform: translateY(40px) scale(0.95); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 .phone-screen {
     width: 100%;
@@ -1166,8 +1172,7 @@ footer {
                 ru: "Наш новый сайт официально запущен. Ознакомьтесь с последними сборками для вашего устройства.", 
                 uk: "Наш новий сайт офіційно запущено. Ознайомтеся з останніми збірками для вашого пристрою." 
             },
-            time: "05 Mar 2026",
-            read: false
+            time: "05 Mar 2026"
         }
     ];
 
@@ -1302,6 +1307,7 @@ footer {
 
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
     let currentPageEl = null;
+    let sessionUnreadNotifs = null;
 
     const pages = [
         document.getElementById('home-page'), 
@@ -1319,8 +1325,6 @@ footer {
     const searchInput = document.getElementById('device-search');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
-    const btnTeam = document.getElementById('btn-team');
-    const navChat = document.getElementById('nav-chat');
     
     const dlMondrian = document.getElementById('dl-mondrian');
     const dlAlioth = document.getElementById('dl-alioth');
@@ -1344,16 +1348,42 @@ footer {
         }
     };
 
+    function getReadNotifs() {
+        try {
+            return JSON.parse(localStorage.getItem('xenithos_read_notifs') || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function markAllAsRead() {
+        const readIds = getReadNotifs();
+        let updated = false;
+        notifications.forEach(n => {
+            if (!readIds.includes(n.id)) {
+                readIds.push(n.id);
+                updated = true;
+            }
+        });
+        if (updated) {
+            localStorage.setItem('xenithos_read_notifs', JSON.stringify(readIds));
+        }
+    }
+
     function renderNotifications() {
         const list = document.getElementById('notif-list');
-        list.innerHTML = '';
-        let unreadCount = 0;
+        const readIds = getReadNotifs();
         
-        if (notifications.length === 0) {
+        if (sessionUnreadNotifs === null) {
+            sessionUnreadNotifs = notifications.filter(n => !readIds.includes(n.id));
+        }
+
+        list.innerHTML = '';
+        
+        if (sessionUnreadNotifs.length === 0) {
             list.innerHTML = `<div class="notif-empty" data-i18n="notif_empty">${translations[currentLang]['notif_empty']}</div>`;
         } else {
-            notifications.forEach(n => {
-                if (!n.read) unreadCount++;
+            sessionUnreadNotifs.forEach(n => {
                 const item = document.createElement('div');
                 item.className = 'notif-item';
                 item.innerHTML = `
@@ -1365,7 +1395,8 @@ footer {
             });
         }
         
-        if (unreadCount > 0) {
+        const realUnread = sessionUnreadNotifs.filter(n => !getReadNotifs().includes(n.id));
+        if (realUnread.length > 0) {
             notifBadge.classList.remove('hidden');
         } else {
             notifBadge.classList.add('hidden');
@@ -1453,10 +1484,7 @@ footer {
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
-            
-            if (!currentPageEl) {
-                switchPageTo('home-page');
-            }
+            if (!currentPageEl) switchPageTo('home-page');
             return;
         }
 
@@ -1473,11 +1501,15 @@ footer {
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        if (!window.location.hash) {
+            history.replaceState(null, '', '#home-page');
+        }
         updateLanguage(currentLang);
         handleRouting();
     });
 
     window.addEventListener('hashchange', handleRouting);
+    
     window.addEventListener('pageshow', () => {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
@@ -1504,8 +1536,8 @@ footer {
         langDropdown.classList.remove('active');
         
         if (notifDropdown.classList.contains('active')) {
-            notifications.forEach(n => n.read = true);
-            renderNotifications();
+            markAllAsRead();
+            notifBadge.classList.add('hidden');
         }
     });
 
@@ -1536,11 +1568,7 @@ footer {
             }
         });
 
-        if (visibleCount === 0) {
-            noResultsMsg.style.display = 'block';
-        } else {
-            noResultsMsg.style.display = 'none';
-        }
+        noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
     });
 
     function openBuildDetails(deviceId) {
@@ -1573,17 +1601,24 @@ footer {
         setTimeout(() => { window.location.href = url; }, 250);
     }
 
-    if (btnTeam) {
-        btnTeam.addEventListener('click', (e) => {
-            e.preventDefault(); transitionToExternal('team.html');
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href').substring(1);
+            const validPages = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
+            if (validPages.includes(targetId)) {
+                e.preventDefault();
+                window.location.hash = targetId;
+            }
         });
-    }
+    });
 
-    if (navChat) {
-        navChat.addEventListener('click', (e) => {
-            e.preventDefault(); transitionToExternal('chat.html');
-        });
-    }
+    document.getElementById('btn-team').addEventListener('click', (e) => {
+        e.preventDefault(); transitionToExternal('team.html');
+    });
+
+    document.getElementById('nav-chat').addEventListener('click', (e) => {
+        e.preventDefault(); transitionToExternal('chat.html');
+    });
 </script>
 </body>
 </html>
