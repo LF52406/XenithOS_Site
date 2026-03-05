@@ -995,7 +995,7 @@ footer {
     window.addEventListener('pageshow', () => {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
-        document.body.style.transform = 'translateY(0)';
+        document.body.style.transform = 'none';
     });
 
     const translations = {
@@ -1168,8 +1168,8 @@ footer {
         const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
         
         if (isMenuOpen) {
-            if (history.state && history.state.prev && validViews.includes(history.state.prev)) {
-                initialView = history.state.prev;
+            if (history.state && history.state.bg && validViews.includes(history.state.bg)) {
+                initialView = history.state.bg;
             }
         } else if (validViews.includes(hash)) {
             initialView = hash;
@@ -1191,7 +1191,7 @@ footer {
         }
         
         if (isMenuOpen) {
-            history.replaceState({ view: 'menu', prev: initialView }, '', '#menu');
+            history.replaceState({ view: 'menu', bg: initialView }, '', '#menu');
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
@@ -1277,7 +1277,7 @@ footer {
     }
 
     function openMenu() {
-        history.pushState({ view: 'menu', prev: currentPageEl.id }, '', '#menu');
+        history.pushState({ view: 'menu', bg: currentPageEl.id }, '', '#menu');
         menu.classList.add('active');
         menuToggle.classList.add('active');
         document.body.classList.add('no-scroll');
@@ -1300,6 +1300,22 @@ footer {
     window.addEventListener('popstate', (e) => {
         const state = e.state;
         if (state && state.view === 'menu') {
+            if (state.bg && state.bg !== currentPageEl.id) {
+                currentPageEl.style.display = 'none';
+                currentPageEl.style.opacity = '0';
+                
+                const targetBg = document.getElementById(state.bg);
+                targetBg.style.display = 'block';
+                targetBg.style.opacity = '1';
+                currentPageEl = targetBg;
+                
+                if (targetBg === homePage) {
+                    navControls.classList.remove('hidden-controls');
+                } else {
+                    navControls.classList.add('hidden-controls');
+                    langDropdown.classList.remove('active');
+                }
+            }
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
@@ -1315,7 +1331,7 @@ footer {
 
     function navigateFromMenu(targetPageId) {
         closeMenuUI();
-        history.replaceState({ view: targetPageId }, '', '#' + targetPageId);
+        history.pushState({ view: targetPageId }, '', '#' + targetPageId);
         switchPageTo(document.getElementById(targetPageId));
     }
 
@@ -1381,9 +1397,8 @@ footer {
     });
 
     function transitionToExternal(url) {
-        document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        document.body.style.transition = 'opacity 0.3s ease';
         document.body.style.opacity = '0';
-        document.body.style.transform = 'translateY(10px)';
         setTimeout(() => {
             window.location.href = url;
         }, 300);
