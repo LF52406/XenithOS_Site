@@ -7,7 +7,7 @@ const teamMembers = [
             uk: "Засновник XenithOS"
         },
         quote: "Падать легко, но это лишь приводит к падению.",
-        avatar: "https://ui-avatars.com/api/?name=LF&background=ff5a3c&color=fff&size=150&bold=true",
+        avatar: "avatar_lf5.png",
         socials: {
             telegram: "https://t.me/LF52406",
             github: "#",
@@ -22,7 +22,7 @@ const teamMembers = [
             uk: "Основний учасник; Тестер XenithOS"
         },
         quote: "Пока не придумал он)",
-        avatar: "https://ui-avatars.com/api/?name=AK&background=2882ff&color=fff&size=150&bold=true",
+        avatar: "avatar_akafist.png",
         socials: {
             telegram: "https://t.me/Akafistj",
             github: "",
