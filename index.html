@@ -119,9 +119,10 @@ nav {
     visibility: hidden;
     pointer-events: none;
 }
-.lang-selector, .notif-wrapper {
+.lang-selector,
+.notif-wrapper {
     position: relative;
-    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 body.no-scroll .lang-selector,
 body.no-scroll .notif-wrapper {
@@ -137,7 +138,7 @@ body.no-scroll .notif-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
     padding: 5px;
     position: relative;
 }
@@ -154,7 +155,7 @@ body.no-scroll .notif-wrapper {
     background: #ff424d;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(255, 66, 77, 0.8);
-    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.3s ease;
 }
 .notif-badge.hidden {
     opacity: 0;
@@ -177,7 +178,7 @@ body.no-scroll .notif-wrapper {
     visibility: hidden;
     transform: translateY(15px) scale(0.95);
     transform-origin: top right;
-    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 .notif-dropdown {
@@ -214,7 +215,7 @@ body.no-scroll .notif-wrapper {
 .notif-item {
     padding: 12px;
     border-radius: 16px;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: background-color 0.2s ease;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -248,7 +249,7 @@ body.no-scroll .notif-wrapper {
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: background-color 0.2s ease, color 0.2s ease;
     border-radius: 16px;
     text-align: left;
 }
@@ -267,14 +268,24 @@ body.no-scroll .notif-wrapper {
     height: 3px;
     background-color: #e4e6eb;
     border-radius: 3px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease-in-out;
     right: 0;
 }
-.hamburger span:nth-child(1) { top: 0; width: 100%; }
-.hamburger span:nth-child(2) { bottom: 0; width: 70%; }
-.hamburger.active span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
-.hamburger.active span:nth-child(2) { width: 100%; transform: translateY(-8.5px) rotate(-45deg); }
-
+.hamburger span:nth-child(1) {
+    top: 0;
+    width: 100%;
+}
+.hamburger span:nth-child(2) {
+    bottom: 0;
+    width: 70%;
+}
+.hamburger.active span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+    width: 100%;
+    transform: translateY(-8.5px) rotate(-45deg);
+}
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -291,7 +302,7 @@ body.no-scroll .notif-wrapper {
     gap: 20px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 99;
 }
 .mobile-menu.active {
@@ -312,14 +323,17 @@ body.no-scroll .notif-wrapper {
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease;
 }
-.mobile-menu.active a { opacity: 1; transform: translateY(0); }
-.mobile-menu.active a:nth-child(1) { transition-delay: 0.1s; }
-.mobile-menu.active a:nth-child(2) { transition-delay: 0.15s; }
-.mobile-menu.active a:nth-child(3) { transition-delay: 0.2s; }
-.mobile-menu.active a:nth-child(4) { transition-delay: 0.25s; }
-.mobile-menu.active a:nth-child(5) { transition-delay: 0.3s; }
+.mobile-menu.active a {
+    opacity: 1;
+    transform: translateY(0);
+}
+.mobile-menu.active a:nth-child(1) { transition-delay: 0.05s; }
+.mobile-menu.active a:nth-child(2) { transition-delay: 0.1s; }
+.mobile-menu.active a:nth-child(3) { transition-delay: 0.15s; }
+.mobile-menu.active a:nth-child(4) { transition-delay: 0.2s; }
+.mobile-menu.active a:nth-child(5) { transition-delay: 0.25s; }
 
 .hero {
     display: flex;
@@ -337,7 +351,7 @@ body.no-scroll .notif-wrapper {
     -webkit-backdrop-filter: blur(25px);
     position: relative;
     opacity: 0;
-    animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.8s ease forwards;
 }
 @keyframes revealPhone {
     0% { opacity: 0; transform: translateY(40px) scale(0.95); }
@@ -379,7 +393,7 @@ body.no-scroll .notif-wrapper {
     width: 100%;
     max-width: 300px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
     backdrop-filter: blur(5px);
     margin: 0 auto;
     cursor: pointer;
@@ -394,7 +408,7 @@ body.no-scroll .notif-wrapper {
     font-size: 13px;
     padding: 8px 16px;
     border-radius: 20px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.2s ease;
 }
 .btn:active, 
 .btn-small:active, 
@@ -402,14 +416,18 @@ body.no-scroll .notif-wrapper {
     background-color: #ffffff !important;
     color: #000000 !important;
     transform: scale(0.98);
+    transition: none; 
 }
+
 #home-page, 
 #download-page, 
 #build-details-page, 
 #donators-page {
     width: 100%;
     flex: 1;
+    transition: opacity 0.25s ease;
 }
+
 #download-page, 
 #build-details-page, 
 #donators-page {
@@ -417,10 +435,11 @@ body.no-scroll .notif-wrapper {
     margin: 0 auto;
     padding: 20px 24px 60px;
 }
+
 .download-header {
     text-align: center;
     margin-bottom: 40px;
-    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.6s ease forwards;
 }
 .download-header h1 {
     font-size: 32px;
@@ -431,13 +450,12 @@ body.no-scroll .notif-wrapper {
     color: #a0a0a5;
     font-size: 16px;
 }
-
 .search-container {
     position: relative;
     max-width: 360px;
     margin: 24px auto 0;
     opacity: 0;
-    animation: revealPhone 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.7s ease forwards;
 }
 .search-icon {
     position: absolute;
@@ -459,7 +477,7 @@ body.no-scroll .notif-wrapper {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     outline: none;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
@@ -478,14 +496,12 @@ body.no-scroll .notif-wrapper {
     padding: 20px;
     display: none;
 }
-
 .devices-list {
     display: flex;
     flex-direction: column;
     gap: 30px;
     width: 100%;
 }
-
 .device-card {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -498,9 +514,8 @@ body.no-scroll .notif-wrapper {
     margin: 0 auto;
     max-width: 360px;
     width: 100%;
-    animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.8s ease forwards;
 }
-
 .device-img {
     width: 140px;
     height: 280px;
@@ -512,7 +527,6 @@ body.no-scroll .notif-wrapper {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
-
 .device-screen {
     width: 100%;
     height: 100%;
@@ -521,12 +535,10 @@ body.no-scroll .notif-wrapper {
     overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
-
 .device-info {
     text-align: center;
     width: 100%;
 }
-
 .device-code {
     font-size: 14px;
     color: #a0a0a5;
@@ -535,37 +547,31 @@ body.no-scroll .notif-wrapper {
     margin-bottom: 6px;
     letter-spacing: 1px;
 }
-
 .device-name {
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 8px;
 }
-
 .device-maintainer {
     font-size: 15px;
     color: #707075;
     margin-bottom: 24px;
 }
-
 .download-btn {
     width: 100%;
     display: block;
 }
-
 .archive-container {
     margin-top: 24px;
     text-align: left;
     width: 100%;
 }
-
 .archive-details {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     overflow: hidden;
 }
-
 .archive-summary {
     padding: 16px 20px;
     font-weight: 600;
@@ -577,28 +583,23 @@ body.no-scroll .notif-wrapper {
     align-items: center;
     user-select: none;
 }
-
 .archive-summary::-webkit-details-marker {
     display: none;
 }
-
 .arrow-icon {
     width: 20px;
     height: 20px;
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.3s ease;
 }
-
 .archive-details[open] .arrow-icon {
     transform: rotate(180deg);
 }
-
 .archive-list {
     padding: 0 20px 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-
 .archive-item {
     display: flex;
     justify-content: space-between;
@@ -606,24 +607,20 @@ body.no-scroll .notif-wrapper {
     padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 .archive-item:first-child {
     border-top: none;
     padding-top: 0;
 }
-
 .archive-version {
     font-size: 15px;
     font-weight: 600;
     color: #e4e6eb;
 }
-
 .archive-date {
     font-size: 13px;
     color: #707075;
     margin-top: 4px;
 }
-
 footer {
     display: flex;
     justify-content: space-between;
@@ -633,33 +630,28 @@ footer {
     color: #707075;
     margin-top: auto;
 }
-
 .social-icons {
     display: flex;
     gap: 20px;
 }
-
 .social-icons a {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .social-icons svg {
     width: 30px;
     height: 30px;
     fill: #707075;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
 }
-
 .build-header {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 30px;
-    animation: revealPhone 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.6s ease forwards;
 }
-
 .back-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -670,69 +662,60 @@ footer {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: 0.3s ease;
     backdrop-filter: blur(5px);
 }
-
 .back-btn:active {
     background: #ffffff;
+    transform: scale(0.95);
+    transition: none;
 }
-
 .back-btn svg {
     width: 24px;
     height: 24px;
     fill: #e4e6eb;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: 0.3s ease;
 }
-
 .back-btn:active svg {
     fill: #000000;
 }
-
 .build-header h1 {
     font-size: 28px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
 .info-block {
     margin-bottom: 20px;
 }
-
 .info-label {
     color: #a0a0a5;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 6px;
 }
-
 .info-value {
     color: #e4e6eb;
     font-size: 20px;
     font-weight: 700;
 }
-
 .donate-section {
     margin-top: 40px;
     width: 100%;
     text-align: center;
 }
-
 .donate-title {
     font-size: 18px;
     font-weight: 700;
     color: #e4e6eb;
     margin-bottom: 20px;
 }
-
 .donate-buttons {
     display: flex;
     flex-direction: column;
     gap: 12px;
     align-items: center;
 }
-
 .donate-btn {
     display: flex;
     align-items: center;
@@ -745,43 +728,40 @@ footer {
     text-decoration: none;
     font-weight: 600;
     font-size: 16px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
     background-color: rgba(255, 255, 255, 0.03);
     border: 2px solid;
 }
-
 .donate-btn svg {
     width: 24px;
     height: 24px;
 }
-
 .btn-paypal {
     border-color: #0079c1;
     color: #e4e6eb;
 }
-
 .btn-patreon {
     border-color: #ff424d;
     color: #e4e6eb;
 }
-
 .btn-paypal:active {
     background-color: #0079c1;
     color: #ffffff;
+    transform: scale(0.98);
+    transition: none;
 }
-
 .btn-patreon:active {
     background-color: #ff424d;
     color: #ffffff;
+    transform: scale(0.98);
+    transition: none;
 }
-
 .donators-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
 }
-
 .donator-card {
     background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -791,9 +771,8 @@ footer {
     flex-direction: column;
     gap: 16px;
     backdrop-filter: blur(10px);
-    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.6s ease forwards;
 }
-
 .donator-top {
     display: flex;
     justify-content: space-between;
@@ -801,7 +780,6 @@ footer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 16px;
 }
-
 .donator-name {
     font-size: 20px;
     font-weight: 700;
@@ -810,7 +788,6 @@ footer {
     align-items: center;
     gap: 10px;
 }
-
 .donator-icon {
     width: 32px;
     height: 32px;
@@ -823,7 +800,6 @@ footer {
     font-weight: 800;
     color: #fff;
 }
-
 .donator-amount {
     font-size: 18px;
     font-weight: 800;
@@ -833,7 +809,6 @@ footer {
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .donator-message {
     font-size: 15px;
     line-height: 1.6;
@@ -843,7 +818,6 @@ footer {
     padding-left: 12px;
     border-left: 3px solid rgba(255, 255, 255, 0.15);
 }
-
 .donator-author {
     font-size: 14px;
     font-weight: 600;
@@ -852,58 +826,17 @@ footer {
 }
 
 @media (hover: hover) {
-    .globe-btn:hover {
-        color: #fff;
-        transform: scale(1.1);
-    }
-    
-    .lang-option:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        transform: translateX(4px);
-    }
-    
-    .notif-item:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-    }
-    
-    .mobile-menu a:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    
-    .btn:hover {
-        background-color: #ffffff;
-        color: #000000;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
-    }
-    
-    .btn-small:hover {
-        background-color: #ffffff;
-        color: #000000;
-    }
-    
-    .social-icons svg:hover {
-        fill: #e4e6eb;
-    }
-    
-    .back-btn:hover {
-        background: #ffffff;
-    }
-    
-    .back-btn:hover svg {
-        fill: #000000;
-    }
-    
-    .btn-paypal:hover {
-        background-color: #0079c1;
-        color: #ffffff;
-    }
-    
-    .btn-patreon:hover {
-        background-color: #ff424d;
-        color: #ffffff;
-    }
+    .globe-btn:hover { color: #fff; transform: scale(1.1); }
+    .lang-option:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; transform: translateX(4px); }
+    .notif-item:hover { background-color: rgba(255, 255, 255, 0.08); }
+    .mobile-menu a:hover { background-color: rgba(255, 255, 255, 0.15); }
+    .btn:hover { background-color: #ffffff; color: #000000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+    .btn-small:hover { background-color: #ffffff; color: #000000; }
+    .social-icons svg:hover { fill: #e4e6eb; }
+    .back-btn:hover { background: #ffffff; transform: none; }
+    .back-btn:hover svg { fill: #000000; }
+    .btn-paypal:hover { background-color: #0079c1; color: #ffffff; transform: translateY(-2px); }
+    .btn-patreon:hover { background-color: #ff424d; color: #ffffff; transform: translateY(-2px); }
 }
 </style>
 </head>
@@ -916,7 +849,7 @@ footer {
 </div>
 
 <nav>
-    <a href="#" class="logo-container" id="logo-link">
+    <a href="#home-page" class="logo-container" id="logo-link">
         <div class="logo-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18" stroke="#e4e6eb" stroke-width="3" stroke-linecap="round"/>
@@ -964,14 +897,14 @@ footer {
 </nav>
 
 <div class="mobile-menu" id="menu">
-    <a href="#" id="nav-about" data-i18n="nav_about">About</a>
-    <a href="#" id="nav-download" data-i18n="nav_download">Download</a>
-    <a href="#" id="nav-donators" data-i18n="nav_donators">Supporters</a>
+    <a href="#home-page" id="nav-about" data-i18n="nav_about">About</a>
+    <a href="#download-page" id="nav-download" data-i18n="nav_download">Download</a>
+    <a href="#donators-page" id="nav-donators" data-i18n="nav_donators">Supporters</a>
     <a href="chat.html" id="nav-chat" data-i18n="nav_chat">Chat</a>
     <a href="team.html" id="btn-team" data-i18n="nav_team">Team</a>
 </div>
 
-<div id="home-page">
+<div id="home-page" style="display: none; opacity: 0;">
     <header class="hero">
         <div class="phone-mockup">
             <div class="phone-screen"></div>
@@ -981,11 +914,11 @@ footer {
     <section class="content">
         <h1 data-i18n="hero_title">What is XenithOS</h1>
         <p data-i18n="hero_desc">XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.</p>
-        <a href="#" class="btn" id="get-btn" data-i18n="hero_btn">Get XenithOS</a>
+        <a href="#download-page" class="btn" id="get-btn" data-i18n="hero_btn">Get XenithOS</a>
     </section>
 </div>
 
-<div id="download-page" style="display: none;">
+<div id="download-page" style="display: none; opacity: 0;">
     <div class="download-header">
         <h1 data-i18n="dl_title">Download XenithOS</h1>
         <p data-i18n="dl_desc">Get the latest version for your device</p>
@@ -1008,7 +941,7 @@ footer {
                 <div class="device-code">mondrian</div>
                 <div class="device-name">Poco F5 Pro/K60</div>
                 <div class="device-maintainer"><span data-i18n="lbl_dev">Developer:</span> LF5</div>
-                <a href="#" class="btn download-btn" id="dl-mondrian" data-i18n="btn_dl_build">Download Build</a>
+                <a href="#build-details-page" class="btn download-btn" id="dl-mondrian" data-i18n="btn_dl_build">Download Build</a>
                 
                 <div class="archive-container">
                     <details class="archive-details">
@@ -1045,7 +978,7 @@ footer {
                 <div class="device-code">alioth</div>
                 <div class="device-name">Poco F3/Mi 11X/Redmi K40</div>
                 <div class="device-maintainer"><span data-i18n="lbl_maint">Maintainer:</span> Ariska Eхидна</div>
-                <a href="#" class="btn download-btn" id="dl-alioth" data-i18n="btn_dl_build">Download Build</a>
+                <a href="#build-details-page" class="btn download-btn" id="dl-alioth" data-i18n="btn_dl_build">Download Build</a>
                 
                 <div class="archive-container">
                     <details class="archive-details">
@@ -1078,11 +1011,11 @@ footer {
     </div>
 </div>
 
-<div id="build-details-page" style="display: none;">
+<div id="build-details-page" style="display: none; opacity: 0;">
     <div class="build-header">
-        <button class="back-btn" id="btn-back">
+        <a href="#download-page" class="back-btn" id="btn-back" style="text-decoration: none;">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </button>
+        </a>
         <h1 id="bd-title">Device</h1>
     </div>
 
@@ -1165,7 +1098,7 @@ footer {
     </div>
 </div>
 
-<div id="donators-page" style="display: none;">
+<div id="donators-page" style="display: none; opacity: 0;">
     <div class="download-header">
         <h1 data-i18n="don_title">Supporters</h1>
         <p data-i18n="don_desc">People who made this project possible</p>
@@ -1370,32 +1303,25 @@ footer {
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
     let currentPageEl = null;
 
-    const homePage = document.getElementById('home-page');
-    const downloadPage = document.getElementById('download-page');
-    const buildDetailsPage = document.getElementById('build-details-page');
-    const donatorsPage = document.getElementById('donators-page');
-    const pages = [homePage, downloadPage, buildDetailsPage, donatorsPage];
-
-    const menuToggle = document.getElementById('menu-open');
+    const pages = [
+        document.getElementById('home-page'), 
+        document.getElementById('download-page'), 
+        document.getElementById('build-details-page'), 
+        document.getElementById('donators-page')
+    ];
+    
     const menu = document.getElementById('menu');
+    const menuToggle = document.getElementById('menu-open');
     const navControls = document.getElementById('nav-controls');
     const langDropdown = document.getElementById('lang-dropdown');
     const notifDropdown = document.getElementById('notif-dropdown');
     const notifBadge = document.getElementById('notif-badge');
-    
-    const getBtn = document.getElementById('get-btn');
-    const logoLink = document.getElementById('logo-link');
-    const navDownload = document.getElementById('nav-download');
-    const navAbout = document.getElementById('nav-about');
-    const navDonators = document.getElementById('nav-donators');
-    const btnBack = document.getElementById('btn-back');
-    const btnTeam = document.getElementById('btn-team');
-    const navChat = document.getElementById('nav-chat');
-
     const searchInput = document.getElementById('device-search');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
-
+    const btnTeam = document.getElementById('btn-team');
+    const navChat = document.getElementById('nav-chat');
+    
     const dlMondrian = document.getElementById('dl-mondrian');
     const dlAlioth = document.getElementById('dl-alioth');
 
@@ -1421,7 +1347,6 @@ footer {
     function renderNotifications() {
         const list = document.getElementById('notif-list');
         list.innerHTML = '';
-        
         let unreadCount = 0;
         
         if (notifications.length === 0) {
@@ -1446,48 +1371,6 @@ footer {
             notifBadge.classList.add('hidden');
         }
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        let hash = window.location.hash.substring(1);
-        let isMenuOpen = (hash === 'menu');
-        
-        let initialView = 'home-page';
-        const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
-        
-        if (isMenuOpen) {
-            if (history.state && history.state.bg && validViews.includes(history.state.bg)) {
-                initialView = history.state.bg;
-            }
-        } else if (validViews.includes(hash)) {
-            initialView = hash;
-        }
-
-        currentPageEl = document.getElementById(initialView);
-        pages.forEach(p => {
-            if (p.id === initialView) {
-                p.style.display = 'block';
-                p.style.opacity = '1';
-            } else {
-                p.style.display = 'none';
-                p.style.opacity = '0';
-            }
-        });
-        
-        if (initialView !== 'home-page') {
-            navControls.classList.add('hidden-controls');
-        }
-        
-        if (isMenuOpen) {
-            history.replaceState({ view: 'menu', bg: initialView }, '', '#menu');
-            menu.classList.add('active');
-            menuToggle.classList.add('active');
-            document.body.classList.add('no-scroll');
-        } else {
-            history.replaceState({ view: initialView }, '', '#' + initialView);
-        }
-        
-        updateLanguage(currentLang);
-    });
 
     function updateLanguage(lang) {
         currentLang = lang;
@@ -1515,7 +1398,7 @@ footer {
             }
         });
 
-        if (buildDetailsPage.style.display === 'block') {
+        if (document.getElementById('build-details-page').style.display === 'block') {
             const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
             if (devicesData[deviceId]) {
                 document.getElementById('bd-maintainer-label').innerText = translations[lang][devicesData[deviceId].maintainerLabelKey];
@@ -1524,26 +1407,88 @@ footer {
         renderNotifications();
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        let visibleCount = 0;
+    function switchPageTo(targetId) {
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl || currentPageEl === targetEl) return;
+        
+        if (document.activeElement) document.activeElement.blur();
 
-        deviceCards.forEach(card => {
-            const codename = card.querySelector('.device-code').innerText.toLowerCase();
-            const devName = card.querySelector('.device-name').innerText.toLowerCase();
-            
-            if (codename.includes(query) || devName.includes(query)) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        if (visibleCount === 0) {
-            noResultsMsg.style.display = 'block';
+        if (targetId === 'home-page') {
+            navControls.classList.remove('hidden-controls');
         } else {
+            navControls.classList.add('hidden-controls');
+            langDropdown.classList.remove('active');
+            notifDropdown.classList.remove('active');
+        }
+
+        if (targetId !== 'download-page') {
+            searchInput.value = '';
+            deviceCards.forEach(c => c.style.display = 'flex');
             noResultsMsg.style.display = 'none';
+        }
+
+        if (currentPageEl) {
+            currentPageEl.style.opacity = '0';
+            setTimeout(() => {
+                currentPageEl.style.display = 'none';
+                targetEl.style.display = 'block';
+                window.scrollTo(0, 0);
+                void targetEl.offsetWidth; 
+                targetEl.style.opacity = '1';
+                currentPageEl = targetEl;
+            }, 250); 
+        } else {
+            targetEl.style.display = 'block';
+            void targetEl.offsetWidth;
+            targetEl.style.opacity = '1';
+            currentPageEl = targetEl;
+        }
+    }
+
+    function handleRouting() {
+        let hash = window.location.hash.replace('#', '');
+        if (!hash) hash = 'home-page';
+
+        if (hash === 'menu') {
+            menu.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.classList.add('no-scroll');
+            
+            if (!currentPageEl) {
+                switchPageTo('home-page');
+            }
+            return;
+        }
+
+        menu.classList.remove('active');
+        menuToggle.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+
+        const validPages = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
+        if (validPages.includes(hash)) {
+            switchPageTo(hash);
+        } else {
+            switchPageTo('home-page');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateLanguage(currentLang);
+        handleRouting();
+    });
+
+    window.addEventListener('hashchange', handleRouting);
+    window.addEventListener('pageshow', () => {
+        document.body.style.transition = 'none';
+        document.body.style.opacity = '1';
+    });
+
+    menuToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.location.hash === '#menu') {
+            window.history.back();
+        } else {
+            window.location.hash = 'menu';
         }
     });
 
@@ -1575,144 +1520,27 @@ footer {
         });
     });
 
-    function switchPageTo(targetEl) {
-        if (currentPageEl === targetEl) return;
-        
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
-        
-        if (currentPageEl) {
-            currentPageEl.style.transition = 'opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-            currentPageEl.style.opacity = '0';
-        }
-        
-        setTimeout(() => {
-            if (currentPageEl) {
-                currentPageEl.style.display = 'none';
-            }
-            targetEl.style.display = 'block';
-            targetEl.style.opacity = '0';
-            window.scrollTo(0, 0);
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        deviceCards.forEach(card => {
+            const codename = card.querySelector('.device-code').innerText.toLowerCase();
+            const devName = card.querySelector('.device-name').innerText.toLowerCase();
             
-            if (targetEl === homePage) {
-                navControls.classList.remove('hidden-controls');
+            if (codename.includes(query) || devName.includes(query)) {
+                card.style.display = 'flex';
+                visibleCount++;
             } else {
-                navControls.classList.add('hidden-controls');
-                langDropdown.classList.remove('active');
-                notifDropdown.classList.remove('active');
+                card.style.display = 'none';
             }
+        });
 
-            if (targetEl !== downloadPage) {
-                searchInput.value = '';
-                deviceCards.forEach(c => c.style.display = 'flex');
-                noResultsMsg.style.display = 'none';
-            }
-            
-            setTimeout(() => {
-                targetEl.style.transition = 'opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-                targetEl.style.opacity = '1';
-            }, 50);
-            
-            currentPageEl = targetEl;
-        }, 300);
-    }
-
-    function goToPage(targetId) {
-        if (currentPageEl && currentPageEl.id === targetId) return;
-        history.pushState({ view: targetId }, '', '#' + targetId);
-        switchPageTo(document.getElementById(targetId));
-    }
-
-    function openMenu() {
-        history.pushState({ view: 'menu', bg: currentPageEl ? currentPageEl.id : 'home-page' }, '', '#menu');
-        menu.classList.add('active');
-        menuToggle.classList.add('active');
-        document.body.classList.add('no-scroll');
-    }
-
-    function closeMenuUI() {
-        menu.classList.remove('active');
-        menuToggle.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-    }
-
-    menuToggle.addEventListener('click', () => {
-        if (menu.classList.contains('active')) {
-            history.back();
+        if (visibleCount === 0) {
+            noResultsMsg.style.display = 'block';
         } else {
-            openMenu();
+            noResultsMsg.style.display = 'none';
         }
-    });
-
-    window.addEventListener('popstate', (e) => {
-        const state = e.state;
-        if (state && state.view === 'menu') {
-            if (state.bg && currentPageEl && state.bg !== currentPageEl.id) {
-                currentPageEl.style.display = 'none';
-                currentPageEl.style.opacity = '0';
-                
-                const targetBg = document.getElementById(state.bg);
-                if (targetBg) {
-                    targetBg.style.display = 'block';
-                    targetBg.style.opacity = '1';
-                    currentPageEl = targetBg;
-                    
-                    if (targetBg === homePage) {
-                        navControls.classList.remove('hidden-controls');
-                    } else {
-                        navControls.classList.add('hidden-controls');
-                        langDropdown.classList.remove('active');
-                        notifDropdown.classList.remove('active');
-                    }
-                }
-            }
-            menu.classList.add('active');
-            menuToggle.classList.add('active');
-            document.body.classList.add('no-scroll');
-        } else {
-            closeMenuUI();
-            if (state && state.view) {
-                switchPageTo(document.getElementById(state.view));
-            } else {
-                switchPageTo(homePage);
-            }
-        }
-    });
-
-    function navigateFromMenu(targetPageId) {
-        closeMenuUI();
-        history.pushState({ view: targetPageId }, '', '#' + targetPageId);
-        switchPageTo(document.getElementById(targetPageId));
-    }
-
-    navDownload.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('download-page');
-    });
-
-    navDonators.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('donators-page');
-    });
-
-    logoLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (menu.classList.contains('active')) {
-            navigateFromMenu('home-page');
-        } else {
-            goToPage('home-page');
-        }
-    });
-
-    navAbout.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('home-page');
-    });
-
-    getBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        goToPage('download-page');
     });
 
     function openBuildDetails(deviceId) {
@@ -1724,55 +1552,38 @@ footer {
         document.getElementById('bd-date').innerText = data.date;
         document.getElementById('bd-maintainer').innerText = data.maintainer;
         document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
-        
-        goToPage('build-details-page');
+        window.location.hash = 'build-details-page';
     }
 
-    dlMondrian.addEventListener('click', (e) => {
-        e.preventDefault();
-        openBuildDetails('mondrian');
-    });
+    if (dlMondrian) {
+        dlMondrian.addEventListener('click', (e) => {
+            e.preventDefault(); openBuildDetails('mondrian');
+        });
+    }
 
-    dlAlioth.addEventListener('click', (e) => {
-        e.preventDefault();
-        openBuildDetails('alioth');
-    });
-
-    btnBack.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (history.state && history.state.view) {
-            history.back();
-        } else {
-            goToPage('download-page');
-        }
-    });
+    if (dlAlioth) {
+        dlAlioth.addEventListener('click', (e) => {
+            e.preventDefault(); openBuildDetails('alioth');
+        });
+    }
 
     function transitionToExternal(url) {
-        document.body.style.transition = 'opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+        document.body.style.transition = 'opacity 0.25s ease';
         document.body.style.opacity = '0';
-        setTimeout(() => {
-            window.location.href = url;
-        }, 400);
+        setTimeout(() => { window.location.href = url; }, 250);
     }
 
     if (btnTeam) {
         btnTeam.addEventListener('click', (e) => {
-            e.preventDefault();
-            transitionToExternal('team.html');
+            e.preventDefault(); transitionToExternal('team.html');
         });
     }
 
     if (navChat) {
         navChat.addEventListener('click', (e) => {
-            e.preventDefault();
-            transitionToExternal('chat.html');
+            e.preventDefault(); transitionToExternal('chat.html');
         });
     }
-
-    window.addEventListener('pageshow', () => {
-        document.body.style.transition = 'none';
-        document.body.style.opacity = '1';
-    });
 </script>
 </body>
 </html>
