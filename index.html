@@ -995,7 +995,7 @@ footer {
     window.addEventListener('pageshow', () => {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
-        document.body.style.transform = 'none';
+        document.body.style.transform = 'translateY(0)';
     });
 
     const translations = {
@@ -1161,10 +1161,20 @@ footer {
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-        const hash = window.location.hash.substring(1);
-        const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
-        const initialView = validViews.includes(hash) ? hash : 'home-page';
+        let hash = window.location.hash.substring(1);
+        let isMenuOpen = (hash === 'menu');
         
+        let initialView = 'home-page';
+        const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
+        
+        if (isMenuOpen) {
+            if (history.state && history.state.prev && validViews.includes(history.state.prev)) {
+                initialView = history.state.prev;
+            }
+        } else if (validViews.includes(hash)) {
+            initialView = hash;
+        }
+
         currentPageEl = document.getElementById(initialView);
         pages.forEach(p => {
             if (p.id === initialView) {
@@ -1180,7 +1190,15 @@ footer {
             navControls.classList.add('hidden-controls');
         }
         
-        history.replaceState({ view: initialView }, '', '#' + initialView);
+        if (isMenuOpen) {
+            history.replaceState({ view: 'menu', prev: initialView }, '', '#menu');
+            menu.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.classList.add('no-scroll');
+        } else {
+            history.replaceState({ view: initialView }, '', '#' + initialView);
+        }
+        
         updateLanguage(currentLang);
     });
 
@@ -1363,8 +1381,6 @@ footer {
     });
 
     function transitionToExternal(url) {
-        closeMenuUI();
-        history.replaceState({ view: currentPageEl.id }, '', '#' + currentPageEl.id);
         document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         document.body.style.opacity = '0';
         document.body.style.transform = 'translateY(10px)';
