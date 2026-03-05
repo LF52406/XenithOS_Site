@@ -13,6 +13,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     -webkit-tap-highlight-color: transparent;
 }
+
 body {
     background-color: #030305;
     color: #e4e6eb;
@@ -22,9 +23,11 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 body.no-scroll {
     overflow: hidden;
 }
+
 .aurora-bg {
     position: fixed;
     top: 0;
@@ -35,6 +38,7 @@ body.no-scroll {
     overflow: hidden;
     background-color: #030305;
 }
+
 .blob {
     position: absolute;
     border-radius: 50%;
@@ -42,6 +46,7 @@ body.no-scroll {
     opacity: 0.9;
     will-change: transform;
 }
+
 .blob.purple {
     top: -20%;
     left: -20%;
@@ -50,6 +55,7 @@ body.no-scroll {
     background: radial-gradient(circle, rgba(150,50,255,1) 0%, rgba(150,50,255,0) 70%);
     animation: float-purple 6s ease-in-out infinite alternate;
 }
+
 .blob.orange {
     top: -15%;
     right: -25%;
@@ -58,6 +64,7 @@ body.no-scroll {
     background: radial-gradient(circle, rgba(255,90,60,1) 0%, rgba(255,90,60,0) 70%);
     animation: float-orange 7s ease-in-out infinite alternate;
 }
+
 .blob.blue {
     top: 25%;
     right: -15%;
@@ -66,18 +73,22 @@ body.no-scroll {
     background: radial-gradient(circle, rgba(40,130,255,1) 0%, rgba(40,130,255,0) 70%);
     animation: float-blue 8s ease-in-out infinite alternate;
 }
+
 @keyframes float-purple {
     0% { transform: translate3d(0, 0, 0) scale(1); }
     100% { transform: translate3d(15vw, 15vh, 0) scale(1.2); }
 }
+
 @keyframes float-orange {
     0% { transform: translate3d(0, 0, 0) scale(1); }
     100% { transform: translate3d(-20vw, 10vh, 0) scale(1.15); }
 }
+
 @keyframes float-blue {
     0% { transform: translate3d(0, 0, 0) scale(1); }
     100% { transform: translate3d(-10vw, -20vh, 0) scale(1.25); }
 }
+
 nav {
     display: flex;
     justify-content: space-between;
@@ -87,6 +98,7 @@ nav {
     position: relative;
     z-index: 101;
 }
+
 .logo-container {
     display: flex;
     align-items: center;
@@ -97,6 +109,7 @@ nav {
     text-decoration: none;
     color: #e4e6eb;
 }
+
 .logo-icon {
     width: 24px;
     height: 24px;
@@ -104,32 +117,38 @@ nav {
     align-items: center;
     justify-content: center;
 }
+
 .logo-icon svg {
     width: 100%;
     height: 100%;
 }
+
 .nav-controls {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
 }
+
 .nav-controls.hidden-controls .lang-selector,
 .nav-controls.hidden-controls .notif-wrapper {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 }
-.lang-selector, 
+
+.lang-selector,
 .notif-wrapper {
     position: relative;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
+
 body.no-scroll .lang-selector,
 body.no-scroll .notif-wrapper {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 }
+
 .globe-btn {
     background: none;
     border: none;
@@ -142,10 +161,12 @@ body.no-scroll .notif-wrapper {
     padding: 5px;
     position: relative;
 }
+
 .globe-btn svg {
     width: 24px;
     height: 24px;
 }
+
 .notif-badge {
     position: absolute;
     top: 4px;
@@ -157,9 +178,11 @@ body.no-scroll .notif-wrapper {
     box-shadow: 0 0 8px rgba(255, 66, 77, 0.8);
     transition: opacity 0.3s ease;
 }
+
 .notif-badge.hidden {
     opacity: 0;
 }
+
 .lang-dropdown {
     position: absolute;
     top: 140%;
@@ -181,6 +204,7 @@ body.no-scroll .notif-wrapper {
     transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
+
 .notif-dropdown {
     width: 300px;
     max-width: 85vw;
@@ -188,11 +212,13 @@ body.no-scroll .notif-wrapper {
     padding: 12px;
     cursor: default;
 }
+
 .lang-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
 }
+
 .notif-header {
     font-weight: 700;
     font-size: 16px;
@@ -201,6 +227,7 @@ body.no-scroll .notif-wrapper {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     margin-bottom: 8px;
 }
+
 .notif-list {
     display: flex;
     flex-direction: column;
@@ -209,9 +236,11 @@ body.no-scroll .notif-wrapper {
     overflow-y: auto;
     scrollbar-width: none;
 }
+
 .notif-list::-webkit-scrollbar {
     display: none;
 }
+
 .notif-item {
     padding: 12px;
     border-radius: 16px;
@@ -222,27 +251,32 @@ body.no-scroll .notif-wrapper {
     gap: 4px;
     cursor: pointer;
 }
+
 .notif-title {
     font-weight: 700;
     font-size: 14px;
     color: #fff;
 }
+
 .notif-text {
     font-size: 13px;
     color: #a0a0a5;
     line-height: 1.4;
 }
+
 .notif-time {
     font-size: 11px;
     color: #707075;
     margin-top: 4px;
 }
+
 .notif-empty {
     padding: 20px;
     text-align: center;
     color: #707075;
     font-size: 14px;
 }
+
 .lang-option {
     padding: 12px 16px;
     color: #a0a0a5;
@@ -253,16 +287,19 @@ body.no-scroll .notif-wrapper {
     border-radius: 16px;
     text-align: left;
 }
+
 .lang-option.selected {
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
+
 .hamburger {
     width: 30px;
     height: 20px;
     position: relative;
     cursor: pointer;
 }
+
 .hamburger span {
     position: absolute;
     height: 3px;
@@ -271,21 +308,26 @@ body.no-scroll .notif-wrapper {
     transition: all 0.3s ease-in-out;
     right: 0;
 }
+
 .hamburger span:nth-child(1) {
     top: 0;
     width: 100%;
 }
+
 .hamburger span:nth-child(2) {
     bottom: 0;
     width: 70%;
 }
+
 .hamburger.active span:nth-child(1) {
     transform: translateY(8.5px) rotate(45deg);
 }
+
 .hamburger.active span:nth-child(2) {
     width: 100%;
     transform: translateY(-8.5px) rotate(-45deg);
 }
+
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -305,10 +347,12 @@ body.no-scroll .notif-wrapper {
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 99;
 }
+
 .mobile-menu.active {
     opacity: 1;
     visibility: visible;
 }
+
 .mobile-menu a {
     font-size: 20px;
     font-weight: 600;
@@ -323,22 +367,26 @@ body.no-scroll .notif-wrapper {
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
+
 .mobile-menu.active a {
     opacity: 1;
     transform: translateY(0);
 }
+
 .mobile-menu.active a:nth-child(1) { transition-delay: 0.1s; }
 .mobile-menu.active a:nth-child(2) { transition-delay: 0.15s; }
 .mobile-menu.active a:nth-child(3) { transition-delay: 0.2s; }
 .mobile-menu.active a:nth-child(4) { transition-delay: 0.25s; }
 .mobile-menu.active a:nth-child(5) { transition-delay: 0.3s; }
+
 .hero {
     display: flex;
     justify-content: center;
     padding: 40px 20px 20px;
 }
+
 .phone-mockup {
     width: 280px;
     height: 580px;
@@ -352,6 +400,7 @@ body.no-scroll .notif-wrapper {
     opacity: 0;
     animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 @keyframes revealPhone {
     0% {
         opacity: 0;
@@ -362,6 +411,7 @@ body.no-scroll .notif-wrapper {
         transform: translateY(0) scale(1);
     }
 }
+
 .phone-screen {
     width: 100%;
     height: 100%;
@@ -370,22 +420,26 @@ body.no-scroll .notif-wrapper {
     overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
+
 .content {
     text-align: center;
     padding: 20px 32px 60px;
 }
+
 .content h1 {
     font-size: 38px;
     margin-bottom: 20px;
     font-weight: 800;
     letter-spacing: -1px;
 }
+
 .content p {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 45px;
     color: #a0a0a5;
 }
+
 .btn {
     display: inline-block;
     background-color: rgba(255, 255, 255, 0.08);
@@ -404,6 +458,7 @@ body.no-scroll .notif-wrapper {
     cursor: pointer;
     text-align: center;
 }
+
 .btn-small {
     display: inline-block;
     background-color: rgba(255, 255, 255, 0.1);
@@ -415,6 +470,7 @@ body.no-scroll .notif-wrapper {
     border-radius: 20px;
     transition: all 0.2s ease;
 }
+
 .btn:active, 
 .btn-small:active, 
 .mobile-menu a:active {
@@ -422,6 +478,7 @@ body.no-scroll .notif-wrapper {
     color: #000000 !important;
     transform: scale(0.98);
 }
+
 #home-page, 
 #download-page, 
 #build-details-page, 
@@ -429,6 +486,7 @@ body.no-scroll .notif-wrapper {
     width: 100%;
     flex: 1;
 }
+
 #download-page, 
 #build-details-page, 
 #donators-page {
@@ -436,26 +494,83 @@ body.no-scroll .notif-wrapper {
     margin: 0 auto;
     padding: 20px 24px 60px;
 }
+
 .download-header {
     text-align: center;
     margin-bottom: 40px;
     animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 .download-header h1 {
     font-size: 32px;
     font-weight: 800;
     margin-bottom: 12px;
 }
+
 .download-header p {
     color: #a0a0a5;
     font-size: 16px;
 }
+
+.search-container {
+    position: relative;
+    max-width: 360px;
+    margin: 24px auto 0;
+    opacity: 0;
+    animation: revealPhone 0.7s forwards;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    stroke: #a0a0a5;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    padding: 14px 16px 14px 44px;
+    color: #e4e6eb;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.search-input::placeholder {
+    color: #a0a0a5;
+}
+
+.search-input:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.no-results-msg {
+    text-align: center;
+    color: #a0a0a5;
+    font-size: 15px;
+    padding: 20px;
+    display: none;
+}
+
 .devices-list {
     display: flex;
     flex-direction: column;
     gap: 30px;
     width: 100%;
 }
+
 .device-card {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -470,6 +585,7 @@ body.no-scroll .notif-wrapper {
     width: 100%;
     animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 .device-img {
     width: 140px;
     height: 280px;
@@ -481,6 +597,7 @@ body.no-scroll .notif-wrapper {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
+
 .device-screen {
     width: 100%;
     height: 100%;
@@ -489,10 +606,12 @@ body.no-scroll .notif-wrapper {
     overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
+
 .device-info {
     text-align: center;
     width: 100%;
 }
+
 .device-code {
     font-size: 14px;
     color: #a0a0a5;
@@ -501,31 +620,37 @@ body.no-scroll .notif-wrapper {
     margin-bottom: 6px;
     letter-spacing: 1px;
 }
+
 .device-name {
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 8px;
 }
+
 .device-maintainer {
     font-size: 15px;
     color: #707075;
     margin-bottom: 24px;
 }
+
 .download-btn {
     width: 100%;
     display: block;
 }
+
 .archive-container {
     margin-top: 24px;
     text-align: left;
     width: 100%;
 }
+
 .archive-details {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     overflow: hidden;
 }
+
 .archive-summary {
     padding: 16px 20px;
     font-weight: 600;
@@ -537,23 +662,28 @@ body.no-scroll .notif-wrapper {
     align-items: center;
     user-select: none;
 }
+
 .archive-summary::-webkit-details-marker {
     display: none;
 }
+
 .arrow-icon {
     width: 20px;
     height: 20px;
     transition: transform 0.3s ease;
 }
+
 .archive-details[open] .arrow-icon {
     transform: rotate(180deg);
 }
+
 .archive-list {
     padding: 0 20px 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
+
 .archive-item {
     display: flex;
     justify-content: space-between;
@@ -561,20 +691,24 @@ body.no-scroll .notif-wrapper {
     padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
 .archive-item:first-child {
     border-top: none;
     padding-top: 0;
 }
+
 .archive-version {
     font-size: 15px;
     font-weight: 600;
     color: #e4e6eb;
 }
+
 .archive-date {
     font-size: 13px;
     color: #707075;
     margin-top: 4px;
 }
+
 footer {
     display: flex;
     justify-content: space-between;
@@ -584,21 +718,25 @@ footer {
     color: #707075;
     margin-top: auto;
 }
+
 .social-icons {
     display: flex;
     gap: 20px;
 }
+
 .social-icons a {
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .social-icons svg {
     width: 30px;
     height: 30px;
     fill: #707075;
     transition: 0.3s;
 }
+
 .build-header {
     display: flex;
     align-items: center;
@@ -606,6 +744,7 @@ footer {
     margin-bottom: 30px;
     animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 .back-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -619,55 +758,66 @@ footer {
     transition: 0.3s;
     backdrop-filter: blur(5px);
 }
+
 .back-btn:active {
     background: #ffffff;
 }
+
 .back-btn svg {
     width: 24px;
     height: 24px;
     fill: #e4e6eb;
     transition: 0.3s;
 }
+
 .back-btn:active svg {
     fill: #000000;
 }
+
 .build-header h1 {
     font-size: 28px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
 .info-block {
     margin-bottom: 20px;
 }
+
 .info-label {
     color: #a0a0a5;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 6px;
 }
+
 .info-value {
     color: #e4e6eb;
     font-size: 20px;
     font-weight: 700;
 }
+
 .donate-section {
     margin-top: 40px;
     width: 100%;
     text-align: center;
 }
+
 .donate-title {
     font-size: 18px;
     font-weight: 700;
     color: #e4e6eb;
     margin-bottom: 20px;
 }
+
 .donate-buttons {
     display: flex;
     flex-direction: column;
     gap: 12px;
     align-items: center;
 }
+
 .donate-btn {
     display: flex;
     align-items: center;
@@ -684,32 +834,39 @@ footer {
     background-color: rgba(255, 255, 255, 0.03);
     border: 2px solid;
 }
+
 .donate-btn svg {
     width: 24px;
     height: 24px;
 }
+
 .btn-paypal {
     border-color: #0079c1;
     color: #e4e6eb;
 }
+
 .btn-patreon {
     border-color: #ff424d;
     color: #e4e6eb;
 }
+
 .btn-paypal:active {
     background-color: #0079c1;
     color: #ffffff;
 }
+
 .btn-patreon:active {
     background-color: #ff424d;
     color: #ffffff;
 }
+
 .donators-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
 }
+
 .donator-card {
     background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -721,6 +878,7 @@ footer {
     backdrop-filter: blur(10px);
     animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 .donator-top {
     display: flex;
     justify-content: space-between;
@@ -728,6 +886,7 @@ footer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 16px;
 }
+
 .donator-name {
     font-size: 20px;
     font-weight: 700;
@@ -736,6 +895,7 @@ footer {
     align-items: center;
     gap: 10px;
 }
+
 .donator-icon {
     width: 32px;
     height: 32px;
@@ -748,6 +908,7 @@ footer {
     font-weight: 800;
     color: #fff;
 }
+
 .donator-amount {
     font-size: 18px;
     font-weight: 800;
@@ -757,6 +918,7 @@ footer {
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .donator-message {
     font-size: 15px;
     line-height: 1.6;
@@ -766,6 +928,7 @@ footer {
     padding-left: 12px;
     border-left: 3px solid rgba(255, 255, 255, 0.15);
 }
+
 .donator-author {
     font-size: 14px;
     font-weight: 600;
@@ -774,17 +937,58 @@ footer {
 }
 
 @media (hover: hover) {
-    .globe-btn:hover { color: #fff; transform: scale(1.1); }
-    .lang-option:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; transform: translateX(4px); }
-    .notif-item:hover { background-color: rgba(255, 255, 255, 0.08); }
-    .mobile-menu a:hover { background-color: rgba(255, 255, 255, 0.15); }
-    .btn:hover { background-color: #ffffff; color: #000000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-    .btn-small:hover { background-color: #ffffff; color: #000000; }
-    .social-icons svg:hover { fill: #e4e6eb; }
-    .back-btn:hover { background: #ffffff; }
-    .back-btn:hover svg { fill: #000000; }
-    .btn-paypal:hover { background-color: #0079c1; color: #ffffff; }
-    .btn-patreon:hover { background-color: #ff424d; color: #ffffff; }
+    .globe-btn:hover {
+        color: #fff;
+        transform: scale(1.1);
+    }
+    
+    .lang-option:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        transform: translateX(4px);
+    }
+    
+    .notif-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .mobile-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn:hover {
+        background-color: #ffffff;
+        color: #000000;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+    }
+    
+    .btn-small:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    .social-icons svg:hover {
+        fill: #e4e6eb;
+    }
+    
+    .back-btn:hover {
+        background: #ffffff;
+    }
+    
+    .back-btn:hover svg {
+        fill: #000000;
+    }
+    
+    .btn-paypal:hover {
+        background-color: #0079c1;
+        color: #ffffff;
+    }
+    
+    .btn-patreon:hover {
+        background-color: #ff424d;
+        color: #ffffff;
+    }
 }
 </style>
 </head>
@@ -806,6 +1010,7 @@ footer {
         </div>
         <span>XenithOS</span>
     </a>
+    
     <div class="nav-controls" id="nav-controls">
         <div class="notif-wrapper" id="notif-wrapper">
             <button class="globe-btn" id="notif-btn">
@@ -869,6 +1074,14 @@ footer {
     <div class="download-header">
         <h1 data-i18n="dl_title">Download XenithOS</h1>
         <p data-i18n="dl_desc">Get the latest version for your device</p>
+        
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="device-search" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search by codename...">
+        </div>
     </div>
     
     <div class="devices-list">
@@ -945,6 +1158,8 @@ footer {
                 </div>
             </div>
         </div>
+        
+        <div id="no-results-msg" class="no-results-msg" data-i18n="no_results">Device not found</div>
     </div>
 </div>
 
@@ -1147,7 +1362,9 @@ footer {
             "don_msg2": "Thank you for the donation! I really appreciate your contribution to the XenithOS project.",
             "don_msg3": "Thanks for the coffee! Your support motivates me to keep working.",
             "lbl_dev": "Developer:",
-            "lbl_maint": "Maintainer:"
+            "lbl_maint": "Maintainer:",
+            "search_placeholder": "Search by codename...",
+            "no_results": "Device not found"
         },
         ru: {
             "notif_header": "Уведомления",
@@ -1187,7 +1404,9 @@ footer {
             "don_msg2": "Благодарю за донат! Очень ценю твой вклад в развитие проекта XenithOS.",
             "don_msg3": "Спасибо за кофе! Твоя поддержка мотивирует работать дальше.",
             "lbl_dev": "Разработчик:",
-            "lbl_maint": "Мейнтейнер:"
+            "lbl_maint": "Мейнтейнер:",
+            "search_placeholder": "Поиск по кодовому имени...",
+            "no_results": "Устройство не найдено"
         },
         uk: {
             "notif_header": "Сповіщення",
@@ -1227,12 +1446,14 @@ footer {
             "don_msg2": "Дякую за донат! Дуже ціную твій внесок у розвиток проекту XenithOS.",
             "don_msg3": "Дякую за каву! Твоя підтримка мотивирует працювати далі.",
             "lbl_dev": "Розробник:",
-            "lbl_maint": "Мейнтейнер:"
+            "lbl_maint": "Мейнтейнер:",
+            "search_placeholder": "Пошук за кодовим ім'ям...",
+            "no_results": "Пристрій не знайдено"
         }
     };
 
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
-    let currentPageEl;
+    let currentPageEl = null;
 
     const homePage = document.getElementById('home-page');
     const downloadPage = document.getElementById('download-page');
@@ -1255,6 +1476,10 @@ footer {
     const btnBack = document.getElementById('btn-back');
     const btnTeam = document.getElementById('btn-team');
     const navChat = document.getElementById('nav-chat');
+
+    const searchInput = document.getElementById('device-search');
+    const deviceCards = document.querySelectorAll('.devices-list .device-card');
+    const noResultsMsg = document.getElementById('no-results-msg');
 
     const dlMondrian = document.getElementById('dl-mondrian');
     const dlAlioth = document.getElementById('dl-alioth');
@@ -1368,6 +1593,13 @@ footer {
             }
         });
 
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (translations[lang][key]) {
+                el.placeholder = translations[lang][key];
+            }
+        });
+
         if (buildDetailsPage.style.display === 'block') {
             const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
             if (devicesData[deviceId]) {
@@ -1376,6 +1608,29 @@ footer {
         }
         renderNotifications();
     }
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        deviceCards.forEach(card => {
+            const codename = card.querySelector('.device-code').innerText.toLowerCase();
+            const devName = card.querySelector('.device-name').innerText.toLowerCase();
+            
+            if (codename.includes(query) || devName.includes(query)) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0) {
+            noResultsMsg.style.display = 'block';
+        } else {
+            noResultsMsg.style.display = 'none';
+        }
+    });
 
     document.getElementById('globe-btn').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1427,6 +1682,12 @@ footer {
                 navControls.classList.add('hidden-controls');
                 langDropdown.classList.remove('active');
                 notifDropdown.classList.remove('active');
+            }
+
+            if (targetEl !== downloadPage) {
+                searchInput.value = '';
+                deviceCards.forEach(c => c.style.display = 'flex');
+                noResultsMsg.style.display = 'none';
             }
             
             setTimeout(() => {
