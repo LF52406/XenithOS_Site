@@ -138,14 +138,6 @@ body.no-scroll .lang-selector {
     transition: all 0.3s ease;
     padding: 5px;
 }
-.globe-btn:hover {
-    color: #fff;
-    transform: scale(1.1);
-}
-.globe-btn svg {
-    width: 24px;
-    height: 24px;
-}
 .lang-dropdown {
     position: absolute;
     top: 140%;
@@ -182,7 +174,7 @@ body.no-scroll .lang-selector {
     border-radius: 16px;
     text-align: left;
 }
-.lang-option:hover, .lang-option.selected {
+.lang-option.selected {
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
     transform: translateX(4px);
@@ -264,9 +256,7 @@ body.no-scroll .lang-selector {
 .mobile-menu.active a:nth-child(3) { transition-delay: 0.2s, 0.2s, 0s; }
 .mobile-menu.active a:nth-child(4) { transition-delay: 0.25s, 0.25s, 0s; }
 .mobile-menu.active a:nth-child(5) { transition-delay: 0.3s, 0.3s, 0s; }
-.mobile-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
+
 .hero {
     display: flex;
     justify-content: center;
@@ -330,12 +320,6 @@ body.no-scroll .lang-selector {
     margin: 0 auto;
     cursor: pointer;
     text-align: center;
-}
-.btn:hover {
-    background-color: #ffffff;
-    color: #000000;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
 }
 .btn:active {
     transform: scale(0.98);
@@ -499,10 +483,6 @@ body.no-scroll .lang-selector {
     border-radius: 20px;
     transition: all 0.2s ease;
 }
-.btn-small:hover {
-    background: #ffffff;
-    color: #000000;
-}
 footer {
     display: flex;
     justify-content: space-between;
@@ -527,9 +507,6 @@ footer {
     fill: #707075;
     transition: 0.3s;
 }
-.social-icons svg:hover {
-    fill: #e4e6eb;
-}
 .build-header {
     display: flex;
     align-items: center;
@@ -550,17 +527,11 @@ footer {
     transition: 0.3s;
     backdrop-filter: blur(5px);
 }
-.back-btn:hover {
-    background: #ffffff;
-}
 .back-btn svg {
     width: 24px;
     height: 24px;
     fill: #e4e6eb;
     transition: 0.3s;
-}
-.back-btn:hover svg {
-    fill: #000000;
 }
 .build-header h1 {
     font-size: 28px;
@@ -623,17 +594,9 @@ footer {
     border-color: #0079c1;
     color: #e4e6eb;
 }
-.btn-paypal:hover {
-    background-color: #0079c1;
-    color: #ffffff;
-}
 .btn-patreon {
     border-color: #ff424d;
     color: #e4e6eb;
-}
-.btn-patreon:hover {
-    background-color: #ff424d;
-    color: #ffffff;
 }
 .donators-list {
     display: flex;
@@ -702,6 +665,19 @@ footer {
     font-weight: 600;
     color: #e4e6eb;
     text-align: right;
+}
+
+@media (hover: hover) {
+    .globe-btn:hover { color: #fff; transform: scale(1.1); }
+    .lang-option:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; transform: translateX(4px); }
+    .mobile-menu a:hover { background-color: rgba(255, 255, 255, 0.15); }
+    .btn:hover { background-color: #ffffff; color: #000000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+    .btn-small:hover { background-color: #ffffff; color: #000000; }
+    .social-icons svg:hover { fill: #e4e6eb; }
+    .back-btn:hover { background: #ffffff; }
+    .back-btn:hover svg { fill: #000000; }
+    .btn-paypal:hover { background-color: #0079c1; color: #ffffff; }
+    .btn-patreon:hover { background-color: #ff424d; color: #ffffff; }
 }
 </style>
 </head>
@@ -995,7 +971,7 @@ footer {
     window.addEventListener('pageshow', () => {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
-        document.body.style.transform = 'none';
+        document.body.style.transform = 'translateY(0)';
     });
 
     const translations = {
@@ -1246,6 +1222,11 @@ footer {
 
     function switchPageTo(targetEl) {
         if (currentPageEl === targetEl) return;
+        
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+        
         currentPageEl.style.transition = 'opacity 0.3s ease';
         currentPageEl.style.opacity = '0';
         
@@ -1397,7 +1378,7 @@ footer {
     });
 
     function transitionToExternal(url) {
-        document.body.style.transition = 'opacity 0.3s ease';
+        document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         document.body.style.opacity = '0';
         setTimeout(() => {
             window.location.href = url;
