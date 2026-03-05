@@ -998,10 +998,23 @@ footer {
 </footer>
 
 <script>
-    window.addEventListener('pageshow', () => {
+    window.addEventListener('pageshow', (e) => {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
         document.body.style.transform = 'none';
+        
+        const menu = document.getElementById('menu');
+        const menuToggle = document.getElementById('menu-open');
+        if (sessionStorage.getItem('menuOpen') === 'true' && menu && menuToggle) {
+            menu.style.transition = 'none'; 
+            menu.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.classList.add('no-scroll');
+            
+            setTimeout(() => {
+                menu.style.transition = '';
+            }, 50);
+        }
     });
 
     const translations = {
@@ -1183,6 +1196,7 @@ footer {
     const navDonators = document.getElementById('nav-donators');
     const btnBack = document.getElementById('btn-back');
     const btnTeam = document.getElementById('btn-team');
+    const navChat = document.getElementById('nav-chat');
 
     const dlMondrian = document.getElementById('dl-mondrian');
     const dlAlioth = document.getElementById('dl-alioth');
@@ -1210,12 +1224,19 @@ footer {
         menu.classList.toggle('active');
         menuToggle.classList.toggle('active');
         document.body.classList.toggle('no-scroll');
+        
+        if (menu.classList.contains('active')) {
+            sessionStorage.setItem('menuOpen', 'true');
+        } else {
+            sessionStorage.removeItem('menuOpen');
+        }
     });
 
     function closeMenu() {
         menu.classList.remove('active');
         menuToggle.classList.remove('active');
         document.body.classList.remove('no-scroll');
+        sessionStorage.removeItem('menuOpen');
     }
 
     function transitionPages(hidePage, showPage) {
@@ -1310,12 +1331,23 @@ footer {
     if (btnTeam) {
         btnTeam.addEventListener('click', (e) => {
             e.preventDefault();
-            closeMenu();
             document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             document.body.style.opacity = '0';
             document.body.style.transform = 'translateY(10px)';
             setTimeout(() => {
                 window.location.href = 'team.html';
+            }, 300);
+        });
+    }
+
+    if (navChat) {
+        navChat.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                window.location.href = 'chat.html';
             }, 300);
         });
     }
