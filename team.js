@@ -1,46 +1,31 @@
 const teamMembers = [
     {
-        name: "Каран Парашар",
+        name: "LF5",
         role: {
-            en: "Co-founder of XenithOS; Porsche maintainer",
-            ru: "Соучредитель XenithOS; специалист по обслуживанию Porsche",
-            uk: "Співзасновник XenithOS; спеціаліст з обслуговування Porsche"
+            en: "Founder of XenithOS",
+            ru: "Основатель XenithOS",
+            uk: "Засновник XenithOS"
         },
-        quote: "Никаких оправданий!",
-        avatar: "https://ui-avatars.com/api/?name=KP&background=9632ff&color=fff&size=150&bold=true",
+        quote: "Падать легко, но это лишь приводит к падению.",
+        avatar: "https://ui-avatars.com/api/?name=LF&background=ff5a3c&color=fff&size=150&bold=true",
         socials: {
-            telegram: "https://t.me/",
-            github: "https://github.com/",
-            website: "#"
-        }
-    },
-    {
-        name: "Арийский",
-        role: {
-            en: "Core Contributor; responsible for maintaining sweet, davinci, kiev and martini.",
-            ru: "Основной участник; ответственный за поддержку sweet, davinci, kiev и martini.",
-            uk: "Основний учасник; відповідальний за підтримку sweet, davinci, kiev та martini."
-        },
-        quote: "git gud",
-        avatar: "https://ui-avatars.com/api/?name=AR&background=2882ff&color=fff&size=150&bold=true",
-        socials: {
-            telegram: "https://t.me/",
-            github: "https://github.com/",
+            telegram: "https://t.me/LF52406",
+            github: "#",
             website: ""
         }
     },
     {
-        name: "LF5",
+        name: "Акафист",
         role: {
-            en: "Lead Developer & UI/UX Designer",
-            ru: "Главный разработчик и UI/UX дизайнер",
-            uk: "Головний розробник та UI/UX дизайнер"
+            en: "Core Contributor; XenithOS Tester",
+            ru: "Основной участник; Тестер XenithOS",
+            uk: "Основний учасник; Тестер XenithOS"
         },
-        quote: "Perfection is not a destination, it's a journey.",
-        avatar: "https://ui-avatars.com/api/?name=LF&background=ff5a3c&color=fff&size=150&bold=true",
+        quote: "Пока не придумал он)",
+        avatar: "https://ui-avatars.com/api/?name=AK&background=2882ff&color=fff&size=150&bold=true",
         socials: {
-            telegram: "https://t.me/",
-            github: "https://github.com/lf52406",
+            telegram: "https://t.me/Akafistj",
+            github: "",
             website: ""
         }
     }
