@@ -998,6 +998,12 @@ footer {
 </footer>
 
 <script>
+    window.addEventListener('pageshow', () => {
+        document.body.style.transition = 'none';
+        document.body.style.opacity = '1';
+        document.body.style.transform = 'none';
+    });
+
     const translations = {
         en: {
             "nav_about": "About",
