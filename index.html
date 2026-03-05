@@ -111,18 +111,20 @@ nav {
 .nav-controls {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
 }
-.nav-controls.hidden-controls .lang-selector {
+.nav-controls.hidden-controls .lang-selector,
+.nav-controls.hidden-controls .notif-wrapper {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 }
-.lang-selector {
+.lang-selector, .notif-wrapper {
     position: relative;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-body.no-scroll .lang-selector {
+body.no-scroll .lang-selector,
+body.no-scroll .notif-wrapper {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -137,14 +139,25 @@ body.no-scroll .lang-selector {
     justify-content: center;
     transition: all 0.3s ease;
     padding: 5px;
-}
-.globe-btn:hover {
-    color: #fff;
-    transform: scale(1.1);
+    position: relative;
 }
 .globe-btn svg {
     width: 24px;
     height: 24px;
+}
+.notif-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background: #ff424d;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 66, 77, 0.8);
+    transition: opacity 0.3s ease;
+}
+.notif-badge.hidden {
+    opacity: 0;
 }
 .lang-dropdown {
     position: absolute;
@@ -167,10 +180,67 @@ body.no-scroll .lang-selector {
     transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
+.notif-dropdown {
+    width: 300px;
+    max-width: 85vw;
+    right: -40px;
+    padding: 12px;
+    cursor: default;
+}
 .lang-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+}
+.notif-header {
+    font-weight: 700;
+    font-size: 16px;
+    color: #e4e6eb;
+    padding: 4px 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 8px;
+}
+.notif-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.notif-list::-webkit-scrollbar {
+    display: none;
+}
+.notif-item {
+    padding: 12px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+.notif-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+}
+.notif-text {
+    font-size: 13px;
+    color: #a0a0a5;
+    line-height: 1.4;
+}
+.notif-time {
+    font-size: 11px;
+    color: #707075;
+    margin-top: 4px;
+}
+.notif-empty {
+    padding: 20px;
+    text-align: center;
+    color: #707075;
+    font-size: 14px;
 }
 .lang-option {
     padding: 12px 16px;
@@ -182,10 +252,9 @@ body.no-scroll .lang-selector {
     border-radius: 16px;
     text-align: left;
 }
-.lang-option:hover, .lang-option.selected {
+.lang-option.selected {
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
-    transform: translateX(4px);
 }
 .hamburger {
     width: 30px;
@@ -201,21 +270,11 @@ body.no-scroll .lang-selector {
     transition: all 0.3s ease-in-out;
     right: 0;
 }
-.hamburger span:nth-child(1) {
-    top: 0;
-    width: 100%;
-}
-.hamburger span:nth-child(2) {
-    bottom: 0;
-    width: 70%;
-}
-.hamburger.active span:nth-child(1) {
-    transform: translateY(8.5px) rotate(45deg);
-}
-.hamburger.active span:nth-child(2) {
-    width: 100%;
-    transform: translateY(-8.5px) rotate(-45deg);
-}
+.hamburger span:nth-child(1) { top: 0; width: 100%; }
+.hamburger span:nth-child(2) { bottom: 0; width: 70%; }
+.hamburger.active span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { width: 100%; transform: translateY(-8.5px) rotate(-45deg); }
+
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -253,20 +312,15 @@ body.no-scroll .lang-selector {
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
-.mobile-menu.active a {
-    opacity: 1;
-    transform: translateY(0);
-}
-.mobile-menu.active a:nth-child(1) { transition-delay: 0.1s, 0.1s, 0s; }
-.mobile-menu.active a:nth-child(2) { transition-delay: 0.15s, 0.15s, 0s; }
-.mobile-menu.active a:nth-child(3) { transition-delay: 0.2s, 0.2s, 0s; }
-.mobile-menu.active a:nth-child(4) { transition-delay: 0.25s, 0.25s, 0s; }
-.mobile-menu.active a:nth-child(5) { transition-delay: 0.3s, 0.3s, 0s; }
-.mobile-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
+.mobile-menu.active a { opacity: 1; transform: translateY(0); }
+.mobile-menu.active a:nth-child(1) { transition-delay: 0.1s; }
+.mobile-menu.active a:nth-child(2) { transition-delay: 0.15s; }
+.mobile-menu.active a:nth-child(3) { transition-delay: 0.2s; }
+.mobile-menu.active a:nth-child(4) { transition-delay: 0.25s; }
+.mobile-menu.active a:nth-child(5) { transition-delay: 0.3s; }
+
 .hero {
     display: flex;
     justify-content: center;
@@ -295,7 +349,6 @@ body.no-scroll .lang-selector {
     background: url('image_0.png') center/cover no-repeat;
     border-radius: 30px;
     overflow: hidden;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 .content {
     text-align: center;
@@ -305,7 +358,6 @@ body.no-scroll .lang-selector {
     font-size: 38px;
     margin-bottom: 20px;
     font-weight: 800;
-    letter-spacing: -1px;
 }
 .content p {
     font-size: 16px;
@@ -331,13 +383,20 @@ body.no-scroll .lang-selector {
     cursor: pointer;
     text-align: center;
 }
-.btn:hover {
-    background-color: #ffffff;
-    color: #000000;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+.btn-small {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
 }
-.btn:active {
+.btn:active, .btn-small:active, .mobile-menu a:active {
+    background-color: #ffffff !important;
+    color: #000000 !important;
     transform: scale(0.98);
 }
 #home-page, #download-page, #build-details-page, #donators-page {
@@ -352,23 +411,11 @@ body.no-scroll .lang-selector {
 .download-header {
     text-align: center;
     margin-bottom: 40px;
-    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.6s forwards;
 }
-.download-header h1 {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 12px;
-}
-.download-header p {
-    color: #a0a0a5;
-    font-size: 16px;
-}
-.devices-list {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%;
-}
+.download-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+.download-header p { color: #a0a0a5; font-size: 16px; }
+.devices-list { display: flex; flex-direction: column; gap: 30px; width: 100%; }
 .device-card {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -381,327 +428,72 @@ body.no-scroll .lang-selector {
     margin: 0 auto;
     max-width: 360px;
     width: 100%;
-    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: revealPhone 0.8s forwards;
 }
 .device-img {
-    width: 140px;
-    height: 280px;
+    width: 140px; height: 280px;
     background-color: rgba(255, 255, 255, 0.05);
     border-radius: 22px;
     padding: 6px;
     margin-bottom: 24px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
 }
-.device-screen {
-    width: 100%;
-    height: 100%;
-    background: url('image_0.png') center/cover no-repeat;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
-}
-.device-info {
-    text-align: center;
-    width: 100%;
-}
-.device-code {
-    font-size: 14px;
-    color: #a0a0a5;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-}
-.device-name {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-.device-maintainer {
-    font-size: 15px;
-    color: #707075;
-    margin-bottom: 24px;
-}
-.download-btn {
-    width: 100%;
-    display: block;
-}
-.archive-container {
-    margin-top: 24px;
-    text-align: left;
-    width: 100%;
-}
-.archive-details {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    overflow: hidden;
-}
-.archive-summary {
-    padding: 16px 20px;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-}
-.archive-summary::-webkit-details-marker {
-    display: none;
-}
-.arrow-icon {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-}
-.archive-details[open] .arrow-icon {
-    transform: rotate(180deg);
-}
-.archive-list {
-    padding: 0 20px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.archive-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-.archive-item:first-child {
-    border-top: none;
-    padding-top: 0;
-}
-.archive-version {
-    font-size: 15px;
-    font-weight: 600;
-    color: #e4e6eb;
-}
-.archive-date {
-    font-size: 13px;
-    color: #707075;
-    margin-top: 4px;
-}
-.btn-small {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-}
-.btn-small:hover {
-    background: #ffffff;
-    color: #000000;
-}
-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 24px;
-    font-weight: 500;
-    color: #707075;
-    margin-top: auto;
-}
-.social-icons {
-    display: flex;
-    gap: 20px;
-}
-.social-icons a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.social-icons svg {
-    width: 30px;
-    height: 30px;
-    fill: #707075;
-    transition: 0.3s;
-}
-.social-icons svg:hover {
-    fill: #e4e6eb;
-}
-.build-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 30px;
-    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.back-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-    backdrop-filter: blur(5px);
-}
-.back-btn:hover {
-    background: #ffffff;
-}
-.back-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: #e4e6eb;
-    transition: 0.3s;
-}
-.back-btn:hover svg {
-    fill: #000000;
-}
-.build-header h1 {
-    font-size: 28px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.info-block {
-    margin-bottom: 20px;
-}
-.info-label {
-    color: #a0a0a5;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-.info-value {
-    color: #e4e6eb;
-    font-size: 20px;
-    font-weight: 700;
-}
-.donate-section {
-    margin-top: 40px;
-    width: 100%;
-    text-align: center;
-}
-.donate-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #e4e6eb;
-    margin-bottom: 20px;
-}
-.donate-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-}
-.donate-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    max-width: 300px;
-    padding: 14px 20px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 2px solid;
-}
-.donate-btn svg {
-    width: 24px;
-    height: 24px;
-}
-.btn-paypal {
-    border-color: #0079c1;
-    color: #e4e6eb;
-}
-.btn-paypal:hover {
-    background-color: #0079c1;
-    color: #ffffff;
-}
-.btn-patreon {
-    border-color: #ff424d;
-    color: #e4e6eb;
-}
-.btn-patreon:hover {
-    background-color: #ff424d;
-    color: #ffffff;
-}
-.donators-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-}
-.donator-card {
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    backdrop-filter: blur(10px);
-    animation: revealPhone 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.donator-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding-bottom: 16px;
-}
-.donator-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: #e4e6eb;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.donator-icon {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #9632ff, #2882ff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 800;
-    color: #fff;
-}
-.donator-amount {
-    font-size: 18px;
-    font-weight: 800;
-    color: #e4e6eb;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.donator-message {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #a0a0a5;
-    font-style: italic;
-    position: relative;
-    padding-left: 12px;
-    border-left: 3px solid rgba(255, 255, 255, 0.15);
-}
-.donator-author {
-    font-size: 14px;
-    font-weight: 600;
-    color: #e4e6eb;
-    text-align: right;
+.device-screen { width: 100%; height: 100%; background: url('image_0.png') center/cover no-repeat; border-radius: 16px; }
+.device-info { text-align: center; width: 100%; }
+.device-code { font-size: 14px; color: #a0a0a5; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+.device-name { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.device-maintainer { font-size: 15px; color: #707075; margin-bottom: 24px; }
+.archive-container { margin-top: 24px; text-align: left; width: 100%; }
+.archive-details { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; overflow: hidden; }
+.archive-summary { padding: 16px 20px; font-weight: 600; font-size: 15px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+.arrow-icon { width: 20px; height: 20px; transition: transform 0.3s ease; }
+.archive-details[open] .arrow-icon { transform: rotate(180deg); }
+.archive-list { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+.archive-item { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.archive-item:first-child { border-top: none; padding-top: 0; }
+.archive-version { font-size: 15px; font-weight: 600; color: #e4e6eb; }
+.archive-date { font-size: 13px; color: #707075; margin-top: 4px; }
+footer { display: flex; justify-content: space-between; align-items: center; padding: 30px 24px; font-weight: 500; color: #707075; margin-top: auto; }
+.social-icons { display: flex; gap: 20px; }
+.social-icons svg { width: 30px; height: 30px; fill: #707075; transition: 0.3s; }
+.build-header { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; animation: revealPhone 0.6s forwards; }
+.back-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); }
+.back-btn svg { width: 24px; height: 24px; fill: #e4e6eb; transition: 0.3s; }
+.build-header h1 { font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.info-block { margin-bottom: 20px; }
+.info-label { color: #a0a0a5; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.info-value { color: #e4e6eb; font-size: 20px; font-weight: 700; }
+.donate-section { margin-top: 40px; width: 100%; text-align: center; }
+.donate-title { font-size: 18px; font-weight: 700; color: #e4e6eb; margin-bottom: 20px; }
+.donate-buttons { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.donate-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; max-width: 300px; padding: 14px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; background-color: rgba(255, 255, 255, 0.03); border: 2px solid; }
+.donate-btn svg { width: 24px; height: 24px; }
+.btn-paypal { border-color: #0079c1; color: #e4e6eb; }
+.btn-patreon { border-color: #ff424d; color: #e4e6eb; }
+.btn-paypal:active { background-color: #0079c1; color: #ffffff; }
+.btn-patreon:active { background-color: #ff424d; color: #ffffff; }
+
+.donators-list { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+.donator-card { background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; backdrop-filter: blur(10px); animation: revealPhone 0.6s forwards; }
+.donator-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 16px; }
+.donator-name { font-size: 20px; font-weight: 700; color: #e4e6eb; display: flex; align-items: center; gap: 10px; }
+.donator-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #9632ff, #2882ff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; }
+.donator-amount { font-size: 18px; font-weight: 800; color: #e4e6eb; background: rgba(255, 255, 255, 0.08); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.donator-message { font-size: 15px; line-height: 1.6; color: #a0a0a5; font-style: italic; position: relative; padding-left: 12px; border-left: 3px solid rgba(255, 255, 255, 0.15); }
+.donator-author { font-size: 14px; font-weight: 600; color: #e4e6eb; text-align: right; }
+
+@media (hover: hover) {
+    .globe-btn:hover { color: #fff; transform: scale(1.1); }
+    .lang-option:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; transform: translateX(4px); }
+    .notif-item:hover { background-color: rgba(255, 255, 255, 0.08); }
+    .mobile-menu a:hover { background-color: rgba(255, 255, 255, 0.15); }
+    .btn:hover { background-color: #ffffff; color: #000000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+    .btn-small:hover { background-color: #ffffff; color: #000000; }
+    .social-icons svg:hover { fill: #e4e6eb; }
+    .back-btn:hover { background: #ffffff; }
+    .back-btn:hover svg { fill: #000000; }
+    .btn-paypal:hover { background-color: #0079c1; color: #ffffff; }
+    .btn-patreon:hover { background-color: #ff424d; color: #ffffff; }
 }
 </style>
 </head>
@@ -724,6 +516,20 @@ footer {
         <span>XenithOS</span>
     </a>
     <div class="nav-controls" id="nav-controls">
+        <div class="notif-wrapper" id="notif-wrapper">
+            <button class="globe-btn" id="notif-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notif-badge hidden" id="notif-badge"></span>
+            </button>
+            <div class="lang-dropdown notif-dropdown" id="notif-dropdown">
+                <div class="notif-header" data-i18n="notif_header">Уведомления</div>
+                <div class="notif-list" id="notif-list"></div>
+            </div>
+        </div>
+        
         <div class="lang-selector">
             <button class="globe-btn" id="globe-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -738,6 +544,7 @@ footer {
                 <div class="lang-option" data-lang="uk">Українська</div>
             </div>
         </div>
+        
         <div class="hamburger" id="menu-open">
             <span></span>
             <span></span>
@@ -759,7 +566,6 @@ footer {
             <div class="phone-screen"></div>
         </div>
     </header>
-
     <section class="content">
         <h1 data-i18n="hero_title">What is XenithOS</h1>
         <p data-i18n="hero_desc">XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.</p>
@@ -768,655 +574,225 @@ footer {
 </div>
 
 <div id="download-page" style="display: none;">
-    <div class="download-header">
-        <h1 data-i18n="dl_title">Download XenithOS</h1>
-        <p data-i18n="dl_desc">Get the latest version for your device</p>
-    </div>
-    
+    <div class="download-header"><h1 data-i18n="dl_title">Download XenithOS</h1><p data-i18n="dl_desc">Get the latest version for your device</p></div>
     <div class="devices-list">
         <div class="device-card">
-            <div class="device-img">
-                <div class="device-screen"></div>
-            </div>
+            <div class="device-img"><div class="device-screen"></div></div>
             <div class="device-info">
-                <div class="device-code">mondrian</div>
-                <div class="device-name">Poco F5 Pro/K60</div>
-                <div class="device-maintainer"><span data-i18n="lbl_dev">Developer:</span> LF5</div>
+                <div class="device-code">mondrian</div><div class="device-name">Poco F5 Pro/K60</div><div class="device-maintainer"><span data-i18n="lbl_dev">Developer:</span> LF5</div>
                 <a href="#" class="btn download-btn" id="dl-mondrian" data-i18n="btn_dl_build">Download Build</a>
-                
-                <div class="archive-container">
-                    <details class="archive-details">
-                        <summary class="archive-summary">
-                            <span data-i18n="prev_versions">Previous Versions</span>
-                            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
-                        </summary>
-                        <div class="archive-list">
-                            <div class="archive-item">
-                                <div>
-                                    <div class="archive-version">XenithOS 1.5.0</div>
-                                    <div class="archive-date">Oct 12, 2025</div>
-                                </div>
-                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
-                            </div>
-                            <div class="archive-item">
-                                <div>
-                                    <div class="archive-version">XenithOS 1.0.0</div>
-                                    <div class="archive-date">Sep 05, 2025</div>
-                                </div>
-                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
-                            </div>
-                        </div>
-                    </details>
-                </div>
+                <div class="archive-container"><details class="archive-details"><summary class="archive-summary"><span data-i18n="prev_versions">Previous Versions</span><svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg></summary><div class="archive-list"><div class="archive-item"><div><div class="archive-version">XenithOS 1.5.0</div><div class="archive-date">Oct 12, 2025</div></div><a href="#" class="btn-small" data-i18n="btn_dl">Download</a></div><div class="archive-item"><div><div class="archive-version">XenithOS 1.0.0</div><div class="archive-date">Sep 05, 2025</div></div><a href="#" class="btn-small" data-i18n="btn_dl">Download</a></div></div></details></div>
             </div>
         </div>
-
         <div class="device-card">
-            <div class="device-img">
-                <div class="device-screen"></div>
-            </div>
+            <div class="device-img"><div class="device-screen"></div></div>
             <div class="device-info">
-                <div class="device-code">alioth</div>
-                <div class="device-name">Poco F3/Mi 11X/Redmi K40</div>
-                <div class="device-maintainer"><span data-i18n="lbl_maint">Maintainer:</span> Ariska Eхидна</div>
+                <div class="device-code">alioth</div><div class="device-name">Poco F3/Mi 11X/Redmi K40</div><div class="device-maintainer"><span data-i18n="lbl_maint">Maintainer:</span> Ariska Eхидна</div>
                 <a href="#" class="btn download-btn" id="dl-alioth" data-i18n="btn_dl_build">Download Build</a>
-                
-                <div class="archive-container">
-                    <details class="archive-details">
-                        <summary class="archive-summary">
-                            <span data-i18n="prev_versions">Previous Versions</span>
-                            <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
-                        </summary>
-                        <div class="archive-list">
-                            <div class="archive-item">
-                                <div>
-                                    <div class="archive-version">XenithOS 1.5.0</div>
-                                    <div class="archive-date">Oct 12, 2025</div>
-                                </div>
-                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
-                            </div>
-                            <div class="archive-item">
-                                <div>
-                                    <div class="archive-version">XenithOS 1.0.0</div>
-                                    <div class="archive-date">Sep 05, 2025</div>
-                                </div>
-                                <a href="#" class="btn-small" data-i18n="btn_dl">Download</a>
-                            </div>
-                        </div>
-                    </details>
-                </div>
+                <div class="archive-container"><details class="archive-details"><summary class="archive-summary"><span data-i18n="prev_versions">Previous Versions</span><svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg></summary><div class="archive-list"><div class="archive-item"><div><div class="archive-version">XenithOS 1.5.0</div><div class="archive-date">Oct 12, 2025</div></div><a href="#" class="btn-small" data-i18n="btn_dl">Download</a></div><div class="archive-item"><div><div class="archive-version">XenithOS 1.0.0</div><div class="archive-date">Sep 05, 2025</div></div><a href="#" class="btn-small" data-i18n="btn_dl">Download</a></div></div></details></div>
             </div>
         </div>
     </div>
 </div>
 
 <div id="build-details-page" style="display: none;">
-    <div class="build-header">
-        <button class="back-btn" id="btn-back">
-            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </button>
-        <h1 id="bd-title">Device</h1>
-    </div>
-
+    <div class="build-header"><button class="back-btn" id="btn-back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><h1 id="bd-title">Device</h1></div>
     <div class="device-card" style="align-items: flex-start; text-align: left; max-width: 100%;">
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_model">Model:</div>
-            <div class="info-value" id="bd-model">...</div>
-        </div>
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_codename">Codename:</div>
-            <div class="info-value" id="bd-codename">...</div>
-        </div>
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_status">Status:</div>
-            <div class="info-value" data-i18n="val_active">Active</div>
-        </div>
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_version">Version:</div>
-            <div class="info-value" id="bd-version">...</div>
-        </div>
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_release">Release:</div>
-            <div class="info-value" data-i18n="val_official">Official</div>
-        </div>
-        <div class="info-block">
-            <div class="info-label" data-i18n="lbl_updated">Last Updated:</div>
-            <div class="info-value" id="bd-date">...</div>
-        </div>
-        <div class="info-block" style="margin-bottom: 30px;">
-            <div class="info-label" id="bd-maintainer-label">Maintainer:</div>
-            <div class="info-value" id="bd-maintainer">...</div>
-        </div>
-
-        <div class="info-label" style="margin-bottom: 12px;" data-i18n="lbl_latest">Latest build:</div>
+        <div class="info-block"><div class="info-label" data-i18n="lbl_model">Model:</div><div class="info-value" id="bd-model">...</div></div>
+        <div class="info-block"><div class="info-label" data-i18n="lbl_codename">Codename:</div><div class="info-value" id="bd-codename">...</div></div>
+        <div class="info-block"><div class="info-label" data-i18n="lbl_version">Version:</div><div class="info-value" id="bd-version">...</div></div>
+        <div class="info-block"><div class="info-label" data-i18n="lbl_updated">Last Updated:</div><div class="info-value" id="bd-date">...</div></div>
+        <div class="info-block" style="margin-bottom: 30px;"><div class="info-label" id="bd-maintainer-label">Maintainer:</div><div class="info-value" id="bd-maintainer">...</div></div>
         <a href="#" class="btn download-btn" style="margin-bottom: 30px;" data-i18n="btn_dl">Download</a>
-
-        <div class="archive-container" style="margin-top: 0;">
-            <details class="archive-details">
-                <summary class="archive-summary">
-                    <span data-i18n="archive_info">Latest Build Info</span>
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
-                </summary>
-                <div class="archive-list" style="color: #a0a0a5; font-size: 14px;" data-i18n="archive_info_desc">
-                    Contains the latest XenithOS features, security patches, and system optimizations.
-                </div>
-            </details>
-            <details class="archive-details" style="margin-top: 12px;">
-                <summary class="archive-summary">
-                    <span data-i18n="archive_change">Device Changelog</span>
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
-                </summary>
-                <div class="archive-list" style="color: #a0a0a5; font-size: 14px; line-height: 1.6;" data-i18n="archive_change_desc">
-                    - Updated vendor blobs<br>- Improved battery backup<br>- Fixed minor UI glitches
-                </div>
-            </details>
-            <details class="archive-details" style="margin-top: 12px;">
-                <summary class="archive-summary">
-                    <span data-i18n="archive_inst">Instructions</span>
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
-                </summary>
-                <div class="archive-list" style="color: #a0a0a5; font-size: 14px; line-height: 1.6;" data-i18n="archive_inst_desc">
-                    1. Reboot to recovery<br>2. Format Data (yes)<br>3. Flash the ROM zip<br>4. Reboot to system
-                </div>
-            </details>
-        </div>
-
-        <div class="donate-section">
-            <div class="donate-title" data-i18n="donate_title">Donate to Project</div>
-            <div class="donate-buttons">
-                <a href="#" class="donate-btn btn-paypal" target="_blank" rel="noopener noreferrer">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.067 8.178c0 2.877-1.47 5.066-4.41 5.066h-.733c-.323 0-.6.234-.67.55l-.945 4.16c-.055.242-.26.414-.502.414h-2.61c-.368 0-.64-.34-.576-.7l1.012-4.415c.066-.29.314-.498.604-.498h.71c2.256 0 3.398-1.42 3.398-3.11 0-1.503-1.014-2.336-2.522-2.336h-3.414c-.323 0-.6.234-.67.55L7.026 18.06c-.055.242-.26.414-.502.414H3.69c-.367 0-.64-.34-.575-.7L5.783 7.022c.066-.29.314-.498.604-.498h5.6c3.27 0 5.176 1.62 5.176 4.312z" fill="currentColor"/><path d="M12.7 10.12c-.066.29-.314.498-.604.498h-.71c-2.256 0-3.398 1.42-3.398 3.11 0 1.503 1.014 2.336 2.522 2.336h3.414c.323 0 .6-.234.67-.55l.206-.906.56-2.434.116-.5c.05-.224.25-.386.478-.386h.146c2.94 0 4.41-2.19 4.41-5.066 0-.21-.013-.41-.037-.604-.41 1.94-1.87 3.65-4.48 3.65h-.732c-.323 0-.6.234-.67.55l-.56 2.434z" fill="currentColor" opacity=".5"/></svg>
-                    PayPal
-                </a>
-                <a href="#" class="donate-btn btn-patreon" target="_blank" rel="noopener noreferrer">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 .48v23.04h4.22V.48H0zm15.385 0c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.615-3.863 8.615-8.613C24 4.356 20.135.48 15.385.48z" fill="currentColor"/></svg>
-                    Patreon
-                </a>
-            </div>
-        </div>
     </div>
 </div>
 
 <div id="donators-page" style="display: none;">
-    <div class="download-header">
-        <h1 data-i18n="don_title">Supporters</h1>
-        <p data-i18n="don_desc">People who made this project possible</p>
-    </div>
-    
+    <div class="download-header"><h1 data-i18n="don_title">Supporters</h1><p data-i18n="don_desc">People who made this project possible</p></div>
     <div class="donators-list">
-        <div class="donator-card">
-            <div class="donator-top">
-                <div class="donator-name">
-                    <div class="donator-icon">AL</div>
-                    Alex L.
-                </div>
-                <div class="donator-amount">$50.00</div>
-            </div>
-            <div class="donator-message" data-i18n="don_msg1">Огромное спасибо за поддержку! Твоя помощь позволяет нам оплачивать сервера и делать прошивку еще лучше.</div>
-            <div class="donator-author">— LF5</div>
-        </div>
-
-        <div class="donator-card">
-            <div class="donator-top">
-                <div class="donator-name">
-                    <div class="donator-icon" style="background: linear-gradient(135deg, #ff5a3c, #9632ff);">M</div>
-                    Max
-                </div>
-                <div class="donator-amount">$15.00</div>
-            </div>
-            <div class="donator-message" data-i18n="don_msg2">Благодарю за донат! Очень ценю твой вклад в развитие проекта XenithOS.</div>
-            <div class="donator-author">— LF5</div>
-        </div>
-
-        <div class="donator-card">
-            <div class="donator-top">
-                <div class="donator-name">
-                    <div class="donator-icon" style="background: linear-gradient(135deg, #2882ff, #00ff88);">JD</div>
-                    John Doe
-                </div>
-                <div class="donator-amount">$5.00</div>
-            </div>
-            <div class="donator-message" data-i18n="don_msg3">Спасибо за кофе! Твоя поддержка мотивирует работать дальше.</div>
-            <div class="donator-author">— LF5</div>
-        </div>
+        <div class="donator-card"><div class="donator-top"><div class="donator-name"><div class="donator-icon">AL</div>Alex L.</div><div class="donator-amount">$50.00</div></div><div class="donator-message" data-i18n="don_msg1">Огромное спасибо за поддержку!</div><div class="donator-author">— LF5</div></div>
     </div>
 </div>
 
-<footer>
-    <div>© 2026 XenithOS</div>
-    <div class="social-icons">
-        <a href="https://t.me/infinityos_xenithos_rom_updates" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        </a>
-    </div>
-</footer>
+<footer><div>© 2026 XenithOS</div><div class="social-icons"><a href="https://t.me/infinityos_xenithos_rom_updates" target="_blank"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a></div></footer>
 
 <script>
-    window.addEventListener('pageshow', () => {
-        document.body.style.transition = 'none';
-        document.body.style.opacity = '1';
-        document.body.style.transform = 'none';
-    });
+    const notifications = [
+        {
+            id: 1,
+            title: { en: "Welcome to XenithOS!", ru: "Добро пожаловать в XenithOS!", uk: "Ласкаво просимо до XenithOS!" },
+            text: { en: "Our new site is officially live. Check out the latest builds.", ru: "Наш новый сайт официально запущен. Ознакомьтесь с последними сборками.", uk: "Наш новий сайт офіційно запущено. Ознайомтеся з останніми збірками." },
+            time: "05 Mar 2026",
+            read: false
+        }
+    ];
 
     const translations = {
-        en: {
-            "nav_about": "About",
-            "nav_download": "Download",
-            "nav_donators": "Supporters",
-            "nav_chat": "Chat",
-            "nav_team": "Team",
-            "hero_title": "What is XenithOS",
-            "hero_desc": "XenithOS, based on HyperOS, is your perfect choice for everyday use. It is an uncompromising combination of high performance, exceptional smoothness, excellent battery life, and moderate customization within a highly stable system.",
-            "hero_btn": "Get XenithOS",
-            "dl_title": "Download XenithOS",
-            "dl_desc": "Get the latest version for your device",
-            "btn_dl_build": "Download Build",
-            "prev_versions": "Previous Versions",
-            "btn_dl": "Download",
-            "lbl_model": "Model:",
-            "lbl_codename": "Codename:",
-            "lbl_status": "Status:",
-            "val_active": "Active",
-            "lbl_version": "Version:",
-            "lbl_release": "Release:",
-            "val_official": "Official",
-            "lbl_updated": "Last Updated:",
-            "lbl_latest": "Latest build:",
-            "archive_info": "Latest Build Info",
-            "archive_info_desc": "Contains the latest XenithOS features, security patches, and system optimizations.",
-            "archive_change": "Device Changelog",
-            "archive_change_desc": "- Updated vendor blobs<br>- Improved battery backup<br>- Fixed minor UI glitches",
-            "archive_inst": "Instructions",
-            "archive_inst_desc": "1. Reboot to recovery<br>2. Format Data (yes)<br>3. Flash the ROM zip<br>4. Reboot to system",
-            "donate_title": "Donate to Project",
-            "don_title": "Supporters",
-            "don_desc": "People who made this project possible",
-            "don_msg1": "Huge thanks for the support! Your help allows us to pay for servers and make the ROM even better.",
-            "don_msg2": "Thank you for the donation! I really appreciate your contribution to the XenithOS project.",
-            "don_msg3": "Thanks for the coffee! Your support motivates me to keep working.",
-            "lbl_dev": "Developer:",
-            "lbl_maint": "Maintainer:"
-        },
-        ru: {
-            "nav_about": "О нас",
-            "nav_download": "Скачать",
-            "nav_donators": "Спонсоры",
-            "nav_chat": "Чат",
-            "nav_team": "Команда",
-            "hero_title": "Что такое XenithOS",
-            "hero_desc": "XenithOS, основанная на HyperOS — ваш идеальный выбор для повседневного использования. Это бескомпромиссное сочетание высокой производительности, исключительной плавности, отличного времени автономной работы и умеренной кастомизации в высокостабильной системе.",
-            "hero_btn": "Скачать XenithOS",
-            "dl_title": "Скачать XenithOS",
-            "dl_desc": "Получите последнюю версию для вашего устройства",
-            "btn_dl_build": "Скачать сборку",
-            "prev_versions": "Предыдущие версии",
-            "btn_dl": "Скачать",
-            "lbl_model": "Модель:",
-            "lbl_codename": "Кодовое имя:",
-            "lbl_status": "Статус:",
-            "val_active": "Активен",
-            "lbl_version": "Версия:",
-            "lbl_release": "Релиз:",
-            "val_official": "Официальный",
-            "lbl_updated": "Обновлено:",
-            "lbl_latest": "Последняя сборка:",
-            "archive_info": "Информация о сборке",
-            "archive_info_desc": "Содержит последние функции XenithOS, патчи безопасности и оптимизации системы.",
-            "archive_change": "Список изменений",
-            "archive_change_desc": "- Обновлены vendor blobs<br>- Улучшено время автономной работы<br>- Исправлены мелкие баги UI",
-            "archive_inst": "Инструкция",
-            "archive_inst_desc": "1. Перезагрузитесь в рекавери<br>2. Сделайте Format Data (yes)<br>3. Прошейте zip архив<br>4. Перезагрузитесь в систему",
-            "donate_title": "Поддержать проект",
-            "don_title": "Спонсоры",
-            "don_desc": "Люди, благодаря которым проект существует",
-            "don_msg1": "Огромное спасибо за поддержку! Твоя помощь позволяет нам оплачивать сервера и делать прошивку еще лучше.",
-            "don_msg2": "Благодарю за донат! Очень ценю твой вклад в развитие проекта XenithOS.",
-            "don_msg3": "Спасибо за кофе! Твоя поддержка мотивирует работать дальше.",
-            "lbl_dev": "Разработчик:",
-            "lbl_maint": "Мейнтейнер:"
-        },
-        uk: {
-            "nav_about": "Про нас",
-            "nav_download": "Завантажити",
-            "nav_donators": "Спонсори",
-            "nav_chat": "Чат",
-            "nav_team": "Команда",
-            "hero_title": "Що таке XenithOS",
-            "hero_desc": "XenithOS, заснована на HyperOS — ваш ідеальний вибір для повсякденного використання. Це безкомпромісне поєднання високої продуктивності, виняткової плавності, відмінного часу автономної роботи та помірної кастомізації у високостабільній системі.",
-            "hero_btn": "Отримати XenithOS",
-            "dl_title": "Завантажити XenithOS",
-            "dl_desc": "Отримайте останню версію для вашого пристрою",
-            "btn_dl_build": "Завантажити збірку",
-            "prev_versions": "Попередні версії",
-            "btn_dl": "Завантажити",
-            "lbl_model": "Модель:",
-            "lbl_codename": "Кодове ім'я:",
-            "lbl_status": "Статус:",
-            "val_active": "Активний",
-            "lbl_version": "Версия:",
-            "lbl_release": "Реліз:",
-            "val_official": "Офіційний",
-            "lbl_updated": "Оновлено:",
-            "lbl_latest": "Остання збірка:",
-            "archive_info": "Інформація про збірку",
-            "archive_info_desc": "Містить останні функції XenithOS, патчі безпеки та оптимізації системи.",
-            "archive_change": "Список змін",
-            "archive_change_desc": "- Оновлено vendor blobs<br>- Покращено час автономної роботи<br>- Виправлено дрібні баги UI",
-            "archive_inst": "Інструкция",
-            "archive_inst_desc": "1. Перезавантажтесь у рекавері<br>2. Зробіть Format Data (yes)<br>3. Прошийте zip архів<br>4. Перезавантажтесь у систему",
-            "donate_title": "Підтримати проект",
-            "don_title": "Спонсори",
-            "don_desc": "Люди, завдяки яким проект існує",
-            "don_msg1": "Величезне дякую за підтримку! Твоя допомога дозволяє нам оплачувати сервери і робити прошивку ще краще.",
-            "don_msg2": "Дякую за донат! Дуже ціную твій внесок у розвиток проекту XenithOS.",
-            "don_msg3": "Дякую за каву! Твоя підтримка мотивирует працювати далі.",
-            "lbl_dev": "Розробник:",
-            "lbl_maint": "Мейнтейнер:"
-        }
+        en: { "notif_header": "Notifications", "notif_empty": "No new notifications", "nav_about": "About", "nav_download": "Download", "nav_donators": "Supporters", "nav_chat": "Chat", "nav_team": "Team", "hero_title": "What is XenithOS", "hero_desc": "XenithOS, based on HyperOS, is your perfect choice for everyday use.", "hero_btn": "Get XenithOS", "dl_title": "Download XenithOS", "dl_desc": "Get the latest version for your device", "btn_dl_build": "Download Build", "prev_versions": "Previous Versions", "btn_dl": "Download", "lbl_model": "Model:", "lbl_codename": "Codename:", "lbl_updated": "Last Updated:", "don_title": "Supporters", "don_desc": "People who made this project possible", "don_msg1": "Huge thanks for the support!", "lbl_dev": "Developer:", "lbl_maint": "Maintainer:" },
+        ru: { "notif_header": "Уведомления", "notif_empty": "Нет новых уведомлений", "nav_about": "О нас", "nav_download": "Скачать", "nav_donators": "Спонсоры", "nav_chat": "Чат", "nav_team": "Команда", "hero_title": "Что такое XenithOS", "hero_desc": "XenithOS, основанная на HyperOS — ваш идеальный выбор.", "hero_btn": "Скачать XenithOS", "dl_title": "Скачать XenithOS", "dl_desc": "Получите последнюю версию", "btn_dl_build": "Скачать сборку", "prev_versions": "Предыдущие версии", "btn_dl": "Скачать", "lbl_model": "Модель:", "lbl_codename": "Кодовое имя:", "lbl_updated": "Обновлено:", "don_title": "Спонсоры", "don_desc": "Люди, благодаря которым проект существует", "don_msg1": "Огромное спасибо за поддержку!", "lbl_dev": "Разработчик:", "lbl_maint": "Мейнтейнер:" },
+        uk: { "notif_header": "Сповіщення", "notif_empty": "Немає нових сповіщень", "nav_about": "Про нас", "nav_download": "Завантажити", "nav_donators": "Спонсори", "nav_chat": "Чат", "nav_team": "Команда", "hero_title": "Що таке XenithOS", "hero_desc": "XenithOS, заснована на HyperOS — ваш ідеальний вибір.", "hero_btn": "Отримати XenithOS", "dl_title": "Завантажити XenithOS", "dl_desc": "Отримайте останню версію", "btn_dl_build": "Завантажити збірку", "prev_versions": "Попередні версії", "btn_dl": "Завантажити", "lbl_model": "Модель:", "lbl_codename": "Кодове ім'я:", "lbl_updated": "Оновлено:", "don_title": "Спонсори", "don_desc": "Люди, завдяки яким проект існує", "don_msg1": "Величезне дякую за підтримку!", "lbl_dev": "Розробник:", "lbl_maint": "Мейнтейнер:" }
     };
 
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
-    let currentPageEl;
+    let currentPageEl = null;
 
-    const homePage = document.getElementById('home-page');
-    const downloadPage = document.getElementById('download-page');
-    const buildDetailsPage = document.getElementById('build-details-page');
-    const donatorsPage = document.getElementById('donators-page');
-    const pages = [homePage, downloadPage, buildDetailsPage, donatorsPage];
-
-    const menuToggle = document.getElementById('menu-open');
+    const pages = [document.getElementById('home-page'), document.getElementById('download-page'), document.getElementById('build-details-page'), document.getElementById('donators-page')];
     const menu = document.getElementById('menu');
-    const navControls = document.getElementById('nav-controls');
+    const menuToggle = document.getElementById('menu-open');
     const langDropdown = document.getElementById('lang-dropdown');
-    
-    const getBtn = document.getElementById('get-btn');
-    const logoLink = document.getElementById('logo-link');
-    const navDownload = document.getElementById('nav-download');
-    const navAbout = document.getElementById('nav-about');
-    const navDonators = document.getElementById('nav-donators');
-    const btnBack = document.getElementById('btn-back');
-    const btnTeam = document.getElementById('btn-team');
-    const navChat = document.getElementById('nav-chat');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const navControls = document.getElementById('nav-controls');
 
-    const dlMondrian = document.getElementById('dl-mondrian');
-    const dlAlioth = document.getElementById('dl-alioth');
-
-    const devicesData = {
-        'mondrian': {
-            model: 'Poco F5 Pro/K60',
-            codename: 'MONDRIAN',
-            version: '1.5.0',
-            date: '26 February 2026',
-            maintainer: 'LF5',
-            maintainerLabelKey: 'lbl_dev'
-        },
-        'alioth': {
-            model: 'Poco F3/Mi 11X/Redmi K40',
-            codename: 'ALIOTH',
-            version: '1.5.0',
-            date: '26 February 2026',
-            maintainer: 'Ariska Eхидна',
-            maintainerLabelKey: 'lbl_maint'
-        }
-    };
-
-    window.addEventListener('DOMContentLoaded', () => {
-        let hash = window.location.hash.substring(1);
-        let isMenuOpen = (hash === 'menu');
+    function renderNotifications() {
+        const list = document.getElementById('notif-list');
+        const badge = document.getElementById('notif-badge');
+        list.innerHTML = '';
         
-        let initialView = 'home-page';
-        const validViews = ['home-page', 'download-page', 'build-details-page', 'donators-page'];
+        let unreadCount = 0;
         
-        if (isMenuOpen) {
-            if (history.state && history.state.bg && validViews.includes(history.state.bg)) {
-                initialView = history.state.bg;
-            }
-        } else if (validViews.includes(hash)) {
-            initialView = hash;
-        }
-
-        currentPageEl = document.getElementById(initialView);
-        pages.forEach(p => {
-            if (p.id === initialView) {
-                p.style.display = 'block';
-                p.style.opacity = '1';
-            } else {
-                p.style.display = 'none';
-                p.style.opacity = '0';
-            }
-        });
-        
-        if (initialView !== 'home-page') {
-            navControls.classList.add('hidden-controls');
-        }
-        
-        if (isMenuOpen) {
-            history.replaceState({ view: 'menu', bg: initialView }, '', '#menu');
-            menu.classList.add('active');
-            menuToggle.classList.add('active');
-            document.body.classList.add('no-scroll');
+        if (notifications.length === 0) {
+            list.innerHTML = `<div class="notif-empty" data-i18n="notif_empty">${translations[currentLang]['notif_empty']}</div>`;
         } else {
-            history.replaceState({ view: initialView }, '', '#' + initialView);
+            notifications.forEach(n => {
+                if (!n.read) unreadCount++;
+                const item = document.createElement('div');
+                item.className = 'notif-item';
+                item.innerHTML = `
+                    <div class="notif-title">${n.title[currentLang]}</div>
+                    <div class="notif-text">${n.text[currentLang]}</div>
+                    <div class="notif-time">${n.time}</div>
+                `;
+                list.appendChild(item);
+            });
         }
         
-        updateLanguage(currentLang);
-    });
+        if (unreadCount > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
 
     function updateLanguage(lang) {
         currentLang = lang;
         localStorage.setItem('xenithos_lang', lang);
         document.documentElement.lang = lang;
-        
-        document.querySelectorAll('.lang-option').forEach(opt => {
-            opt.classList.remove('selected');
-            if (opt.getAttribute('data-lang') === lang) {
-                opt.classList.add('selected');
-            }
-        });
-
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (translations[lang][key]) {
-                el.innerHTML = translations[lang][key];
-            }
+            if (translations[lang][key]) el.innerHTML = translations[lang][key];
         });
-
-        if (buildDetailsPage.style.display === 'block') {
-            const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
-            if (devicesData[deviceId]) {
-                document.getElementById('bd-maintainer-label').innerText = translations[lang][devicesData[deviceId].maintainerLabelKey];
-            }
-        }
+        renderNotifications();
     }
-
-    document.getElementById('globe-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        langDropdown.classList.toggle('active');
-    });
-
-    document.addEventListener('click', () => {
-        langDropdown.classList.remove('active');
-    });
-
-    document.querySelectorAll('.lang-option').forEach(opt => {
-        opt.addEventListener('click', (e) => {
-            updateLanguage(e.target.getAttribute('data-lang'));
-        });
-    });
 
     function switchPageTo(targetEl) {
         if (currentPageEl === targetEl) return;
-        currentPageEl.style.transition = 'opacity 0.3s ease';
-        currentPageEl.style.opacity = '0';
+        if (document.activeElement) document.activeElement.blur();
         
-        setTimeout(() => {
-            currentPageEl.style.display = 'none';
-            targetEl.style.display = 'block';
-            targetEl.style.opacity = '0';
-            window.scrollTo(0, 0);
-            
-            if (targetEl === homePage) {
-                navControls.classList.remove('hidden-controls');
+        pages.forEach(p => {
+            if (p === targetEl) {
+                p.style.display = 'block';
+                setTimeout(() => { p.style.opacity = '1'; }, 10);
             } else {
-                navControls.classList.add('hidden-controls');
-                langDropdown.classList.remove('active');
+                p.style.display = 'none';
+                p.style.opacity = '0';
             }
-            
-            setTimeout(() => {
-                targetEl.style.transition = 'opacity 0.4s ease';
-                targetEl.style.opacity = '1';
-            }, 50);
-            currentPageEl = targetEl;
-        }, 300);
-    }
-
-    function goToPage(targetId) {
-        if (currentPageEl.id === targetId) return;
-        history.pushState({ view: targetId }, '', '#' + targetId);
-        switchPageTo(document.getElementById(targetId));
-    }
-
-    function openMenu() {
-        history.pushState({ view: 'menu', bg: currentPageEl.id }, '', '#menu');
-        menu.classList.add('active');
-        menuToggle.classList.add('active');
-        document.body.classList.add('no-scroll');
-    }
-
-    function closeMenuUI() {
-        menu.classList.remove('active');
-        menuToggle.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-    }
-
-    menuToggle.addEventListener('click', () => {
-        if (menu.classList.contains('active')) {
-            history.back();
+        });
+        window.scrollTo(0, 0);
+        currentPageEl = targetEl;
+        
+        if (targetEl === document.getElementById('home-page')) {
+            navControls.classList.remove('hidden-controls');
         } else {
-            openMenu();
+            navControls.classList.add('hidden-controls');
+            langDropdown.classList.remove('active');
+            notifDropdown.classList.remove('active');
         }
-    });
+    }
 
-    window.addEventListener('popstate', (e) => {
-        const state = e.state;
-        if (state && state.view === 'menu') {
-            if (state.bg && state.bg !== currentPageEl.id) {
-                currentPageEl.style.display = 'none';
-                currentPageEl.style.opacity = '0';
-                
-                const targetBg = document.getElementById(state.bg);
-                targetBg.style.display = 'block';
-                targetBg.style.opacity = '1';
-                currentPageEl = targetBg;
-                
-                if (targetBg === homePage) {
-                    navControls.classList.remove('hidden-controls');
-                } else {
-                    navControls.classList.add('hidden-controls');
-                    langDropdown.classList.remove('active');
-                }
-            }
+    function handleHashChange() {
+        const hash = window.location.hash || '#home-page';
+        if (hash === '#menu') {
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
         } else {
-            closeMenuUI();
-            if (state && state.view) {
-                switchPageTo(document.getElementById(state.view));
-            } else {
-                switchPageTo(homePage);
-            }
+            menu.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+            const el = document.getElementById(hash.substring(1));
+            if (el) switchPageTo(el);
         }
-    });
-
-    function navigateFromMenu(targetPageId) {
-        closeMenuUI();
-        history.pushState({ view: targetPageId }, '', '#' + targetPageId);
-        switchPageTo(document.getElementById(targetPageId));
     }
 
-    navDownload.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('download-page');
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('load', handleHashChange);
+    window.addEventListener('pageshow', () => { document.body.style.opacity = '1'; });
+
+    document.getElementById('globe-btn').addEventListener('click', (e) => { 
+        e.stopPropagation(); 
+        langDropdown.classList.toggle('active'); 
+        notifDropdown.classList.remove('active');
     });
 
-    navDonators.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('donators-page');
-    });
-
-    logoLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (menu.classList.contains('active')) {
-            navigateFromMenu('home-page');
-        } else {
-            goToPage('home-page');
-        }
-    });
-
-    navAbout.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateFromMenu('home-page');
-    });
-
-    getBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        goToPage('download-page');
-    });
-
-    function openBuildDetails(deviceId) {
-        const data = devicesData[deviceId];
-        document.getElementById('bd-title').innerText = data.codename;
-        document.getElementById('bd-model').innerText = data.model;
-        document.getElementById('bd-codename').innerText = data.codename;
-        document.getElementById('bd-version').innerText = data.version;
-        document.getElementById('bd-date').innerText = data.date;
-        document.getElementById('bd-maintainer').innerText = data.maintainer;
-        document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
+    document.getElementById('notif-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifDropdown.classList.toggle('active');
+        langDropdown.classList.remove('active');
         
-        goToPage('build-details-page');
-    }
-
-    dlMondrian.addEventListener('click', (e) => {
-        e.preventDefault();
-        openBuildDetails('mondrian');
-    });
-
-    dlAlioth.addEventListener('click', (e) => {
-        e.preventDefault();
-        openBuildDetails('alioth');
-    });
-
-    btnBack.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (history.state && history.state.view) {
-            history.back();
-        } else {
-            goToPage('download-page');
+        if (notifDropdown.classList.contains('active')) {
+            notifications.forEach(n => n.read = true);
+            renderNotifications();
         }
     });
 
-    function transitionToExternal(url) {
-        document.body.style.transition = 'opacity 0.3s ease';
+    document.addEventListener('click', () => { 
+        langDropdown.classList.remove('active'); 
+        notifDropdown.classList.remove('active');
+    });
+
+    document.querySelectorAll('.lang-option').forEach(opt => opt.addEventListener('click', (e) => updateLanguage(e.target.dataset.lang)));
+
+    menuToggle.addEventListener('click', () => {
+        if (window.location.hash === '#menu') history.back();
+        else window.location.hash = 'menu';
+    });
+
+    document.getElementById('nav-download').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = 'download-page'; });
+    document.getElementById('nav-donators').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = 'donators-page'; });
+    document.getElementById('logo-link').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = 'home-page'; });
+    document.getElementById('nav-about').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = 'home-page'; });
+    document.getElementById('get-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = 'download-page'; });
+
+    const devicesData = {
+        'mondrian': { model: 'Poco F5 Pro/K60', codename: 'MONDRIAN', version: '1.5.0', date: '26 Feb 2026', maintainer: 'LF5', label: 'lbl_dev' },
+        'alioth': { model: 'Poco F3/Mi 11X/K40', codename: 'ALIOTH', version: '1.5.0', date: '26 Feb 2026', maintainer: 'Ariska Eхидна', label: 'lbl_maint' }
+    };
+
+    function openBuildDetails(id) {
+        const d = devicesData[id];
+        document.getElementById('bd-title').innerText = d.codename;
+        document.getElementById('bd-model').innerText = d.model;
+        document.getElementById('bd-codename').innerText = d.codename;
+        document.getElementById('bd-version').innerText = d.version;
+        document.getElementById('bd-date').innerText = d.date;
+        document.getElementById('bd-maintainer').innerText = d.maintainer;
+        document.getElementById('bd-maintainer-label').innerText = translations[currentLang][d.label];
+        window.location.hash = 'build-details-page';
+    }
+
+    document.getElementById('dl-mondrian').addEventListener('click', (e) => { e.preventDefault(); openBuildDetails('mondrian'); });
+    document.getElementById('dl-alioth').addEventListener('click', (e) => { e.preventDefault(); openBuildDetails('alioth'); });
+    document.getElementById('btn-back').addEventListener('click', () => history.back());
+
+    function transitionTo(url) {
         document.body.style.opacity = '0';
-        setTimeout(() => {
-            window.location.href = url;
-        }, 300);
+        setTimeout(() => { window.location.href = url; }, 300);
     }
 
-    if (btnTeam) {
-        btnTeam.addEventListener('click', (e) => {
-            e.preventDefault();
-            transitionToExternal('team.html');
-        });
-    }
+    document.getElementById('btn-team').addEventListener('click', (e) => { e.preventDefault(); transitionTo('team.html'); });
+    document.getElementById('nav-chat').addEventListener('click', (e) => { e.preventDefault(); transitionTo('chat.html'); });
 
-    if (navChat) {
-        navChat.addEventListener('click', (e) => {
-            e.preventDefault();
-            transitionToExternal('chat.html');
-        });
-    }
+    updateLanguage(currentLang);
 </script>
 </body>
 </html>
