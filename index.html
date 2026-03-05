@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XenithOS</title>
-<meta name="description" content="XenithOS is your perfect choice for everyday use. An uncompromising combination of high performance, exceptional smoothness, and excellent battery life.">
+<meta name="description" content="Explore the official XenithOS website. Stay up to date with the latest news, discover new features, and download the newest builds for your device.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lf52406.github.io/XenithOS_Site/">
 <meta property="og:title" content="XenithOS">
-<meta property="og:description" content="XenithOS is your perfect choice for everyday use. An uncompromising combination of high performance, exceptional smoothness, and excellent battery life.">
+<meta property="og:description" content="Explore the official XenithOS website. Stay up to date with the latest news, discover new features, and download the newest builds for your device.">
 <meta property="og:image" content="https://lf52406.github.io/XenithOS_Site/image_0.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://lf52406.github.io/XenithOS_Site/">
 <meta name="twitter:title" content="XenithOS">
-<meta name="twitter:description" content="XenithOS is your perfect choice for everyday use. An uncompromising combination of high performance, exceptional smoothness, and excellent battery life.">
+<meta name="twitter:description" content="Explore the official XenithOS website. Stay up to date with the latest news, discover new features, and download the newest builds for your device.">
 <meta name="twitter:image" content="https://lf52406.github.io/XenithOS_Site/image_0.png">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
 * {
     margin: 0;
     padding: 0;
@@ -132,7 +133,7 @@ nav {
 .lang-selector,
 .notif-wrapper {
     position: relative;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 body.no-scroll .lang-selector,
 body.no-scroll .notif-wrapper {
@@ -148,7 +149,7 @@ body.no-scroll .notif-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     padding: 5px;
     position: relative;
 }
@@ -165,7 +166,7 @@ body.no-scroll .notif-wrapper {
     background: #ff424d;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(255, 66, 77, 0.8);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .notif-badge.hidden {
     opacity: 0;
@@ -188,7 +189,7 @@ body.no-scroll .notif-wrapper {
     visibility: hidden;
     transform: translateY(15px) scale(0.95);
     transform-origin: top right;
-    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 .notif-dropdown {
@@ -225,7 +226,7 @@ body.no-scroll .notif-wrapper {
 .notif-item {
     padding: 12px;
     border-radius: 16px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -259,7 +260,7 @@ body.no-scroll .notif-wrapper {
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     border-radius: 16px;
     text-align: left;
 }
@@ -278,7 +279,7 @@ body.no-scroll .notif-wrapper {
     height: 3px;
     background-color: #e4e6eb;
     border-radius: 3px;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     right: 0;
 }
 .hamburger span:nth-child(1) {
@@ -312,7 +313,7 @@ body.no-scroll .notif-wrapper {
     gap: 20px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     z-index: 99;
 }
 .mobile-menu.active {
@@ -333,7 +334,7 @@ body.no-scroll .notif-wrapper {
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease;
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .mobile-menu.active a {
     opacity: 1;
@@ -361,7 +362,7 @@ body.no-scroll .notif-wrapper {
     -webkit-backdrop-filter: blur(25px);
     position: relative;
     opacity: 0;
-    animation: revealPhone 0.8s ease forwards;
+    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes revealPhone {
     0% {
@@ -409,7 +410,7 @@ body.no-scroll .notif-wrapper {
     width: 100%;
     max-width: 300px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     backdrop-filter: blur(5px);
     margin: 0 auto;
     cursor: pointer;
@@ -424,7 +425,7 @@ body.no-scroll .notif-wrapper {
     font-size: 13px;
     padding: 8px 16px;
     border-radius: 20px;
-    transition: all 0.2s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .btn:active, 
 .btn-small:active, 
@@ -435,13 +436,15 @@ body.no-scroll .notif-wrapper {
     transition: none; 
 }
 
-#home-page, 
-#download-page, 
-#build-details-page, 
-#donators-page {
+.page-section {
+    display: none;
+    opacity: 0;
     width: 100%;
     flex: 1;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.page-section.active {
+    display: block;
 }
 
 #download-page, 
@@ -455,7 +458,7 @@ body.no-scroll .notif-wrapper {
 .download-header {
     text-align: center;
     margin-bottom: 40px;
-    animation: revealPhone 0.6s ease forwards;
+    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .download-header h1 {
     font-size: 32px;
@@ -471,7 +474,7 @@ body.no-scroll .notif-wrapper {
     max-width: 360px;
     margin: 24px auto 0;
     opacity: 0;
-    animation: revealPhone 0.7s ease forwards;
+    animation: revealPhone 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .search-icon {
     position: absolute;
@@ -493,7 +496,7 @@ body.no-scroll .notif-wrapper {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
@@ -530,7 +533,7 @@ body.no-scroll .notif-wrapper {
     margin: 0 auto;
     max-width: 360px;
     width: 100%;
-    animation: revealPhone 0.8s ease forwards;
+    animation: revealPhone 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .device-img {
     width: 140px;
@@ -605,7 +608,7 @@ body.no-scroll .notif-wrapper {
 .arrow-icon {
     width: 20px;
     height: 20px;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .archive-details[open] .arrow-icon {
     transform: rotate(180deg);
@@ -659,14 +662,14 @@ footer {
     width: 30px;
     height: 30px;
     fill: #707075;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .build-header {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 30px;
-    animation: revealPhone 0.6s ease forwards;
+    animation: revealPhone 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .back-btn {
     background: rgba(255, 255, 255, 0.08);
@@ -678,7 +681,7 @@ footer {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     backdrop-filter: blur(5px);
 }
 .back-btn:active {
@@ -690,7 +693,7 @@ footer {
     width: 24px;
     height: 24px;
     fill: #e4e6eb;
-    transition: 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .back-btn:active svg {
     fill: #000000;
@@ -744,7 +747,7 @@ footer {
     text-decoration: none;
     font-weight: 600;
     font-size: 16px;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     background-color: rgba(255, 255, 255, 0.03);
     border: 2px solid;
 }
@@ -787,7 +790,7 @@ footer {
     flex-direction: column;
     gap: 16px;
     backdrop-filter: blur(10px);
-    animation: revealPhone 0.6s ease forwards;
+    animation: revealPhone 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .donator-top {
     display: flex;
@@ -842,17 +845,51 @@ footer {
 }
 
 @media (hover: hover) {
-    .globe-btn:hover { color: #fff; transform: scale(1.1); }
-    .lang-option:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; transform: translateX(4px); }
-    .notif-item:hover { background-color: rgba(255, 255, 255, 0.08); }
-    .mobile-menu a:hover { background-color: rgba(255, 255, 255, 0.15); }
-    .btn:hover { background-color: #ffffff; color: #000000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-    .btn-small:hover { background-color: #ffffff; color: #000000; }
-    .social-icons svg:hover { fill: #e4e6eb; }
-    .back-btn:hover { background: #ffffff; transform: none; }
-    .back-btn:hover svg { fill: #000000; }
-    .btn-paypal:hover { background-color: #0079c1; color: #ffffff; transform: translateY(-2px); }
-    .btn-patreon:hover { background-color: #ff424d; color: #ffffff; transform: translateY(-2px); }
+    .globe-btn:hover {
+        color: #fff;
+        transform: scale(1.1);
+    }
+    .lang-option:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        transform: translateX(4px);
+    }
+    .notif-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+    .mobile-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    .btn:hover {
+        background-color: #ffffff;
+        color: #000000;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+    }
+    .btn-small:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    .social-icons svg:hover {
+        fill: #e4e6eb;
+    }
+    .back-btn:hover {
+        background: #ffffff;
+        transform: none;
+    }
+    .back-btn:hover svg {
+        fill: #000000;
+    }
+    .btn-paypal:hover {
+        background-color: #0079c1;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+    .btn-patreon:hover {
+        background-color: #ff424d;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
 }
 </style>
 </head>
@@ -920,7 +957,7 @@ footer {
     <a href="team.html" id="btn-team" data-i18n="nav_team">Team</a>
 </div>
 
-<div id="home-page" style="display: none; opacity: 0;">
+<div id="home-page" class="page-section">
     <header class="hero">
         <div class="phone-mockup">
             <div class="phone-screen"></div>
@@ -934,7 +971,7 @@ footer {
     </section>
 </div>
 
-<div id="download-page" style="display: none; opacity: 0;">
+<div id="download-page" class="page-section">
     <div class="download-header">
         <h1 data-i18n="dl_title">Download XenithOS</h1>
         <p data-i18n="dl_desc">Get the latest version for your device</p>
@@ -1027,7 +1064,7 @@ footer {
     </div>
 </div>
 
-<div id="build-details-page" style="display: none; opacity: 0;">
+<div id="build-details-page" class="page-section">
     <div class="build-header">
         <a href="#download-page" class="back-btn" id="btn-back" style="text-decoration: none;">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
@@ -1114,7 +1151,7 @@ footer {
     </div>
 </div>
 
-<div id="donators-page" style="display: none; opacity: 0;">
+<div id="donators-page" class="page-section">
     <div class="download-header">
         <h1 data-i18n="don_title">Supporters</h1>
         <p data-i18n="don_desc">People who made this project possible</p>
@@ -1182,7 +1219,8 @@ footer {
                 ru: "Наш новый сайт официально запущен. Ознакомьтесь с последними сборками для вашего устройства.", 
                 uk: "Наш новий сайт офіційно запущено. Ознайомтеся з останніми збірками для вашого пристрою." 
             },
-            time: "05 Mar 2026"
+            time: "05 Mar 2026",
+            read: false
         }
     ];
 
@@ -1319,13 +1357,6 @@ footer {
     let currentPageEl = null;
     let sessionUnreadNotifs = null;
 
-    const pages = [
-        document.getElementById('home-page'), 
-        document.getElementById('download-page'), 
-        document.getElementById('build-details-page'), 
-        document.getElementById('donators-page')
-    ];
-    
     const menu = document.getElementById('menu');
     const menuToggle = document.getElementById('menu-open');
     const navControls = document.getElementById('nav-controls');
@@ -1336,9 +1367,6 @@ footer {
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
     
-    const dlMondrian = document.getElementById('dl-mondrian');
-    const dlAlioth = document.getElementById('dl-alioth');
-
     const devicesData = {
         'mondrian': {
             model: 'Poco F5 Pro/K60',
@@ -1439,7 +1467,7 @@ footer {
             }
         });
 
-        if (document.getElementById('build-details-page').style.display === 'block') {
+        if (document.getElementById('build-details-page').classList.contains('active')) {
             const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
             if (devicesData[deviceId]) {
                 document.getElementById('bd-maintainer-label').innerText = translations[lang][devicesData[deviceId].maintainerLabelKey];
@@ -1471,15 +1499,15 @@ footer {
         if (currentPageEl) {
             currentPageEl.style.opacity = '0';
             setTimeout(() => {
-                currentPageEl.style.display = 'none';
-                targetEl.style.display = 'block';
+                currentPageEl.classList.remove('active');
+                targetEl.classList.add('active');
                 window.scrollTo(0, 0);
                 void targetEl.offsetWidth; 
                 targetEl.style.opacity = '1';
                 currentPageEl = targetEl;
             }, 250); 
         } else {
-            targetEl.style.display = 'block';
+            targetEl.classList.add('active');
             void targetEl.offsetWidth;
             targetEl.style.opacity = '1';
             currentPageEl = targetEl;
@@ -1494,7 +1522,10 @@ footer {
             menu.classList.add('active');
             menuToggle.classList.add('active');
             document.body.classList.add('no-scroll');
-            if (!currentPageEl) switchPageTo('home-page');
+            
+            if (!currentPageEl) {
+                switchPageTo('home-page');
+            }
             return;
         }
 
@@ -1511,9 +1542,6 @@ footer {
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-        if (!window.location.hash) {
-            history.replaceState(null, '', '#home-page');
-        }
         updateLanguage(currentLang);
         handleRouting();
     });
@@ -1593,12 +1621,14 @@ footer {
         window.location.hash = 'build-details-page';
     }
 
+    const dlMondrian = document.getElementById('dl-mondrian');
     if (dlMondrian) {
         dlMondrian.addEventListener('click', (e) => {
             e.preventDefault(); openBuildDetails('mondrian');
         });
     }
 
+    const dlAlioth = document.getElementById('dl-alioth');
     if (dlAlioth) {
         dlAlioth.addEventListener('click', (e) => {
             e.preventDefault(); openBuildDetails('alioth');
@@ -1622,13 +1652,19 @@ footer {
         });
     });
 
-    document.getElementById('btn-team').addEventListener('click', (e) => {
-        e.preventDefault(); transitionToExternal('team.html');
-    });
+    const btnTeam = document.getElementById('btn-team');
+    if (btnTeam) {
+        btnTeam.addEventListener('click', (e) => {
+            e.preventDefault(); transitionToExternal('team.html');
+        });
+    }
 
-    document.getElementById('nav-chat').addEventListener('click', (e) => {
-        e.preventDefault(); transitionToExternal('chat.html');
-    });
+    const navChat = document.getElementById('nav-chat');
+    if (navChat) {
+        navChat.addEventListener('click', (e) => {
+            e.preventDefault(); transitionToExternal('chat.html');
+        });
+    }
 </script>
 </body>
 </html>
