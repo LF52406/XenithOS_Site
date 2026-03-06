@@ -828,7 +828,6 @@ footer {
     text-align: right;
 }
 
-/* Стили для баннера установки приложения */
 .app-banner {
     position: fixed;
     bottom: 24px;
@@ -1595,7 +1594,12 @@ footer {
         handleRouting();
         
         setTimeout(() => {
-            if (!localStorage.getItem('xenithos_app_banner_closed')) {
+            // Проверка: открыто ли в приложении (WebView) или на рабочем столе (Standalone PWA)
+            const isWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || /\bwv\b/i.test(navigator.userAgent) || navigator.userAgent.includes("Android") && navigator.userAgent.includes("Version/");
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+            // Если это обычный браузер и баннер еще не закрывали — показываем его
+            if (!localStorage.getItem('xenithos_app_banner_closed') && !isWebView && !isStandalone) {
                 document.getElementById('app-banner').classList.add('visible');
             }
         }, 2000);
