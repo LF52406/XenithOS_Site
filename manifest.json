@@ -1,0 +1,16 @@
+{
+  "name": "XenithOS",
+  "short_name": "XenithOS",
+  "start_url": "/XenithOS_Site/index.html",
+  "display": "standalone",
+  "background_color": "#030305",
+  "theme_color": "#030305",
+  "icons": [
+    {
+      "src": "image_0.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
