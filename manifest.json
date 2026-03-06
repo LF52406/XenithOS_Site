@@ -1,15 +1,25 @@
 {
+  "id": "/",
   "name": "XenithOS",
   "short_name": "XenithOS",
+  "description": "XenithOS is your perfect choice for everyday use.",
   "start_url": "/XenithOS_Site/index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#030305",
   "theme_color": "#030305",
+  "lang": "ru",
   "icons": [
     {
-      "src": "image_0.png",
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
