@@ -95,6 +95,11 @@ body.no-scroll {
     20%, 40% { transform: rotate(-10deg); }
     60% { transform: rotate(0deg); }
 }
+@keyframes empty-snap {
+    0% { transform: translateY(-2px) scale(1.02); }
+    50% { transform: translateY(-2px) scale(0.97); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    100% { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); }
+}
 nav {
     display: flex;
     justify-content: space-between;
@@ -484,6 +489,9 @@ body.no-scroll .notif-wrapper {
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
+.search-container.cleared-anim {
+    animation: empty-snap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
 .search-icon {
     position: absolute;
     left: 16px;
@@ -491,14 +499,14 @@ body.no-scroll .notif-wrapper {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    stroke: #a0a0a5;
+    stroke: rgba(160, 160, 165, 0.5);
     pointer-events: none;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 .search-container:focus-within .search-icon {
-    stroke: #ffffff;
-    transform: translateY(-50%) scale(1.15);
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
+    stroke: rgba(255, 255, 255, 0.7);
+    transform: translateY(-50%) scale(1.1);
+    filter: none;
 }
 .search-input {
     width: 100%;
@@ -519,8 +527,8 @@ body.no-scroll .notif-wrapper {
 }
 .search-input:focus {
     background-color: rgba(255, 255, 255, 0.08);
-    border-color: #2882ff;
-    box-shadow: 0 0 15px rgba(40, 130, 255, 0.2);
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 .no-results-msg {
     text-align: center;
@@ -1435,6 +1443,9 @@ footer {
     let currentLang = localStorage.getItem('xenithos_lang') || 'ru';
     let currentPageEl = null;
     let sessionUnreadNotifs = null;
+    let lastSearchVal = '';
+    let isKeyboardOpen = false;
+    let initialHeight = window.innerHeight;
 
     const menu = document.getElementById('menu');
     const menuToggle = document.getElementById('menu-open');
@@ -1444,6 +1455,7 @@ footer {
     const notifBadge = document.getElementById('notif-badge');
     const notifBtn = document.getElementById('notif-btn');
     const searchInput = document.getElementById('device-search');
+    const searchContainer = document.querySelector('.search-container');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
     
@@ -1553,7 +1565,7 @@ footer {
         if (document.getElementById('build-details-page').classList.contains('active')) {
             const deviceId = document.getElementById('bd-codename').innerText.toLowerCase();
             if (devicesData[deviceId]) {
-                document.getElementById('bd-maintainer-label').innerText = translations[lang][devicesData[deviceId].maintainerLabelKey];
+                document.getElementById('bd-maintainer-label').innerText = translations[currentLang][devicesData[deviceId].maintainerLabelKey];
             }
         }
         renderNotifications();
@@ -1577,6 +1589,7 @@ footer {
             searchInput.value = '';
             deviceCards.forEach(c => c.style.display = 'flex');
             noResultsMsg.style.display = 'none';
+            lastSearchVal = '';
         }
 
         if (currentPageEl) {
@@ -1645,6 +1658,23 @@ footer {
         document.body.style.opacity = '1';
     });
 
+    window.addEventListener('resize', () => {
+        if (window.innerHeight < initialHeight - 100) {
+            isKeyboardOpen = true;
+        } else if (window.innerHeight >= initialHeight - 100 && isKeyboardOpen) {
+            isKeyboardOpen = false;
+            if (document.activeElement === searchInput) {
+                searchInput.blur();
+            }
+        }
+    });
+
+    document.addEventListener('touchstart', (e) => {
+        if (document.activeElement === searchInput && !e.target.closest('.search-container')) {
+            searchInput.blur();
+        }
+    }, { passive: true });
+
     document.getElementById('app-banner-close').addEventListener('click', () => {
         document.getElementById('app-banner').classList.remove('visible');
         localStorage.setItem('xenithos_app_banner_closed', 'true');
@@ -1689,6 +1719,17 @@ footer {
 
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
+        
+        if (query === '' && lastSearchVal !== '') {
+            searchContainer.classList.remove('cleared-anim');
+            void searchContainer.offsetWidth;
+            searchContainer.classList.add('cleared-anim');
+            setTimeout(() => {
+                searchContainer.classList.remove('cleared-anim');
+            }, 400);
+        }
+        lastSearchVal = query;
+
         let visibleCount = 0;
 
         deviceCards.forEach(card => {
