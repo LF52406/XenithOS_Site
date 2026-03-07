@@ -225,7 +225,7 @@ body.no-scroll .notif-wrapper {
     visibility: hidden;
     transform: translateY(-20px) scale(0.8);
     transform-origin: 85% top;
-    transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1), visibility 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 .notif-dropdown {
@@ -341,15 +341,16 @@ body.no-scroll .notif-wrapper {
     gap: 20px;
     opacity: 0;
     visibility: hidden;
+    transform-origin: top right;
     transform: scale(0.95);
-    transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.2s cubic-bezier(0.25, 1, 0.5, 1), transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 99;
 }
 .mobile-menu.active {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .mobile-menu a {
     font-size: 20px;
@@ -364,19 +365,19 @@ body.no-scroll .notif-wrapper {
     max-width: 320px;
     text-align: center;
     opacity: 0;
-    transform: translateY(30px) scale(0.9);
-    transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: scale(0.9) translateY(30px);
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
 }
 .mobile-menu.active a {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: scale(1) translateY(0);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
 }
-.mobile-menu.active a:nth-child(1) { transition-delay: 0.05s, 0.05s, 0s; }
-.mobile-menu.active a:nth-child(2) { transition-delay: 0.1s, 0.1s, 0s; }
-.mobile-menu.active a:nth-child(3) { transition-delay: 0.15s, 0.15s, 0s; }
-.mobile-menu.active a:nth-child(4) { transition-delay: 0.2s, 0.2s, 0s; }
-.mobile-menu.active a:nth-child(5) { transition-delay: 0.25s, 0.25s, 0s; }
+.mobile-menu.active a:nth-child(1) { transition-delay: 0.05s; }
+.mobile-menu.active a:nth-child(2) { transition-delay: 0.1s; }
+.mobile-menu.active a:nth-child(3) { transition-delay: 0.15s; }
+.mobile-menu.active a:nth-child(4) { transition-delay: 0.2s; }
+.mobile-menu.active a:nth-child(5) { transition-delay: 0.25s; }
 
 .hero {
     display: flex;
@@ -1621,18 +1622,14 @@ footer {
             setTimeout(() => {
                 currentPageEl.classList.remove('active');
                 targetEl.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'instant' });
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
+                window.scrollTo(0, 0);
                 void targetEl.offsetWidth; 
                 targetEl.style.opacity = '1';
                 currentPageEl = targetEl;
             }, 250); 
         } else {
             targetEl.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'instant' });
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
+            window.scrollTo(0, 0);
             void targetEl.offsetWidth;
             targetEl.style.opacity = '1';
             currentPageEl = targetEl;
@@ -1691,7 +1688,6 @@ footer {
                     isKeyboardOpen = false;
                     searchInput.blur();
                     window.scrollTo(0, 0);
-                    document.body.scrollTop = 0;
                 }
             });
         }
@@ -1749,7 +1745,7 @@ footer {
     searchInput.addEventListener('blur', () => {
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
+        }, 50);
     });
 
     function triggerBounce() {
