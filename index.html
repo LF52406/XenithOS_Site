@@ -95,10 +95,11 @@ body.no-scroll {
     20%, 40% { transform: rotate(-10deg); }
     60% { transform: rotate(0deg); }
 }
-@keyframes empty-snap {
-    0% { transform: translateY(-2px) scale(1.02); }
-    50% { transform: translateY(-2px) scale(0.97); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-    100% { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); }
+@keyframes input-bounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(0.96); }
+    70% { transform: scale(1.02); }
+    100% { transform: scale(1); }
 }
 nav {
     display: flex;
@@ -483,14 +484,7 @@ body.no-scroll .notif-wrapper {
     opacity: 0;
     border-radius: 30px;
     animation: revealPhone 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
-}
-.search-container:focus-within {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-}
-.search-container.cleared-anim {
-    animation: empty-snap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .search-icon {
     position: absolute;
@@ -499,36 +493,43 @@ body.no-scroll .notif-wrapper {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    stroke: rgba(160, 160, 165, 0.5);
+    stroke: rgba(160, 160, 165, 0.6);
     pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.3s ease;
+    z-index: 2;
 }
 .search-container:focus-within .search-icon {
-    stroke: rgba(255, 255, 255, 0.7);
-    transform: translateY(-50%) scale(1.1);
-    filter: none;
+    stroke: #ffffff;
+    transform: translateY(-50%) scale(1.05);
 }
 .search-input {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 30px;
     padding: 14px 16px 14px 44px;
-    color: #e4e6eb;
+    color: #ffffff;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     outline: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.search-input::placeholder {
+    color: rgba(160, 160, 165, 0.8);
 }
 .search-input::-webkit-search-cancel-button {
     display: none;
 }
 .search-input:focus {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 20px rgba(150, 50, 255, 0.25), inset 0 0 10px rgba(40, 130, 255, 0.15);
+}
+.search-input.bounce-anim {
+    animation: input-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 .no-results-msg {
     text-align: center;
@@ -1444,9 +1445,7 @@ footer {
     let currentPageEl = null;
     let sessionUnreadNotifs = null;
     let lastSearchVal = '';
-    let isKeyboardOpen = false;
-    let initialHeight = window.innerHeight;
-
+    
     const menu = document.getElementById('menu');
     const menuToggle = document.getElementById('menu-open');
     const navControls = document.getElementById('nav-controls');
@@ -1455,7 +1454,6 @@ footer {
     const notifBadge = document.getElementById('notif-badge');
     const notifBtn = document.getElementById('notif-btn');
     const searchInput = document.getElementById('device-search');
-    const searchContainer = document.querySelector('.search-container');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
     
@@ -1649,6 +1647,17 @@ footer {
                 document.getElementById('app-banner').classList.add('visible');
             }
         }, 2000);
+        
+        if (window.visualViewport) {
+            let initialHeight = window.visualViewport.height;
+            window.visualViewport.addEventListener('resize', () => {
+                if (window.visualViewport.height > initialHeight - 50) {
+                    if (document.activeElement === searchInput) {
+                        searchInput.blur();
+                    }
+                }
+            });
+        }
     });
 
     window.addEventListener('hashchange', handleRouting);
@@ -1657,23 +1666,6 @@ footer {
         document.body.style.transition = 'none';
         document.body.style.opacity = '1';
     });
-
-    window.addEventListener('resize', () => {
-        if (window.innerHeight < initialHeight - 100) {
-            isKeyboardOpen = true;
-        } else if (window.innerHeight >= initialHeight - 100 && isKeyboardOpen) {
-            isKeyboardOpen = false;
-            if (document.activeElement === searchInput) {
-                searchInput.blur();
-            }
-        }
-    });
-
-    document.addEventListener('touchstart', (e) => {
-        if (document.activeElement === searchInput && !e.target.closest('.search-container')) {
-            searchInput.blur();
-        }
-    }, { passive: true });
 
     document.getElementById('app-banner-close').addEventListener('click', () => {
         document.getElementById('app-banner').classList.remove('visible');
@@ -1721,11 +1713,11 @@ footer {
         const query = e.target.value.toLowerCase().trim();
         
         if (query === '' && lastSearchVal !== '') {
-            searchContainer.classList.remove('cleared-anim');
-            void searchContainer.offsetWidth;
-            searchContainer.classList.add('cleared-anim');
+            searchInput.classList.remove('bounce-anim');
+            void searchInput.offsetWidth;
+            searchInput.classList.add('bounce-anim');
             setTimeout(() => {
-                searchContainer.classList.remove('cleared-anim');
+                searchInput.classList.remove('bounce-anim');
             }, 400);
         }
         lastSearchVal = query;
