@@ -470,20 +470,19 @@ body.no-scroll .notif-wrapper {
     color: #a0a0a5;
     font-size: 16px;
 }
+
 .search-container {
     position: relative;
     max-width: 360px;
     margin: 24px auto 0;
     opacity: 0;
+    border-radius: 30px;
     animation: revealPhone 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
 }
-.search-container:active {
-    transform: scale(0.97);
-}
-.search-container:focus-within .search-icon {
-    stroke: #ffffff;
-    transform: translateY(-50%) scale(1.15) rotate(5deg);
+.search-container:focus-within {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 .search-icon {
     position: absolute;
@@ -494,7 +493,12 @@ body.no-scroll .notif-wrapper {
     height: 20px;
     stroke: #a0a0a5;
     pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.search-container:focus-within .search-icon {
+    stroke: #ffffff;
+    transform: translateY(-50%) scale(1.15);
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
 }
 .search-input {
     width: 100%;
@@ -506,17 +510,17 @@ body.no-scroll .notif-wrapper {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     outline: none;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
-.search-input::placeholder {
-    color: #a0a0a5;
+.search-input::-webkit-search-cancel-button {
+    display: none;
 }
 .search-input:focus {
     background-color: rgba(255, 255, 255, 0.08);
-    border-color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    border-color: #2882ff;
+    box-shadow: 0 0 15px rgba(40, 130, 255, 0.2);
 }
 .no-results-msg {
     text-align: center;
@@ -525,6 +529,7 @@ body.no-scroll .notif-wrapper {
     padding: 20px;
     display: none;
 }
+
 .devices-list {
     display: flex;
     flex-direction: column;
@@ -1030,7 +1035,7 @@ footer {
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="device-search" class="search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n-placeholder="search_placeholder" placeholder="Search by codename...">
+            <input type="search" id="device-search" class="search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" data-i18n-placeholder="search_placeholder" placeholder="Search by codename...">
         </div>
     </div>
     
