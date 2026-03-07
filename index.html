@@ -16,7 +16,6 @@
 <meta name="twitter:description" content="Explore the official XenithOS website. Stay up to date with the latest news, discover new features, and download the newest builds for your device.">
 <meta name="twitter:image" content="https://lf52406.github.io/XenithOS_Site/image_0.png">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="manifest" href="manifest.json">
 <style>
 * {
     margin: 0;
@@ -90,6 +89,12 @@ body.no-scroll {
     0% { transform: translate3d(0, 0, 0) scale(1); }
     100% { transform: translate3d(-10vw, -20vh, 0) scale(1.25); }
 }
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30%, 50% { transform: rotate(12deg); }
+    20%, 40% { transform: rotate(-10deg); }
+    60% { transform: rotate(0deg); }
+}
 nav {
     display: flex;
     justify-content: space-between;
@@ -157,6 +162,10 @@ body.no-scroll .notif-wrapper {
 .globe-btn svg {
     width: 24px;
     height: 24px;
+    transform-origin: top center;
+}
+.globe-btn.ringing svg {
+    animation: bell-ring 2.5s ease-in-out infinite;
 }
 .notif-badge {
     position: absolute;
@@ -1340,7 +1349,7 @@ footer {
             "archive_change": "Список изменений",
             "archive_change_desc": "- Обновлены vendor blobs<br>- Улучшено время автономной работы<br>- Исправлены мелкие баги UI",
             "archive_inst": "Инструкция",
-            "archive_inst_desc": "1. Перезагрузитесь в рекавери<br>2. Сделайте Format Data (yes)<br>3. Прошейте zip архив<br>4. Перезагрузитесь в систему",
+            "archive_inst_desc": "1. Перезагрузитесь в рекавери<br>2. Сделайте Format Data (yes)<br>3. Прошийте zip архив<br>4. Перезагрузитесь в систему",
             "donate_title": "Поддержать проект",
             "don_title": "Спонсоры",
             "don_desc": "Люди, благодаря которым проект существует",
@@ -1412,6 +1421,7 @@ footer {
     const langDropdown = document.getElementById('lang-dropdown');
     const notifDropdown = document.getElementById('notif-dropdown');
     const notifBadge = document.getElementById('notif-badge');
+    const notifBtn = document.getElementById('notif-btn');
     const searchInput = document.getElementById('device-search');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
@@ -1454,6 +1464,7 @@ footer {
         });
         if (updated) {
             localStorage.setItem('xenithos_read_notifs', JSON.stringify(readIds));
+            notifBtn.classList.remove('ringing');
         }
     }
 
@@ -1485,8 +1496,10 @@ footer {
         const realUnread = sessionUnreadNotifs.filter(n => !getReadNotifs().includes(n.id));
         if (realUnread.length > 0) {
             notifBadge.classList.remove('hidden');
+            notifBtn.classList.add('ringing');
         } else {
             notifBadge.classList.add('hidden');
+            notifBtn.classList.remove('ringing');
         }
     }
 
@@ -1595,11 +1608,9 @@ footer {
         handleRouting();
         
         setTimeout(() => {
-            // Проверка: открыто ли в приложении (WebView) или на рабочем столе (Standalone PWA)
             const isWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || /\bwv\b/i.test(navigator.userAgent) || navigator.userAgent.includes("Android") && navigator.userAgent.includes("Version/");
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
-            // Если это обычный браузер и баннер еще не закрывали — показываем его
             if (!localStorage.getItem('xenithos_app_banner_closed') && !isWebView && !isStandalone) {
                 document.getElementById('app-banner').classList.add('visible');
             }
@@ -1633,7 +1644,7 @@ footer {
         notifDropdown.classList.remove('active');
     });
 
-    document.getElementById('notif-btn').addEventListener('click', (e) => {
+    notifBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         notifDropdown.classList.toggle('active');
         langDropdown.classList.remove('active');
@@ -1730,11 +1741,6 @@ footer {
             e.preventDefault(); transitionToExternal('chat.html');
         });
     }
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
 </script>
 </body>
 </html>
