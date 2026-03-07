@@ -101,6 +101,12 @@ body.no-scroll {
     70% { transform: scale(1.02); }
     100% { transform: scale(1); }
 }
+@keyframes search-alive {
+    0% { transform: translateY(-50%) scale(1) rotate(0deg); stroke: rgba(160, 160, 165, 0.6); }
+    30% { transform: translateY(-50%) scale(1.25) rotate(-15deg); stroke: #ffffff; }
+    60% { transform: translateY(-50%) scale(1.1) rotate(10deg); stroke: #ffffff; }
+    100% { transform: translateY(-50%) scale(1.15) rotate(0deg); stroke: #ffffff; }
+}
 nav {
     display: flex;
     justify-content: space-between;
@@ -495,12 +501,10 @@ body.no-scroll .notif-wrapper {
     height: 20px;
     stroke: rgba(160, 160, 165, 0.6);
     pointer-events: none;
-    transition: all 0.3s ease;
     z-index: 2;
 }
 .search-container:focus-within .search-icon {
-    stroke: #ffffff;
-    transform: translateY(-50%) scale(1.05);
+    animation: search-alive 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 .search-input {
     width: 100%;
@@ -1598,12 +1602,17 @@ footer {
                 currentPageEl.classList.remove('active');
                 targetEl.classList.add('active');
                 window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
                 void targetEl.offsetWidth; 
                 targetEl.style.opacity = '1';
                 currentPageEl = targetEl;
             }, 250); 
         } else {
             targetEl.classList.add('active');
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
             void targetEl.offsetWidth;
             targetEl.style.opacity = '1';
             currentPageEl = targetEl;
