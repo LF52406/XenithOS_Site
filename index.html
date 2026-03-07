@@ -101,11 +101,17 @@ body.no-scroll {
     70% { transform: scale(1.02); }
     100% { transform: scale(1); }
 }
+@keyframes icon-bounce {
+    0% { transform: scale(1.05); }
+    40% { transform: scale(0.85); }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1.05); }
+}
 @keyframes search-alive {
-    0% { transform: translateY(-50%) scale(1) rotate(0deg); stroke: rgba(160, 160, 165, 0.6); }
-    30% { transform: translateY(-50%) scale(1.25) rotate(-15deg); stroke: #ffffff; }
-    60% { transform: translateY(-50%) scale(1.1) rotate(10deg); stroke: #ffffff; }
-    100% { transform: translateY(-50%) scale(1.15) rotate(0deg); stroke: #ffffff; }
+    0% { transform: scale(1) rotate(0deg); stroke: rgba(160, 160, 165, 0.6); }
+    30% { transform: scale(1.25) rotate(-15deg); stroke: #ffffff; }
+    60% { transform: scale(1.1) rotate(10deg); stroke: #ffffff; }
+    100% { transform: scale(1.05) rotate(0deg); stroke: #ffffff; }
 }
 nav {
     display: flex;
@@ -494,24 +500,29 @@ body.no-scroll .notif-wrapper {
 }
 .search-icon {
     position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 18px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
     width: 20px;
     height: 20px;
     stroke: rgba(160, 160, 165, 0.6);
     pointer-events: none;
     z-index: 2;
+    shape-rendering: geometricPrecision;
 }
 .search-container:focus-within .search-icon {
     animation: search-alive 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.search-icon.bounce-anim {
+    animation: icon-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 .search-input {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 30px;
-    padding: 14px 16px 14px 44px;
+    padding: 14px 16px 14px 48px;
     color: #ffffff;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
@@ -1460,6 +1471,7 @@ footer {
     const notifBadge = document.getElementById('notif-badge');
     const notifBtn = document.getElementById('notif-btn');
     const searchInput = document.getElementById('device-search');
+    const searchIcon = document.querySelector('.search-icon');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
     
@@ -1728,10 +1740,13 @@ footer {
 
     function triggerBounce() {
         searchInput.classList.remove('bounce-anim');
+        searchIcon.classList.remove('bounce-anim');
         void searchInput.offsetWidth;
         searchInput.classList.add('bounce-anim');
+        searchIcon.classList.add('bounce-anim');
         setTimeout(() => {
             searchInput.classList.remove('bounce-anim');
+            searchIcon.classList.remove('bounce-anim');
         }, 400);
     }
 
