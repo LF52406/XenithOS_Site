@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>XenithOS</title>
 <meta name="description" content="Explore the official XenithOS website. Stay up to date with the latest news, discover new features, and download the newest builds for your device.">
 <meta property="og:type" content="website">
@@ -29,7 +29,7 @@ body {
     color: #e4e6eb;
     overflow-x: hidden;
     position: relative;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -41,7 +41,7 @@ body.no-scroll {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     z-index: -1;
     overflow: hidden;
     background-color: #030305;
@@ -89,12 +89,30 @@ body.no-scroll {
     0% { transform: translate3d(0, 0, 0) scale(1); }
     100% { transform: translate3d(-10vw, -20vh, 0) scale(1.25); }
 }
-@keyframes search-spring {
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30%, 50% { transform: rotate(12deg); }
+    20%, 40% { transform: rotate(-10deg); }
+    60% { transform: rotate(0deg); }
+}
+@keyframes search-focus-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(0.96); }
+    70% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+@keyframes search-empty-spring {
     0% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
+    25% { transform: translateX(-5px); }
     50% { transform: translateX(4px); }
     75% { transform: translateX(-2px); }
     100% { transform: translateX(0); }
+}
+@keyframes search-alive {
+    0% { transform: scale(1) rotate(0deg); stroke: rgba(160, 160, 165, 0.6); }
+    30% { transform: scale(1.2) rotate(-15deg); stroke: #ffffff; }
+    60% { transform: scale(1.1) rotate(10deg); stroke: #ffffff; }
+    100% { transform: scale(1.05) rotate(0deg); stroke: #ffffff; }
 }
 nav {
     display: flex;
@@ -149,7 +167,7 @@ body.no-scroll .notif-wrapper {
     pointer-events: none;
 }
 .globe-btn {
-    background: none;
+    background: transparent;
     border: none;
     color: #e4e6eb;
     cursor: pointer;
@@ -157,12 +175,23 @@ body.no-scroll .notif-wrapper {
     align-items: center;
     justify-content: center;
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    padding: 5px;
+    padding: 6px;
     position: relative;
+    border-radius: 50%;
 }
 .globe-btn svg {
     width: 24px;
     height: 24px;
+    transform-origin: top center;
+}
+.globe-btn.ringing svg {
+    animation: bell-ring 2.5s ease-in-out infinite;
+}
+.globe-btn:active {
+    transform: scale(0.85);
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.1s ease;
 }
 .notif-badge {
     position: absolute;
@@ -194,9 +223,9 @@ body.no-scroll .notif-wrapper {
     min-width: 160px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(15px) scale(0.95);
-    transform-origin: top right;
-    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(-20px) scale(0.8);
+    transform-origin: 85% top;
+    transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1), visibility 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 .notif-dropdown {
@@ -205,11 +234,13 @@ body.no-scroll .notif-wrapper {
     right: -40px;
     padding: 12px;
     cursor: default;
+    transform-origin: 90% top;
 }
 .lang-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .notif-header {
     font-weight: 700;
@@ -299,7 +330,7 @@ body.no-scroll .notif-wrapper {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     background-color: rgba(3, 3, 5, 0.7);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -310,16 +341,12 @@ body.no-scroll .notif-wrapper {
     gap: 20px;
     opacity: 0;
     visibility: hidden;
-    transform-origin: top right;
-    transform: scale(0.95);
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     z-index: 99;
 }
 .mobile-menu.active {
     opacity: 1;
     visibility: visible;
-    transform: scale(1);
-    transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .mobile-menu a {
     font-size: 20px;
@@ -334,13 +361,12 @@ body.no-scroll .notif-wrapper {
     max-width: 320px;
     text-align: center;
     opacity: 0;
-    transform: scale(0.9) translateY(30px);
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+    transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .mobile-menu.active a {
     opacity: 1;
-    transform: scale(1) translateY(0);
-    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+    transform: translateY(0);
 }
 .mobile-menu.active a:nth-child(1) { transition-delay: 0.05s; }
 .mobile-menu.active a:nth-child(2) { transition-delay: 0.1s; }
@@ -465,48 +491,63 @@ body.no-scroll .notif-wrapper {
     color: #a0a0a5;
     font-size: 16px;
 }
-.search-container {
-    position: relative;
+
+.search-wrapper {
     max-width: 360px;
     margin: 24px auto 0;
     opacity: 0;
     animation: revealPhone 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 30px;
+    padding: 0 18px;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    transform-origin: center;
+}
+.search-container:focus-within {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(150, 50, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.05);
+    animation: search-focus-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
 .search-container.spring-anim {
-    animation: search-spring 0.4s ease-in-out forwards !important;
+    animation: search-empty-spring 0.4s ease-in-out forwards !important;
 }
 .search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    stroke: #a0a0a5;
-    pointer-events: none;
+    stroke: rgba(160, 160, 165, 0.6);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    shape-rendering: geometricPrecision;
+}
+.search-container:focus-within .search-icon {
+    animation: search-alive 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 .search-input {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 30px;
-    padding: 14px 16px 14px 44px;
-    color: #e4e6eb;
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 14px 0 14px 12px;
+    color: #ffffff;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 15px;
     outline: none;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 .search-input::placeholder {
-    color: #a0a0a5;
+    color: rgba(160, 160, 165, 0.8);
 }
-.search-input:focus {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+.search-input::-webkit-search-cancel-button {
+    display: none;
 }
+
 .no-results-msg {
     text-align: center;
     color: #a0a0a5;
@@ -514,6 +555,7 @@ body.no-scroll .notif-wrapper {
     padding: 20px;
     display: none;
 }
+
 .devices-list {
     display: flex;
     flex-direction: column;
@@ -1014,12 +1056,14 @@ footer {
         <h1 data-i18n="dl_title">Download XenithOS</h1>
         <p data-i18n="dl_desc">Get the latest version for your device</p>
         
-        <div class="search-container">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="search" id="device-search" class="search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n-placeholder="search_placeholder" placeholder="Search by codename...">
+        <div class="search-wrapper">
+            <div class="search-container" id="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="search" id="device-search" class="search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-i18n-placeholder="search_placeholder" placeholder="Search by codename...">
+            </div>
         </div>
     </div>
     
@@ -1420,6 +1464,8 @@ footer {
     let currentPageEl = null;
     let sessionUnreadNotifs = null;
     let lastSearchVal = '';
+    let maxViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    let isKeyboardOpen = false;
 
     const menu = document.getElementById('menu');
     const menuToggle = document.getElementById('menu-open');
@@ -1429,6 +1475,7 @@ footer {
     const notifBadge = document.getElementById('notif-badge');
     const notifBtn = document.getElementById('notif-btn');
     const searchInput = document.getElementById('device-search');
+    const searchContainer = document.getElementById('search-container');
     const deviceCards = document.querySelectorAll('.devices-list .device-card');
     const noResultsMsg = document.getElementById('no-results-msg');
     
@@ -1559,28 +1606,33 @@ footer {
         }
 
         if (targetId !== 'download-page') {
-            if (searchInput) {
-                searchInput.value = '';
-            }
+            searchInput.value = '';
             deviceCards.forEach(c => c.style.display = 'flex');
-            if (noResultsMsg) {
-                noResultsMsg.style.display = 'none';
-            }
+            noResultsMsg.style.display = 'none';
             lastSearchVal = '';
         }
 
         if (currentPageEl) {
             currentPageEl.style.opacity = '0';
-            currentPageEl.classList.remove('active');
+            setTimeout(() => {
+                currentPageEl.classList.remove('active');
+                targetEl.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+                void targetEl.offsetWidth; 
+                targetEl.style.opacity = '1';
+                currentPageEl = targetEl;
+            }, 250); 
+        } else {
+            targetEl.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            void targetEl.offsetWidth;
+            targetEl.style.opacity = '1';
+            currentPageEl = targetEl;
         }
-        
-        targetEl.classList.add('active');
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        void targetEl.offsetWidth;
-        targetEl.style.opacity = '1';
-        currentPageEl = targetEl;
     }
 
     function handleRouting() {
@@ -1619,12 +1671,26 @@ footer {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
             if (!localStorage.getItem('xenithos_app_banner_closed') && !isWebView && !isStandalone) {
-                const banner = document.getElementById('app-banner');
-                if (banner) {
-                    banner.classList.add('visible');
-                }
+                document.getElementById('app-banner').classList.add('visible');
             }
         }, 2000);
+        
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                if (window.visualViewport.height > maxViewportHeight) {
+                    maxViewportHeight = window.visualViewport.height;
+                }
+                
+                if (window.visualViewport.height < maxViewportHeight - 150) {
+                    isKeyboardOpen = true;
+                } else if (isKeyboardOpen && window.visualViewport.height >= maxViewportHeight - 150) {
+                    isKeyboardOpen = false;
+                    searchInput.blur();
+                    window.scrollTo(0, 0);
+                    document.body.scrollTop = 0;
+                }
+            });
+        }
     });
 
     window.addEventListener('hashchange', handleRouting);
@@ -1634,13 +1700,10 @@ footer {
         document.body.style.opacity = '1';
     });
 
-    const bannerCloseBtn = document.getElementById('app-banner-close');
-    if (bannerCloseBtn) {
-        bannerCloseBtn.addEventListener('click', () => {
-            document.getElementById('app-banner').classList.remove('visible');
-            localStorage.setItem('xenithos_app_banner_closed', 'true');
-        });
-    }
+    document.getElementById('app-banner-close').addEventListener('click', () => {
+        document.getElementById('app-banner').classList.remove('visible');
+        localStorage.setItem('xenithos_app_banner_closed', 'true');
+    });
 
     menuToggle.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1679,72 +1742,64 @@ footer {
         });
     });
 
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+    });
+
     function triggerBounce() {
-        const container = document.querySelector('.search-container');
-        if (container) {
-            container.classList.remove('spring-anim');
-            void container.offsetWidth;
-            container.classList.add('spring-anim');
-            setTimeout(() => {
-                container.classList.remove('spring-anim');
-            }, 400);
-        }
+        searchContainer.classList.remove('spring-anim');
+        void searchContainer.offsetWidth;
+        searchContainer.classList.add('spring-anim');
+        setTimeout(() => {
+            searchContainer.classList.remove('spring-anim');
+        }, 500);
     }
 
-    if (searchInput) {
-        searchInput.addEventListener('keydown', (e) => {
-            if ((e.key === 'Backspace' || e.keyCode === 8) && searchInput.value === '') {
-                if (!e.repeat) {
-                    triggerBounce();
-                }
-            }
-        });
-
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            
-            if (query === '' && lastSearchVal !== '') {
+    searchInput.addEventListener('keydown', (e) => {
+        if ((e.key === 'Backspace' || e.keyCode === 8) && searchInput.value === '') {
+            if (!e.repeat) {
                 triggerBounce();
             }
-            lastSearchVal = query;
+        }
+    });
 
-            let visibleCount = 0;
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query === '' && lastSearchVal !== '') {
+            triggerBounce();
+        }
+        lastSearchVal = query;
 
-            deviceCards.forEach(card => {
-                const codenameElem = card.querySelector('.device-code');
-                const devNameElem = card.querySelector('.device-name');
-                
-                if (codenameElem && devNameElem) {
-                    const codename = codenameElem.innerText.toLowerCase();
-                    const devName = devNameElem.innerText.toLowerCase();
-                    
-                    if (codename.includes(query) || devName.includes(query)) {
-                        card.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                }
-            });
+        let visibleCount = 0;
 
-            if (noResultsMsg) {
-                noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+        deviceCards.forEach(card => {
+            const codename = card.querySelector('.device-code').innerText.toLowerCase();
+            const devName = card.querySelector('.device-name').innerText.toLowerCase();
+            
+            if (codename.includes(query) || devName.includes(query)) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
             }
         });
-    }
+
+        noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
 
     function openBuildDetails(deviceId) {
         const data = devicesData[deviceId];
-        if (data) {
-            document.getElementById('bd-title').innerText = data.codename;
-            document.getElementById('bd-model').innerText = data.model;
-            document.getElementById('bd-codename').innerText = data.codename;
-            document.getElementById('bd-version').innerText = data.version;
-            document.getElementById('bd-date').innerText = data.date;
-            document.getElementById('bd-maintainer').innerText = data.maintainer;
-            document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
-            window.location.hash = 'build-details-page';
-        }
+        document.getElementById('bd-title').innerText = data.codename;
+        document.getElementById('bd-model').innerText = data.model;
+        document.getElementById('bd-codename').innerText = data.codename;
+        document.getElementById('bd-version').innerText = data.version;
+        document.getElementById('bd-date').innerText = data.date;
+        document.getElementById('bd-maintainer').innerText = data.maintainer;
+        document.getElementById('bd-maintainer-label').innerText = translations[currentLang][data.maintainerLabelKey];
+        window.location.hash = 'build-details-page';
     }
 
     const dlMondrian = document.getElementById('dl-mondrian');
