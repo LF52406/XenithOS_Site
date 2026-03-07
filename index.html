@@ -95,11 +95,18 @@ body.no-scroll {
     20%, 40% { transform: rotate(-10deg); }
     60% { transform: rotate(0deg); }
 }
-@keyframes search-spring {
-    0% { transform: translateY(-2px) scale(1.02); }
-    40% { transform: translateY(-2px) scale(0.97); }
-    70% { transform: translateY(-2px) scale(1.03); }
-    100% { transform: translateY(-2px) scale(1.02); }
+@keyframes search-focus-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(0.96); }
+    70% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+@keyframes search-empty-spring {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
 }
 @keyframes search-alive {
     0% { transform: scale(1) rotate(0deg); stroke: rgba(160, 160, 165, 0.6); }
@@ -508,10 +515,10 @@ body.no-scroll .notif-wrapper {
     background-color: rgba(255, 255, 255, 0.1);
     border-color: #ffffff;
     box-shadow: 0 0 20px rgba(150, 50, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.05);
-    transform: scale(1.02);
+    animation: search-focus-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 .search-container.spring-anim {
-    animation: search-spring 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+    animation: search-empty-spring 0.4s ease-in-out forwards !important;
 }
 .search-icon {
     width: 20px;
@@ -1438,7 +1445,7 @@ footer {
             "archive_inst": "Інструкция",
             "archive_inst_desc": "1. Перезавантажтесь у рекавері<br>2. Зробіть Format Data (yes)<br>3. Прошийте zip архів<br>4. Перезавантажтесь у систему",
             "donate_title": "Підтримати проект",
-            "don_title": "Спонсоры",
+            "don_title": "Спонсори",
             "don_desc": "Люди, завдяки яким проект існує",
             "don_msg1": "Величезне дякую за підтримку! Твоя допомога дозволяє нам оплачувати сервери і робити прошивку ще краще.",
             "don_msg2": "Дякую за донат! Дуже ціную твій внесок у розвиток проекту XenithOS.",
@@ -1733,6 +1740,12 @@ footer {
         opt.addEventListener('click', (e) => {
             updateLanguage(e.target.getAttribute('data-lang'));
         });
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
     });
 
     function triggerBounce() {
